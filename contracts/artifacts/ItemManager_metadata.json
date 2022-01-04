@@ -1,0 +1,191 @@
+{
+	"compiler": {
+		"version": "0.6.12+commit.27d51765"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_itemIndex",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_step",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_itemAddress",
+						"type": "address"
+					}
+				],
+				"name": "SupplyChainStep",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_identifier",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_itemPrice",
+						"type": "uint256"
+					}
+				],
+				"name": "createItem",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getItemIndex",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "isOwner",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "items",
+				"outputs": [
+					{
+						"internalType": "contract Item",
+						"name": "_item",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_identifier",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_itemPrice",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum ItemManager.SupplyChainState",
+						"name": "_state",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_itemIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "triggerDelivery",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_itemIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "triggerPayment",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Chapter06/contracts/ItemManager.sol": "ItemManager"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Chapter06/contracts/Item.sol": {
+			"keccak256": "0xb3eb28fa6874c3a23dfcd763283253066a9f56aeec324b13580c55314a1a49d6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://914ba01cc4a3b18b0d4619c19cac62e5f114d7ce5a1e14c4cdba7e010ba84753",
+				"dweb:/ipfs/Qmb9vfn9pH1Jrgw58ySW1SCuzquVwJhEyoTwTTqYA97FQM"
+			]
+		},
+		"Chapter06/contracts/ItemManager.sol": {
+			"keccak256": "0x333e1b6e19f0ecacbd1d6c168f2111225223b91318121afe20e2f162e1b33422",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://acca9472b9eedd47cf8a0ebd14e3bc9934828b3a6b34f6cc46cb3f5199d78f0a",
+				"dweb:/ipfs/QmW5Ae6xEUHsSnosNKM3Ry8RUxWYRxyVDNud8gRkiAEAWb"
+			]
+		},
+		"Chapter06/contracts/Ownable.sol": {
+			"keccak256": "0x3f5367a7bcc6dc12a0b6e7f4b9c6f4f26ef46e3141c36884409d9416012af853",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7b8a6a962c2b42d4870ca3968d91e60fa559887fa53cdbb934f86f1c892d7e16",
+				"dweb:/ipfs/QmPjbzM8tbdf8ZYWBQwLV6sRck1KvPfpusMkRCKMc1kPJo"
+			]
+		}
+	},
+	"version": 1
+}
