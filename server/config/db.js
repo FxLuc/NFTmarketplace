@@ -1,3 +1,3 @@
 module.exports = {
-  DB: "mongodb://localhost:27017/client",
+  DB: "mongodb+srv://admin:admin123@cluster0.c3eqc.mongodb.net/Blockchain?retryWrites=true&w=majority",
 };
