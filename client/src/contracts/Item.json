@@ -77,7 +77,7 @@
   "sourceMap": "91:805:0:-:0;;;232:192;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;336:11;323:10;:24;;;;366:7;358:5;:15;;;;401;384:14;;:32;;;;;;;;;;;;;;;;;;232:192;;;91:805;;;;;;",
   "deployedSourceMap": "91:805:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;494:1;482:9;;:13;474:47;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;554:9;540:10;;:23;532:62;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;617:9;605;;:21;;;;;;;;;;;638:12;663:14;;;;;;;;;;;655:28;;691:9;752:5;;702:56;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;655:104;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;637:122;;;778:7;770:65;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;436:407;91:805;;;;;;;;;;;;;169:17;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;112:22;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;141:21;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;169:17;;;;:::o;112:22::-;;;;:::o;141:21::-;;;;:::o",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.6.0;\r\n\r\nimport \"./ItemManager.sol\";\r\n\r\ncontract Item {\r\n    uint public priceInWei;\r\n    uint public pricePaid;\r\n    uint public index;\r\n    ItemManager parentContract;\r\n    \r\n    constructor(ItemManager _parentContract, uint _priceInWei, uint _indedx) public {\r\n        priceInWei = _priceInWei;\r\n        index = _indedx;\r\n        parentContract = _parentContract;\r\n    }\r\n    \r\n    receive() external payable {\r\n        require(pricePaid ==0, \"Item is paid already!\");\r\n        require(priceInWei == msg.value, \"Only full payments allowed\");\r\n        pricePaid+= msg.value;\r\n        (bool success,) = address(parentContract).call{value: msg.value}(abi.encodeWithSignature(\"triggerPayment(uint256)\",index));\r\n        require(success,\"The transaction wasn't successfull, cancelling\");\r\n    }\r\n    \r\n    fallback() external {\r\n        \r\n    }\r\n}",
-  "sourcePath": "D:\\Office\\DAPP\\Blockchain1Laps\\Chapter08\\contracts\\Item.sol",
+  "sourcePath": "D:\\Office\\DAPP\\Blockchain1Laps\\final\\contracts\\Item.sol",
   "ast": {
     "absolutePath": "project:/contracts/Item.sol",
     "exportedSymbols": {
@@ -2526,7 +2526,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-28T02:13:15.247Z",
+  "updatedAt": "2022-01-04T10:29:48.346Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

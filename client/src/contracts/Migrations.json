@@ -17,7 +17,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -30,7 +31,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -53,7 +55,7 @@
   "sourceMap": "66:311:2:-:0;;;218:50;;;;;;;;;;253:10;245:5;;:18;;;;;;;;;;;;;;;;;;66:311;;;;;;",
   "deployedSourceMap": "66:311:2:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;114:36;;;:::i;:::-;;;;;;;;;;;;;;;;;;;90:20;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;272:103;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;114:36;;;;:::o;90:20::-;;;;;;;;;;;;:::o;272:103::-;201:5;;;;;;;;;;187:19;;:10;:19;;;183:26;;;361:9:::1;334:24;:36;;;;183:26:::0;272:103;:::o",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.4.21 <0.7.0;\n\ncontract Migrations {\n  address public owner;\n  uint public last_completed_migration;\n\n  modifier restricted() {\n    if (msg.sender == owner) _;\n  }\n\n  constructor() public {\n    owner = msg.sender;\n  }\n\n  function setCompleted(uint completed) public restricted {\n    last_completed_migration = completed;\n  }\n}\n",
-  "sourcePath": "D:\\Office\\DAPP\\Blockchain1Laps\\Chapter08\\contracts\\Migrations.sol",
+  "sourcePath": "D:\\Office\\DAPP\\Blockchain1Laps\\final\\contracts\\Migrations.sol",
   "ast": {
     "absolutePath": "project:/contracts/Migrations.sol",
     "exportedSymbols": {
@@ -987,7 +989,8 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-28T02:13:15.261Z",
+  "updatedAt": "2022-01-04T10:29:51.938Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

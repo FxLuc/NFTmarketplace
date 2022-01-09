@@ -37,7 +37,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -71,7 +72,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -84,7 +86,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -115,7 +118,8 @@
       "name": "triggerPayment",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -138,7 +142,7 @@
   "sourceMap": "109:1771:1:-:0;;;;;;;;;;;;;160:10:3;151:6;;:19;;;;;;;;;;;;;;;;;;109:1771:1;;;;;;",
   "deployedSourceMap": "109:1771:1:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1094:430;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;618:464;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;297:92:3;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;511:95:1;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;365:37;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1536:341;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;1094:430;1201:9;1169:5;:17;1175:10;1169:17;;;;;;;;;;;:28;;;:41;1161:82;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1290:24;1262:52;;;;;;;;:5;:17;1268:10;1262:17;;;;;;;;;;;:24;;;;;;;;;;;;:52;;;;;;;;;1254:94;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1386:21;1359:5;:17;1365:10;1359:17;;;;;;;;;;;:24;;;:48;;;;;;;;;;;;;;;;;;;;;;;;1423:93;1439:10;1456:5;:17;1462:10;1456:17;;;;;;;;;;;:24;;;;;;;;;;;;1451:30;;;;;;;;1491:5;:17;1497:10;1491:17;;;;;;;;;;;:23;;;;;;;;;;;;1423:93;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1094:430;:::o;618:464::-;230:9:3;:7;:9::i;:::-;222:43;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;710:9:1::1;731:4;737:10;749:9;;722:37;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;::::0;::::1;;;;;;710:49;;795:4;770:5;:16;776:9;;770:16;;;;;;;;;;;:22;;;:29;;;;;;;;;;;;;;;;;;841:11;810:5;:16;816:9;;810:16;;;;;;;;;;;:28;;:42;;;;;;;;;;;;:::i;:::-;;893:10;863:5;:16;869:9;;863:16;;;;;;;;;;;:27;;:40;;;;940:24;914:5;:16;920:9;;914:16;;;;;;;;;;;:23;;;:50;;;;;;;;;;;;;;;;;;;;;;;;980:72;996:9;;1012:5;:16;1018:9;;1012:16;;;;;;;;;;;:23;;;;;;;;;;;;1007:29;;;;;;;;1046:4;980:72;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1063:9;;:11;;;;;;;;;;;;;276:1:3;618:464:1::0;;:::o;297:92:3:-;336:4;374:6;;;;;;;;;;;360:20;;:10;:20;;;353:28;;297:92;:::o;511:95:1:-;565:4;230:9:3;:7;:9::i;:::-;222:43;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;589:9:1::1;;582:16;;511:95:::0;:::o;365:37::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;1536:341::-;230:9:3;:7;:9::i;:::-;222:43;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1642:21:1::1;1614:49;;;;;;;;:5;:17;1620:10;1614:17;;;;;;;;;;;:24;;;;;;;;;;;;:49;;;;;;;;;1606:91;;;;;;;;;;;;;;;;;;;;;;;;;;;::::0;::::1;;;;;;;;;;;;;1734:26;1708:5;:17;1714:10;1708:17;;;;;;;;;;;:24;;;:52;;;;;;;;;;;;;;;;;;;;;;;;1776:93;1792:10;1809:5;:17;1815:10;1809:17;;;;;;;;;;;:24;;;;;;;;;;;;1804:30;;;;;;;;1844:5;:17;1850:10;1844:17;;;;;;;;;;;:23;;;;;;;;;;;;1776:93;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1536:341:::0;:::o;-1:-1:-1:-;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;:::o",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.6.0;\r\n\r\nimport \"./Ownable.sol\";\r\nimport \"./Item.sol\";\r\n\r\ncontract ItemManager is Ownable {\r\n\r\n    enum SupplyChainState{Created, Paid, Delivered}\r\n    \r\n    struct S_Item {\r\n        Item _item;\r\n        string _identifier;\r\n        uint _itemPrice;\r\n        ItemManager.SupplyChainState _state;\r\n    }\r\n    \r\n    mapping (uint => S_Item) public items;\r\n    uint itemIndex;\r\n    event SupplyChainStep(uint _itemIndex, uint _step, address _itemAddress);\r\n\r\n    function getItemIndex() public onlyOwner view returns(uint) {\r\n        return itemIndex;\r\n    }\r\n    \r\n    function createItem(string memory _identifier, uint _itemPrice) public onlyOwner {\r\n        Item item = new Item(this, _itemPrice, itemIndex);\r\n        items[itemIndex]._item = item;\r\n        items[itemIndex]._identifier = _identifier;\r\n        items[itemIndex]._itemPrice = _itemPrice;\r\n        items[itemIndex]._state = SupplyChainState.Created;\r\n        emit SupplyChainStep(itemIndex, uint(items[itemIndex]._state), address(item));\r\n        itemIndex++;\r\n    }\r\n    \r\n    function triggerPayment(uint _itemIndex) public payable {\r\n        require(items[_itemIndex]._itemPrice == msg.value, \"Only full payments accepted!\");\r\n        require(items[_itemIndex]._state == SupplyChainState.Created, \"Item is further in the chain!\");\r\n        items[_itemIndex]._state = SupplyChainState.Paid;\r\n        emit SupplyChainStep(_itemIndex, uint(items[_itemIndex]._state), address(items[_itemIndex]._item));\r\n    }\r\n    \r\n    function triggerDelivery(uint _itemIndex) public onlyOwner {\r\n        require(items[_itemIndex]._state == SupplyChainState.Paid, \"Item is further in the chain!\");\r\n        items[_itemIndex]._state= SupplyChainState.Delivered;\r\n        emit SupplyChainStep(_itemIndex, uint(items[_itemIndex]._state), address(items[_itemIndex]._item));\r\n    }\r\n}",
-  "sourcePath": "D:\\Office\\DAPP\\Blockchain1Laps\\Chapter08\\contracts\\ItemManager.sol",
+  "sourcePath": "D:\\Office\\DAPP\\Blockchain1Laps\\final\\contracts\\ItemManager.sol",
   "ast": {
     "absolutePath": "project:/contracts/ItemManager.sol",
     "exportedSymbols": {
@@ -6021,7 +6025,8 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-28T02:13:15.255Z",
+  "updatedAt": "2022-01-04T10:29:51.929Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},
