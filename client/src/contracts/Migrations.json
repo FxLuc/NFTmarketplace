@@ -55,7 +55,7 @@
   "sourceMap": "69:326:2:-:0;;;229:52;;;;;;;;;;265:10;257:5;;:18;;;;;;;;;;;;;;;;;;69:326;;;;;;",
   "deployedSourceMap": "69:326:2:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;119:36;;;:::i;:::-;;;;;;;;;;;;;;;;;;;94:20;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;287:105;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;119:36;;;;:::o;94:20::-;;;;;;;;;;;;:::o;287:105::-;209:5;;;;;;;;;;195:19;;:10;:19;;;191:26;;;377:9:::1;350:24;:36;;;;191:26:::0;287:105;:::o",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity >=0.4.21 <0.7.0;\r\n\r\ncontract Migrations {\r\n  address public owner;\r\n  uint public last_completed_migration;\r\n\r\n  modifier restricted() {\r\n    if (msg.sender == owner) _;\r\n  }\r\n\r\n  constructor() public {\r\n    owner = msg.sender;\r\n  }\r\n\r\n  function setCompleted(uint completed) public restricted {\r\n    last_completed_migration = completed;\r\n  }\r\n}\r\n",
-  "sourcePath": "D:\\Blockchain\\blockchain01\\contracts\\Migrations.sol",
+  "sourcePath": "D:\\Blockchain\\Project_KTM\\blockchain01\\contracts\\Migrations.sol",
   "ast": {
     "absolutePath": "project:/contracts/Migrations.sol",
     "exportedSymbols": {
@@ -989,7 +989,7 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-01-05T08:28:10.653Z",
+  "updatedAt": "2022-01-09T07:11:31.235Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

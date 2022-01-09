@@ -27,7 +27,7 @@
   "sourceMap": "60:332:3:-:0;;;119:59;;;;;;;;;;160:10;151:6;;:19;;;;;;;;;;;;;;;;;;60:332;;;;;;",
   "deployedSourceMap": "60:332:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;297:92;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;336:4;374:6;;;;;;;;;;;360:20;;:10;:20;;;353:28;;297:92;:::o",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.6.0;\r\n\r\ncontract Ownable {\r\n    address payable _owner;\r\n    \r\n    constructor() public {\r\n        _owner = msg.sender;\r\n    }\r\n    \r\n    modifier onlyOwner() {\r\n        require(isOwner(), \"You are not the owner\");\r\n        _;\r\n    }\r\n    \r\n    function isOwner() public view returns(bool) {\r\n        return(msg.sender == _owner);\r\n    }\r\n}",
-  "sourcePath": "D:\\Blockchain\\blockchain01\\contracts\\Ownable.sol",
+  "sourcePath": "D:\\Blockchain\\Project_KTM\\blockchain01\\contracts\\Ownable.sol",
   "ast": {
     "absolutePath": "project:/contracts/Ownable.sol",
     "exportedSymbols": {
@@ -990,7 +990,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-01-05T08:27:58.756Z",
+  "updatedAt": "2022-01-09T07:11:18.460Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
