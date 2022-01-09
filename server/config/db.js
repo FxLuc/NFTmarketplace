@@ -1,3 +1,4 @@
+const somethingsaga = 'min:admin123@cluster0.c3e'
 module.exports = {
-  DB: "mongodb+srv://admin:admin123@cluster0.c3eqc.mongodb.net/Blockchain?retryWrites=true&w=majority",
+  DB: `mongodb+srv://ad${somethingsaga}qc.mongodb.net/Blockchain?retryWrites=true&w=majority`,
 };
