@@ -3,7 +3,6 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const config = require("./config/db");
-const productsRoute = require("./routes/product.route");
 
 // mongoose connect
 const mongoose = require('mongoose')
@@ -16,7 +15,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/products", productsRoute);
+// router
+require('./routes/index')(app)
+app.use(express.static("public"));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

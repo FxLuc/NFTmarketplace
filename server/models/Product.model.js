@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
 
-let productSchema = new Schema({
+let productSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -14,6 +13,6 @@ let productSchema = new Schema({
     type: String,
     default: "",
   },
-});
+})
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model("Product", productSchema)
