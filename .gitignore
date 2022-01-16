@@ -18,5 +18,6 @@
 */artifacts
 /remix-live
 /remix-project
-node_modules
+/client/src/contracts
+/node_modules
 *.drawio
