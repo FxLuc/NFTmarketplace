@@ -1,11 +1,14 @@
-import React, { Component } from "react"
-import ItemManagerContract from "../contracts/ItemManager.json"
-import ItemContract from "../contracts/Item.json"
-import getWeb3 from "../getWeb3"
-import ItemRow from "./ItemRow"
+import React, { Component } from 'react'
+import axios from 'axios'
+import FormData from 'form-data'
+
+import getWeb3 from '../getWeb3'
+import ItemManagerContract from '../contracts/ItemManager.json'
+import ItemContract from '../contracts/Item.json'
+import ItemRow from './ItemRow'
 
 class ItemManager extends Component {
-  state = { loaded: false, cost: 0, itemName: "item_01", unit: 'Wei', itemList: [] }
+  state = { loaded: false, cost: 0, itemName: 'item_01', unit: 'Wei', itemList: [], image: null, description: '' }
 
   componentDidMount = async () => {
     try {
@@ -48,13 +51,18 @@ class ItemManager extends Component {
 
   handleInputChange = event => {
     const target = event.target
-    const value = target.type === "checkbox" ? target.checked : target.value
+    const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
     this.setState({ [name]: value })
   }
 
+  getFileInfo = event => {
+    console.log(event.target.files[0])
+    this.setState({ image: event.target.files[0] })
+  }
+
   handleSubmit = async () => {
-    const { cost, itemName, unit, itemList } = this.state
+    const { cost, itemName, unit, image, description, itemList } = this.state
     let value = cost
     if (unit === 'Ether') {
       value = this.web3.utils.toWei(cost, 'ether')
@@ -65,24 +73,41 @@ class ItemManager extends Component {
 
     // add new item to table
     const itemIndex = await this.itemManager.methods.getItemIndex().call()
-    itemList.unshift(await this.itemManager.methods.items(itemIndex - 1).call())
+    const newItem = await this.itemManager.methods.items(itemIndex - 1).call()
+    itemList.unshift(newItem)
     this.setState({ itemList })
+    let formData = new FormData()
+    formData.append('file', image, image.name)
+    formData.append('_id', newItem._item)
+    formData.append('name', newItem._identifier)
+    formData.append('price', newItem._itemPrice)
+    formData.append('state', newItem._state)
+    formData.append('owner', this.accounts[0])
+    formData.append('description', description)
+    axios
+      .post('http://localhost:4000/product/create', formData, {
+        headers: { 'content-type': 'multipart/form-data' }
+      })
+      .then(res => {
+        console.log('Axios response: ', res)
+      })
+      .catch(err => console.log(err))
   }
 
-  handleBuy = async(itemAddress, itemPrice) => {
+  handleBuy = async (itemAddress, itemPrice) => {
     const currentAccount = await this.web3.eth.getAccounts()
-    this.web3.eth.sendTransaction({from: currentAccount[0], to: itemAddress, value: itemPrice});
+    this.web3.eth.sendTransaction({ from: currentAccount[0], to: itemAddress, value: itemPrice });
   }
 
-  handleDelivery = async(itemAddress) => {
+  handleDelivery = async (itemAddress) => {
     const currentAccount = await this.web3.eth.getAccounts()
-    const functionSignatureIndex = await this.web3.eth.abi.encodeFunctionSignature("index()")
+    const functionSignatureIndex = await this.web3.eth.abi.encodeFunctionSignature('index()')
     const itemIndex = await this.web3.eth.call({ from: currentAccount[0], to: itemAddress, data: functionSignatureIndex })
     await this.itemManager.methods.triggerDelivery(this.web3.utils.hexToNumber(itemIndex)).send({ from: currentAccount[0] })
   }
 
   listenToSupplyChainStepEvent = () => {
-    this.itemManager.events.SupplyChainStep().on("data", async event => {
+    this.itemManager.events.SupplyChainStep().on('data', async event => {
       const itemObject = await this.itemManager.methods.items(event.returnValues._itemIndex).call()
       const { itemList } = this.state
       itemList[await itemList.indexOf(itemList.find(item => item._item === itemObject._item))] = itemObject
@@ -95,28 +120,28 @@ class ItemManager extends Component {
       return <div>Loading Web3, accounts, and contract...</div>
     }
     return (
-      <div className="container">
-        <h1 className="py-3"><strong>SUPPLY CHAIN</strong></h1>
+      <div className='container'>
+        <h1 className='py-3'><strong>SUPPLY CHAIN</strong></h1>
 
-        <div className="ItemManager">
+        <div className='ItemManager'>
           <h4>Create item</h4>
 
-          <div className="form-group">
-            <label htmlFor="itemName">Idetifier:</label>
-            <input name="itemName" value={this.state.itemName} onChange={this.handleInputChange} type="text" className="form-control" />
+          <div className='form-group my-2'>
+            <label htmlFor='itemName'>Idetifier:</label>
+            <input name='itemName' value={this.state.itemName} onChange={this.handleInputChange} type='text' className='form-control' />
           </div>
 
-          <div className="row py-3">
-            <div className="col">
-              <div className="form-group">
-                <label htmlFor="cost">Price:</label>
-                <input name="cost" onChange={this.handleInputChange} type="number" className="form-control" value={this.state.cost} />
+          <div className='row my-2'>
+            <div className='col'>
+              <div className='form-group'>
+                <label htmlFor='cost'>Price:</label>
+                <input name='cost' onChange={this.handleInputChange} type='number' className='form-control' value={this.state.cost} />
               </div>
             </div>
-            <div className="col-3">
-              <div className="form-group">
-                <label htmlFor="unit">In:</label>
-                <select className="form-control" onChange={this.handleInputChange} name="unit" defaultValue="Wei">
+            <div className='col-3'>
+              <div className='form-group'>
+                <label htmlFor='unit'>In:</label>
+                <select className='form-control' onChange={this.handleInputChange} name='unit' defaultValue='Wei'>
                   <option>Wei</option>
                   <option>Gwei</option>
                   <option>Ether</option>
@@ -124,13 +149,28 @@ class ItemManager extends Component {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary" type="button" onClick={this.handleSubmit}>Create item</button>
+          <div className='form-group my-2'>
+            <label>Picture:</label>
+            <input type='file' name='img' className='form-control' onChange={this.getFileInfo}></input>
+          </div>
+          <div className='form-group my-2'>
+            <label>Description:</label>
+            <textarea
+              name='description'
+              rows='3'
+              onChange={this.handleInputChange}
+              className='form-control'
+              placeholder='Item specifications...'
+            ></textarea>
+          </div>
+          <button className='btn btn-primary my-2' type='button' onClick={this.handleSubmit}>Create item</button>
         </div>
-        <div className="ItemTable py-5">
+
+        <div className='ItemTable py-5'>
           <h4>Item manager</h4>
-          <div className="py-3 ">
-            <div className="table-responsive">
-              <table className="table table-bordered">
+          <div className='py-3 '>
+            <div className='table-responsive'>
+              <table className='table table-bordered'>
                 <thead>
                   <tr>
                     <th>Address</th>
@@ -140,7 +180,7 @@ class ItemManager extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.itemList.map(itemList => <ItemRow data={itemList} key={itemList._item} buy={this.handleBuy} delivery={this.handleDelivery}/>)}
+                  {this.state.itemList.map(itemList => <ItemRow data={itemList} key={itemList._item} buy={this.handleBuy} delivery={this.handleDelivery} />)}
                 </tbody>
               </table>
             </div>

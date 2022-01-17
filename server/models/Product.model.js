@@ -11,6 +11,16 @@ let productSchema = mongoose.Schema({
   },
   price: {
     type: Number,
+    min: 0,
+    default: 0,
+  },
+  state: {
+    type: Number,
+    min: 0,
+    default: 0
+  },
+  owner: {
+    type: String,
     required: true,
   },
   description: {
@@ -18,7 +28,7 @@ let productSchema = mongoose.Schema({
   },
   img: {
     type: String,
-    default: "default/defaut.png",
+    default: "http://localhost:4000/img/default/defaut.png",
   },
 })
 

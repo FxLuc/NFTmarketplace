@@ -16,8 +16,8 @@
 .vscode/
 *.code-workspace
 */artifacts
-/remix-live
-/remix-project
+**/remix-live
+**/remix-project
 /client/src/contracts
-/node_modules
+**/node_modules
 *.drawio
