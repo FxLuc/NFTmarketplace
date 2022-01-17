@@ -23,7 +23,7 @@ let productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  paid: {
+  purchaser: {
     type: String,
     default: '0x0000000000000000000000000000000000000000'
   },

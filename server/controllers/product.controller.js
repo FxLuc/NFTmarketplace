@@ -54,9 +54,12 @@ const createProduct = (req, res) => {
 
 const updateProduct = (req, res) => {
     Product
-        .findByIdAndUpdate(req.body.id, req.body)
+        .findByIdAndUpdate(req.body._id, {
+            state: req.body.state,
+            purchaser: req.body.purchaser
+        })
         .exec(err =>
-            err ? res.status(400).json({ message: err }) : res.status(200).json({ message: 'Update success' })
+            err ? res.status(500).json(err) : Product.findById(req.body._id).then(product => res.status(201).json(product))
         )
 }
 

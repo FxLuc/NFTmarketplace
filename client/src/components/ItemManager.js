@@ -8,7 +8,7 @@ import ItemContract from '../contracts/Item.json'
 import ItemRow from './ItemRow'
 
 class ItemManager extends Component {
-  state = { loaded: false, cost: 0, itemName: 'item_01', unit: 'Wei', itemList: [], image: null, description: '' }
+  state = { loaded: false, price: 0, itemName: 'item_01', unit: 'Wei', itemList: [], image: undefined, description: '' }
 
   componentDidMount = async () => {
     try {
@@ -34,10 +34,14 @@ class ItemManager extends Component {
       this.listenToSupplyChainStepEvent();
 
       // load items to table
+      axios
+        .get('http://localhost:4000/product')
+        .then(res => {
+          this.setState({ itemList: res.data })
+        })
+        .catch(console.log())
+
       this.itemIndex = await this.itemManager.methods.getItemIndex().call()
-      for (let i = this.itemIndex - 1; i >= 0; i--) {
-        this.setState({ itemList: [...this.state.itemList, await this.itemManager.methods.items(i).call()] })
-      }
 
       this.setState({ loaded: true })
 
@@ -57,25 +61,24 @@ class ItemManager extends Component {
   }
 
   getFileInfo = event => {
-    console.log(event.target.files[0])
     this.setState({ image: event.target.files[0] })
   }
 
   handleSubmit = async () => {
-    const { cost, itemName, unit, image, description, itemList } = this.state
-    let value = cost
+    const { price, itemName, unit, image, description, itemList } = this.state
+    let value = price
     if (unit === 'Ether') {
-      value = this.web3.utils.toWei(cost, 'ether')
+      value = this.web3.utils.toWei(price, 'ether')
     } else if (unit === 'Gwei') {
-      value = this.web3.utils.toWei(cost, 'gwei')
+      value = this.web3.utils.toWei(price, 'gwei')
     }
-    await this.itemManager.methods.createItem(itemName, value).send({ from: this.accounts[0] })
 
-    // add new item to table
+    // add item to blockchain
     const itemIndex = await this.itemManager.methods.getItemIndex().call()
     const newItem = await this.itemManager.methods.items(itemIndex - 1).call()
-    itemList.unshift(newItem)
-    this.setState({ itemList })
+    await this.itemManager.methods.createItem(itemName, value).send({ from: this.accounts[0] })
+
+    // add new item to server
     const formData = new FormData()
     formData.append('file', image, image.name)
     formData.append('_id', newItem._item)
@@ -89,29 +92,41 @@ class ItemManager extends Component {
         headers: { 'content-type': 'multipart/form-data' }
       })
       .then(res => {
-        console.log('Axios response: ', res)
+        this.setState({ price: 0, itemName: 'item_01', image: undefined, description: '' })
+        // add new item to componets state
+        itemList.unshift(res.data)
+        this.setState({ itemList })
       })
-      .catch(err => console.log(err))
+      .catch(console.log())
   }
 
   handleBuy = async (itemAddress, itemPrice) => {
-    const currentAccount = await this.web3.eth.getAccounts()
-    this.web3.eth.sendTransaction({ from: currentAccount[0], to: itemAddress, value: itemPrice });
+    this.web3.eth.sendTransaction({ from: this.accounts[0], to: itemAddress, value: itemPrice })
   }
 
   handleDelivery = async (itemAddress) => {
-    const currentAccount = await this.web3.eth.getAccounts()
     const functionSignatureIndex = await this.web3.eth.abi.encodeFunctionSignature('index()')
-    const itemIndex = await this.web3.eth.call({ from: currentAccount[0], to: itemAddress, data: functionSignatureIndex })
-    await this.itemManager.methods.triggerDelivery(this.web3.utils.hexToNumber(itemIndex)).send({ from: currentAccount[0] })
+    const itemIndex = await this.web3.eth.call({ from: this.accounts[0], to: itemAddress, data: functionSignatureIndex })
+    await this.itemManager.methods.triggerDelivery(this.web3.utils.hexToNumber(itemIndex)).send({ from: this.accounts[0] })
   }
 
   listenToSupplyChainStepEvent = () => {
     this.itemManager.events.SupplyChainStep().on('data', async event => {
       const itemObject = await this.itemManager.methods.items(event.returnValues._itemIndex).call()
       const { itemList } = this.state
-      itemList[await itemList.indexOf(itemList.find(item => item._item === itemObject._item))] = itemObject
-      this.setState({ itemList })
+      if (itemObject._state != '0') {
+      axios
+        .post('http://localhost:4000/product/update', {
+          _id: itemObject._item,
+          state: itemObject._state,
+          purchaser: this.accounts[0]
+        })
+        .then(res => {
+          itemList[itemList.indexOf(itemList.find(item => item._id === itemObject._item))] = res.data
+          this.setState({ itemList })
+        })
+        .catch(console.log())
+      } 
     })
   }
 
@@ -127,15 +142,15 @@ class ItemManager extends Component {
           <h4>Create item</h4>
 
           <div className='form-group my-2'>
-            <label htmlFor='itemName'>Idetifier:</label>
+            <label htmlFor='itemName'>Name:</label>
             <input name='itemName' value={this.state.itemName} onChange={this.handleInputChange} type='text' className='form-control' />
           </div>
 
           <div className='row my-2'>
             <div className='col'>
               <div className='form-group'>
-                <label htmlFor='cost'>Price:</label>
-                <input name='cost' onChange={this.handleInputChange} type='number' className='form-control' value={this.state.cost} />
+                <label htmlFor='price'>Price:</label>
+                <input name='price' onChange={this.handleInputChange} type='number' className='form-control' value={this.state.price} min={0} />
               </div>
             </div>
             <div className='col-3'>
@@ -159,6 +174,7 @@ class ItemManager extends Component {
               name='description'
               rows='3'
               onChange={this.handleInputChange}
+              value={this.state.description}
               className='form-control'
               placeholder='Item specifications...'
             ></textarea>
@@ -173,14 +189,18 @@ class ItemManager extends Component {
               <table className='table table-bordered'>
                 <thead>
                   <tr>
-                    <th>Address</th>
-                    <th>Identifier</th>
+                    <th>Picture</th>
+                    <th>Name</th>
                     <th>Price (wei)</th>
+                    <th>Item</th>
+                    <th>Owner</th>
+                    <th>Purchaser</th>
                     <th>State</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.itemList.map(itemList => <ItemRow data={itemList} key={itemList._item} buy={this.handleBuy} delivery={this.handleDelivery} />)}
+                  {this.state.itemList.map(item => <ItemRow data={item} key={item._id} buy={this.handleBuy} delivery={this.handleDelivery} />)}
                 </tbody>
               </table>
             </div>
