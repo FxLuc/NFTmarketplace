@@ -101,32 +101,37 @@ class ItemManager extends Component {
   }
 
   handleBuy = async (itemAddress, itemPrice) => {
-    this.web3.eth.sendTransaction({ from: this.accounts[0], to: itemAddress, value: itemPrice })
+    const currentAccount = await this.web3.eth.getAccounts()
+    this.web3.eth.sendTransaction({ from: currentAccount[0], to: itemAddress, value: itemPrice })
   }
 
   handleDelivery = async (itemAddress) => {
+    const currentAccount = await this.web3.eth.getAccounts()
     const functionSignatureIndex = await this.web3.eth.abi.encodeFunctionSignature('index()')
     const itemIndex = await this.web3.eth.call({ from: this.accounts[0], to: itemAddress, data: functionSignatureIndex })
-    await this.itemManager.methods.triggerDelivery(this.web3.utils.hexToNumber(itemIndex)).send({ from: this.accounts[0] })
+    await this.itemManager.methods.triggerDelivery(this.web3.utils.hexToNumber(itemIndex)).send({ from: currentAccount[0] })
   }
 
   listenToSupplyChainStepEvent = () => {
     this.itemManager.events.SupplyChainStep().on('data', async event => {
       const itemObject = await this.itemManager.methods.items(event.returnValues._itemIndex).call()
       const { itemList } = this.state
-      if (itemObject._state != '0') {
-      axios
-        .post('http://localhost:4000/product/update', {
-          _id: itemObject._item,
-          state: itemObject._state,
-          purchaser: this.accounts[0]
-        })
-        .then(res => {
-          itemList[itemList.indexOf(itemList.find(item => item._id === itemObject._item))] = res.data
-          this.setState({ itemList })
-        })
-        .catch(console.log())
-      } 
+      const itemIndex = await itemList.indexOf(itemList.find(item => item._id === itemObject._item))
+      const currentAccount = await this.web3.eth.getAccounts()
+
+      if (itemObject._state !== '0') {
+        axios
+          .post('http://localhost:4000/product/update', {
+            _id: itemObject._item,
+            state: itemObject._state,
+            purchaser: currentAccount[0]
+          })
+          .then(res => {
+            itemList[itemIndex] = res.data
+            this.setState({ itemList })
+          })
+          .catch(console.log())
+      }
     })
   }
 

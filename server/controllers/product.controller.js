@@ -28,7 +28,13 @@ const upload = multer({
 }).single('file')
 
 const getProduct = (req, res) => {
-    Product.find().then(products => res.status(200).json(products))
+    Product.find().sort('-createdAt').limit(10).then(products => res.status(200).json(products))
+}
+
+const searchProduct = (req, res) => {
+    Product.find(({ name: { $regex: req.body.name, $options: 'i' }})).sort('-createdAt').limit(10).then( products => {
+        res.status(200).json(products)
+    })
 }
 
 const createProduct = (req, res) => {
@@ -67,4 +73,5 @@ module.exports = {
     getProduct,
     createProduct,
     updateProduct,
+    searchProduct
 }
