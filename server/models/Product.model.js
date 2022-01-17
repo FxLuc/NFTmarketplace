@@ -23,6 +23,10 @@ let productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  paid: {
+    type: String,
+    default: '0x0000000000000000000000000000000000000000'
+  },
   description: {
     type: String,
   },
@@ -30,6 +34,6 @@ let productSchema = mongoose.Schema({
     type: String,
     default: "http://localhost:4000/img/default/defaut.png",
   },
-})
+}, {timestamps: true} )
 
 module.exports = mongoose.model("Product", productSchema)

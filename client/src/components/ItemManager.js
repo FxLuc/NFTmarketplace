@@ -76,7 +76,7 @@ class ItemManager extends Component {
     const newItem = await this.itemManager.methods.items(itemIndex - 1).call()
     itemList.unshift(newItem)
     this.setState({ itemList })
-    let formData = new FormData()
+    const formData = new FormData()
     formData.append('file', image, image.name)
     formData.append('_id', newItem._item)
     formData.append('name', newItem._identifier)

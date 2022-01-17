@@ -43,7 +43,6 @@ const createProduct = (req, res) => {
         const url = req.protocol + '://' + req.get('host')
         req.body.img = url + '/img/' + req.file.filename
         const newProduct = new Product(req.body)
-        console.log(newProduct)
         newProduct.save().then(product => {
             res.status(201).json(product)
         }).catch(error => {
