@@ -74,15 +74,15 @@ class ItemManager extends Component {
     }
 
     // add item to blockchain
-    const itemIndex = await this.itemManager.methods.getItemIndex().call()
-    const newItem = await this.itemManager.methods.items(itemIndex - 1).call()
     await this.itemManager.methods.createItem(itemName, value).send({ from: this.accounts[0] })
+    const itemIndex = await this.itemManager.methods.getItemIndex().call()
+    const newItem = await this.itemManager.methods.items(itemIndex-1).call()
 
     // add new item to server
     const formData = new FormData()
     formData.append('file', image, image.name)
     formData.append('_id', newItem._item)
-    formData.append('name', newItem._identifier)
+    formData.append('name', itemName)
     formData.append('price', newItem._itemPrice)
     formData.append('state', newItem._state)
     formData.append('owner', this.accounts[0])

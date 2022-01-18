@@ -1,4 +1,4 @@
-const somethingsaga = 'min:admin123@cluster0.c3e'
+const somethingsaga = '127:D3c0DeD.doc@often127.3eupw'
 module.exports = {
-  DB: `mongodb+srv://ad${somethingsaga}qc.mongodb.net/Blockchain?retryWrites=true&w=majority`,
+  DB: `mongodb+srv://often${somethingsaga}.mongodb.net/blockchain1?retryWrites=true&w=majority`,
 };

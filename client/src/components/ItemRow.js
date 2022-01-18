@@ -1,7 +1,7 @@
 import React from 'react'
 import QRCode from 'qrcode.react'
 import NextStep from './NextStep'
-
+import '../App.css'
 class ItemRow extends React.Component {
 
     handleBuy = () => {
@@ -36,7 +36,7 @@ class ItemRow extends React.Component {
         return (
             <tr>
                 <td>
-                    <img src={this.props.data.img} className="img-fluid" alt={this.props.data.name}></img>
+                    <img src={this.props.data.img} className="product-image img-thumbnail" alt={this.props.data.name}></img>
                 </td>
                 <td>{this.props.data.name}</td>
                 <td>{this.props.data.price}</td>
