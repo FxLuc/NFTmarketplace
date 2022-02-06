@@ -4,45 +4,76 @@ pragma solidity ^0.8.11;
 import "./Context.sol";
 import "./ItemManager.sol";
 
-contract Item is Context{
-    address public owner;
+contract Item is Context {
     ItemManager public parentContract;
-    bytes32 public identifier;
-    bytes32 public specifications;
-    bytes32 public rawDataUrl;
+    address public owner;
     bytes32 public rawDataHash;
-    uint public indexInParentContract;
+    string public name;
+    string public specifications;
+    string public rawDataUrl;
+    uint256 public indexInParentContract;
+    uint256 public price;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-    
-    constructor(ItemManager _parentContract, bytes32 _identifier, bytes32 _specifications, bytes32 _rawDataUrl, bytes32 _rawDataHash, uint _indexInParentContract) {
-        owner = tx.origin;
-        identifier = _identifier;
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner,
+        address recipt
+    );
+
+    constructor(
+        ItemManager _parentContract,
+        address _owner,
+        string memory _name,
+        string memory _specifications,
+        string memory _rawDataUrl,
+        bytes32 _rawDataHash,
+        uint256 _indexInParentContract
+    ) {
+        parentContract = _parentContract;
+        owner = _owner;
+        name = _name;
         specifications = _specifications;
         rawDataUrl = _rawDataUrl;
         rawDataHash = _rawDataHash;
         indexInParentContract = _indexInParentContract;
-        parentContract = _parentContract;
     }
 
-    function transferOwnership(address _newOwner) public {
-        require(owner == msg.sender, "Item: caller is not the Item owner");
-        require(_newOwner != address(0), "Item: new owner is the zero address");
-        _transferOwnership(_newOwner);
+    function changePrice(uint256 _newPrice) public {
+        require(
+            owner == _msgSender() || address(parentContract) == _msgSender(),
+            "Item: caller is not the owner or parent contract"
+        );
+        price = _newPrice;
     }
 
-    function _transferOwnership(address _newOwner) internal {
+    function giveOwnershipTo(address _newOwner) public {
+        require(_newOwner != address(0), "Ownable: new owner is the zero address");
+        require(price == 0, "Item: this Item is for sale");
         address oldOwner = owner;
         owner = _newOwner;
-        emit OwnershipTransferred(oldOwner, _newOwner);
+        emit OwnershipTransferred(oldOwner, _newOwner, address(0));
     }
-    
+
+    function transferOwnership(address _newOwner, address _recipt) public {
+        require(
+            address(parentContract) == _msgSender(),
+            "Item: caller is not the owner or parent contract"
+        );
+        address oldOwner = owner;
+        owner = _newOwner;
+        price = 0;
+        emit OwnershipTransferred(oldOwner, _newOwner, _recipt);
+    }
+
     receive() external payable {
-        // (bool success, ) = address(parentContract).call{value: msg.value}(abi.encodeWithSignature("triggerPayment(uint256)", indexInParentContract));
-        // require(success, "Item: the transaction wasn't successfull, cancelling...");
-        parentContract.triggerPayment{value: msg.value}(indexInParentContract);
-        _transferOwnership(_msgSender());
+        require(price > 0, "Item: this Item is not for sale");
+        require(price == msg.value, "Item: only full payments accepted");
+        parentContract.triggerPayment{value: msg.value}(
+            indexInParentContract,
+            _msgSender(),
+            owner
+        );
     }
-    
-    fallback() external {}
+
+    fallback() external payable {}
 }
