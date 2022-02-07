@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
 class CreateItem extends React.Component {
     constructor(props) {
@@ -60,11 +60,11 @@ class CreateItem extends React.Component {
 
     render() {
         return (
-            <div className='container text-dark'>
+            <div className='container text-dark mt-5 py-4'>
                 <form className='CreateItem'>
                     <h1 className='fw-bold text-uppercase'>Create new item</h1>
 
-                    <div className='text-muted'><span className='text-danger'>*</span> Required fields (will be storage in blockchain)</div>
+                    <div className='text-muted'><span className='text-danger'>*</span> Required fields (will be storage directly in blockchain)</div>
 
                     <div className='form-group my-3'>
                         <label htmlFor='picture' className='fw-bold'>Picture <span className='text-danger'>*</span></label>
@@ -87,7 +87,7 @@ class CreateItem extends React.Component {
                         <textarea
                             name='specifications'
                             id='specifications'
-                            rows='3'
+                            rows='5'
                             onChange={this.handleInputChange}
                             value={this.state.specifications}
                             className='form-control'
@@ -102,7 +102,7 @@ class CreateItem extends React.Component {
                         <textarea
                             name='description'
                             id='description'
-                            rows='5'
+                            rows='3'
                             onChange={this.handleInputChange}
                             value={this.state.description}
                             className='form-control'
@@ -117,9 +117,9 @@ class CreateItem extends React.Component {
                         <input name='externaLink' id='externaLink' value={this.state.externaLink} onChange={this.handleInputChange} type='text' className='form-control' placeholder='https://yoursite.io/item/123'/>
                     </div>
                     
-                    <div className='my-3 fw-bold fst-italic text-danger'><FontAwesomeIcon icon={faCheckCircle}/> Freeze metadata: <span className='fw-normal text-dark'>Your metadata will permanently lock and store all of this item's content in decentralized file storage.</span></div>
+                    <div className='my-3 fw-bold fst-italic text-danger'><FontAwesomeIcon icon={faExclamationTriangle}/> Freeze metadata: <span className='fw-normal text-dark'>Your metadata will permanently lock and store all of this item's content in decentralized file storage.</span></div>
 
-                    <button className='btn btn-primary fw-bold fs-5 px-5' type='submit' onClick={this.handleSubmit}>Create</button>
+                    <button className='btn btn-primary fw-bold px-5' type='submit' onClick={this.handleSubmit}>Create</button>
                 </form>
             </div>
         )

@@ -1,6 +1,8 @@
-import React from "react";
-import CreateItem from "./components/CreateItem";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React from "react"
+import CreateItem from "./components/CreateItem"
+import NavigationBar from './components/NavigationBar'
+import Footer from './components/Footer'
+import "bootstrap/dist/css/bootstrap.min.css"
 
 import getWeb3 from './getWeb3'
 import ItemManagerContract from './contracts/ItemManager.json'
@@ -49,10 +51,12 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <NavigationBar/>
         <CreateItem/>
+        <Footer/>
       </div>
     )
   }
 }
 
-export default App;
+export default App
