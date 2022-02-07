@@ -8,7 +8,16 @@ import ItemContract from '../contracts/Item.json'
 import ItemRow from './ItemRow'
 
 class ItemManager extends Component {
-  state = { loaded: false, price: 0, itemName: 'item_01', unit: 'Wei', itemList: [], image: undefined, description: '' }
+  state = {
+    loaded: false,
+    name: 'Samsung RAM 4GB SDRAM DDR3 1333MHz (4GB, 2RX8, PC3-10600S-09-10-F2, M471B5273CH0-CH9)',
+    specifications: 'Brand: Samsung\nManufacturer: Samsung Electronics (SEC)\nCountry of manufacture: China\nBuild (year/week): 2011/13\nType: DDR3 SDRAM\nBus Speed: 10600S (1333MHz)\nTotal Capacity: 4GB\nMemory Timing: CL=9, tRCD=9, tRP=9\nFeatures: 204pin, SODIMM, Unbuffer Non-ECC DDR3 SDRAM\nProduction process technology: 40nm\nData bits: x64\nInternal Module banks: 8\nRanks: 2\nData chip composition: 256M x 8 * 16 pcs\nComponent revision: 2Gb, C-die\nPackage: 78 ball FBGA\nVDD voltage: 1.5V\nHeight: 30mm\nItem Weight: 45.359 grams\nOperating Case Temperature Range: 0°C ~ 85°C',
+    description: 'Perfect for every computing environment\nDeveloped in 2005, Samsung\'s industry-first DDR3 is the most used system solution, from PCs and home appliances, to automotive and medical devices.',
+    externalUrl: 'https://semiconductor.samsung.com/dram/ddr/ddr3/',
+    unit: 'Wei',
+    itemList: [],
+    picture: undefined,
+  }
 
   componentDidMount = async () => {
     try {
@@ -31,17 +40,17 @@ class ItemManager extends Component {
         ItemContract.networks[this.networkId] && ItemContract.networks[this.networkId].address,
       )
 
-      this.listenToSupplyChainStepEvent();
+      this.listenToItemStateChangedEvent();
 
       // load items to table
-      axios
-        .get('http://localhost:4000/product')
-        .then(res => {
-          this.setState({ itemList: res.data })
-        })
-        .catch(console.log())
+      // axios
+      //   .get('http://localhost:4000/product')
+      //   .then(res => {
+      //     this.setState({ itemList: res.data })
+      //   })
+      //   .catch(console.log())
 
-      this.itemIndex = await this.itemManager.methods.getItemIndex().call()
+      this.itemIndex = await this.itemManager.methods.currentItemIndex().call()
 
       this.setState({ loaded: true })
 
@@ -61,11 +70,11 @@ class ItemManager extends Component {
   }
 
   getFileInfo = event => {
-    this.setState({ image: event.target.files[0] })
+    this.setState({ picture: event.target.files[0] })
   }
 
   handleSubmit = async () => {
-    const { price, itemName, unit, image, description, itemList } = this.state
+    const { price, itemName, unit, picture, description, itemList } = this.state
     let value = price
     if (unit === 'Ether') {
       value = this.web3.utils.toWei(price, 'ether')
@@ -75,29 +84,29 @@ class ItemManager extends Component {
 
     // add item to blockchain
     await this.itemManager.methods.createItem(itemName, value).send({ from: this.accounts[0] })
-    const itemIndex = await this.itemManager.methods.getItemIndex().call()
-    const newItem = await this.itemManager.methods.items(itemIndex-1).call()
+    const itemIndex = await this.itemManager.methods.currentItemIndex().call()
+    const newItem = await this.itemManager.methods.items(itemIndex - 1).call()
 
     // add new item to server
     const formData = new FormData()
-    formData.append('file', image, image.name)
+    formData.append('file', picture, picture.name)
     formData.append('_id', newItem._item)
     formData.append('name', itemName)
     formData.append('price', newItem._itemPrice)
     formData.append('state', newItem._state)
     formData.append('owner', this.accounts[0])
     formData.append('description', description)
-    axios
-      .post('http://localhost:4000/product/create', formData, {
-        headers: { 'content-type': 'multipart/form-data' }
-      })
-      .then(res => {
-        this.setState({ price: 0, itemName: 'item_01', image: undefined, description: '' })
-        // add new item to componets state
-        itemList.unshift(res.data)
-        this.setState({ itemList })
-      })
-      .catch(console.log())
+    // axios
+    //   .post('http://localhost:4000/product/create', formData, {
+    //     headers: { 'content-type': 'multipart/form-data' }
+    //   })
+    //   .then(res => {
+    //     this.setState({ price: 0, itemName: 'item_01', picture: undefined, description: '' })
+    //     // add new item to componets state
+    //     itemList.unshift(res.data)
+    //     this.setState({ itemList })
+    //   })
+    //   .catch(console.log())
   }
 
   handleBuy = async (itemAddress, itemPrice) => {
@@ -112,26 +121,26 @@ class ItemManager extends Component {
     await this.itemManager.methods.triggerDelivery(this.web3.utils.hexToNumber(itemIndex)).send({ from: currentAccount[0] })
   }
 
-  listenToSupplyChainStepEvent = () => {
-    this.itemManager.events.SupplyChainStep().on('data', async event => {
+  listenToItemStateChangedEvent = () => {
+    this.itemManager.events.ItemStateChanged().on('data', async event => {
       const itemObject = await this.itemManager.methods.items(event.returnValues._itemIndex).call()
       const { itemList } = this.state
       const itemIndex = await itemList.indexOf(itemList.find(item => item._id === itemObject._item))
       const currentAccount = await this.web3.eth.getAccounts()
 
-      if (itemObject._state !== '0') {
-        axios
-          .post('http://localhost:4000/product/update', {
-            _id: itemObject._item,
-            state: itemObject._state,
-            purchaser: currentAccount[0]
-          })
-          .then(res => {
-            itemList[itemIndex] = res.data
-            this.setState({ itemList })
-          })
-          .catch(console.log())
-      }
+      // if (itemObject._state !== '0') {
+      //   axios
+      //     .post('http://localhost:4000/product/update', {
+      //       _id: itemObject._item,
+      //       state: itemObject._state,
+      //       purchaser: currentAccount[0]
+      //     })
+      //     .then(res => {
+      //       itemList[itemIndex] = res.data
+      //       this.setState({ itemList })
+      //     })
+      //     .catch(console.log())
+      // }
     })
   }
 
@@ -147,11 +156,16 @@ class ItemManager extends Component {
           <h4>Create item</h4>
 
           <div className='form-group my-2'>
-            <label htmlFor='itemName'>Name:</label>
-            <input name='itemName' value={this.state.itemName} onChange={this.handleInputChange} type='text' className='form-control' />
+            <label htmlFor='picture'>Picture:</label>
+            <input type='file' name='picture' id='picture' className='form-control' onChange={this.getFileInfo}></input>
           </div>
 
-          <div className='row my-2'>
+          <div className='form-group my-2'>
+            <label htmlFor='name'>Name:</label>
+            <input name='name' id='name' value={this.state.name} onChange={this.handleInputChange} type='text' className='form-control' />
+          </div>
+
+          {/* <div className='row my-2'>
             <div className='col'>
               <div className='form-group'>
                 <label htmlFor='price'>Price:</label>
@@ -168,22 +182,39 @@ class ItemManager extends Component {
                 </select>
               </div>
             </div>
-          </div>
+          </div> */}
+
           <div className='form-group my-2'>
-            <label>Picture:</label>
-            <input type='file' name='img' className='form-control' onChange={this.getFileInfo}></input>
-          </div>
-          <div className='form-group my-2'>
-            <label>Description:</label>
+            <label htmlFor='specifications'>Specifications:</label>
             <textarea
-              name='description'
+              name='specifications'
+              id='specifications'
               rows='3'
               onChange={this.handleInputChange}
-              value={this.state.description}
+              value={this.state.specifications}
               className='form-control'
               placeholder='Item specifications...'
             ></textarea>
           </div>
+
+          <div className='form-group my-2'>
+            <label htmlFor='description'>Description:</label>
+            <textarea
+              name='description'
+              id='description'
+              rows='5'
+              onChange={this.handleInputChange}
+              value={this.state.description}
+              className='form-control'
+              placeholder='Item description...'
+            ></textarea>
+          </div>
+
+          <div className='form-group my-2'>
+            <label htmlFor='externalUrl'>External URL:</label>
+            <input name='externalUrl' id='externalUrl' value={this.state.externalUrl} onChange={this.handleInputChange} type='text' className='form-control' />
+          </div>
+
           <button className='btn btn-primary my-2' type='button' onClick={this.handleSubmit}>Create item</button>
         </div>
 
@@ -205,7 +236,7 @@ class ItemManager extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.itemList.map(item => <ItemRow data={item} key={item._id} buy={this.handleBuy} delivery={this.handleDelivery} />)}
+                  {/* {this.state.itemList.map(item => <ItemRow data={item} key={item._id} buy={this.handleBuy} delivery={this.handleDelivery} />)} */}
                 </tbody>
               </table>
             </div>
