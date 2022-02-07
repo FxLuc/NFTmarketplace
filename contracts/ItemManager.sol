@@ -48,6 +48,7 @@ contract ItemManager is Ownable {
         string memory _rawDataUrl,
         bytes32 _rawDataHash
     ) public {
+        uint curentItemIndex = itemIndex.current();
         Item item = new Item(
             this,
             _msgSender(),
@@ -55,12 +56,12 @@ contract ItemManager is Ownable {
             _specifications,
             _rawDataUrl,
             _rawDataHash,
-            itemIndex.current()
+            curentItemIndex
         );
-        S_Item storage s_item = items[itemIndex.current()];
+        S_Item storage s_item = items[curentItemIndex];
         s_item._item = item;
         s_item._state = ItemState.Created;
-        emit ItemStateChanged(itemIndex.current(), uint8(s_item._state));
+        emit ItemStateChanged(curentItemIndex, uint8(s_item._state));
         itemIndex.increment();
     }
 
