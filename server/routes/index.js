@@ -1,9 +1,10 @@
 module.exports = app => {
-    const { productController } = require('../controllers')
+    const { itemController } = require('../controllers')
+    app.get('/', (req, res) => res.status(200).json('API Server is working...'))
 
-    app.get('/product', productController.getProduct)
-    app.post('/product/create', productController.createProduct)
-    app.post('/product/update', productController.updateProduct)
-    app.post('/product/search', productController.searchProduct)
+    app.get('/items', itemController.getItems)
+    app.post('/item/create', itemController.createItem)
+    app.post('/item/update', itemController.updateItem)
+    app.post('/item/search', itemController.searchItem)
 
 }

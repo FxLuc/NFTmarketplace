@@ -1,4 +1,4 @@
-const somethingsaga = '127:D3c0DeD.doc@often127.3eupw'
+const somethingsaga = ':findex.maketplace@findexmaketplace'
 module.exports = {
-  DB: `mongodb+srv://often${somethingsaga}.mongodb.net/blockchain1?retryWrites=true&w=majority`,
+  DB: `mongodb+srv://ServerAPI${somethingsaga}azureho.jxfsf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
 };

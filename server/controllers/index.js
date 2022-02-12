@@ -1,1 +1,1 @@
-module.exports.productController = require('./product.controller')
+module.exports.itemController = require('./Item.controller')

@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
@@ -12,9 +13,8 @@ class CreateItem extends React.Component {
             externaLink: 'https://semiconductor.samsung.com/dram/ddr/ddr3/',
             picture: undefined,
         }
-        // this.handleInputChange = this.handleInputChange.bind(this)
-        // this.getFileInfo = this.getFileInfo.bind(this)
-        // this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.getFileInfo = this.getFileInfo.bind(this)
     }
 
     handleInputChange = event => {
@@ -28,43 +28,41 @@ class CreateItem extends React.Component {
         this.setState({ picture: event.target.files[0] })
     }
 
-    handleSubmit = async () => {
-        // const { picture, name, specifications, description, externaLink, itemList } = this.state
+    handleSubmit = async(event) => {
+        event.preventDefault()
+        const { picture, name, specifications, description, externaLink } = this.state
 
-        // // add item to blockchain
-        // await this.itemManager.methods.createItem(itemName, value).send({ from: this.accounts[0] })
-        // const itemIndex = await this.itemManager.methods.currentItemIndex().call()
-        // const newItem = await this.itemManager.methods.items(itemIndex - 1).call()
+        // add item to blockchain
+        // await this.itemManager.methods.createItem(name, specifications, externaLink).send({ from: this.accounts[0] })
 
-        // // add new item to server
-        // const formData = new FormData()
-        // formData.append('file', picture, picture.name)
-        // formData.append('_id', newItem._item)
-        // formData.append('name', itemName)
-        // formData.append('price', newItem._itemPrice)
-        // formData.append('state', newItem._state)
-        // formData.append('owner', this.accounts[0])
-        // formData.append('description', description)
-        // axios
-        //   .post('http://localhost:4000/product/create', formData, {
-        //     headers: { 'content-type': 'multipart/form-data' }
-        //   })
-        //   .then(res => {
-        //     this.setState({ price: 0, itemName: 'item_01', picture: undefined, description: '' })
-        //     // add new item to componets state
-        //     itemList.unshift(res.data)
-        //     this.setState({ itemList })
-        //   })
-        //   .catch(console.log())
+        // add new item to server
+        const formData = new FormData()
+        formData.append('file', picture, picture.name)
+        formData.append('name', name)
+        formData.append('specifications', specifications)
+        formData.append('externaLink', externaLink)
+        formData.append('description', description)
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ':\n' + pair[1]); 
+        }
+        
+        axios
+          .post('http://localhost:4000/item/create', formData, {
+            headers: { 'content-type': 'multipart/form-data' }
+          })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(error => console.log(error))
     }
 
     render() {
         return (
-            <div className='container text-dark mt-5 py-4'>
-                <form className='CreateItem'>
+            <div className='CreateItem'>
+                <form>
                     <h1 className='fw-bold text-uppercase'>Create new item</h1>
 
-                    <div className='text-muted'><span className='text-danger'>*</span> Required fields (will be storage directly in blockchain)</div>
+                    <div className='text-muted'><span className='text-danger'>*</span> Required fields</div>
 
                     <div className='form-group my-3'>
                         <label htmlFor='picture' className='fw-bold'>Picture <span className='text-danger'>*</span></label>

@@ -15,6 +15,7 @@
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.2",
     "react-dom": "16.11.0",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "3.2.0",
     "web3": "1.2.2"
   },

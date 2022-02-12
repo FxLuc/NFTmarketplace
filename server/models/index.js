@@ -1,1 +1,1 @@
-module.exports.Product = require('./product.model')
+module.exports.Item = require('./Item.model')
