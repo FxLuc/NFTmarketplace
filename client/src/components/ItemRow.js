@@ -1,5 +1,5 @@
 import React from 'react'
-import QRCode from 'qrcode.react'
+import QRCode from 'react-qr-code'
 import NextStep from './NextStep'
 import '../App.css'
 class ItemRow extends React.Component {
@@ -14,7 +14,9 @@ class ItemRow extends React.Component {
 
     covertStep(step) {
         if (step === 0) return 'Created'
-        else if (step === 1) return 'Paid'
+        else if (step === 1) return 'Selling'
+        else if (step === 2) return 'Sold'
+        else if (step === 3) return 'Delivered'
         else return 'Delivered'
     }
 
@@ -22,9 +24,8 @@ class ItemRow extends React.Component {
         if (address === '0x0000000000000000000000000000000000000000') return 'Not yet'
         else return (
             <QRCode
-                id='qrcode'
+                // id='qrcode'
                 value={address}
-                size={100}
                 level={'H'}
                 includeMargin={true}
                 onClick={() => alert('Address: ' + address)}
@@ -36,27 +37,25 @@ class ItemRow extends React.Component {
         return (
             <tr>
                 <td>
-                    <img src={this.props.data.img} className="product-image img-thumbnail" alt={this.props.data.name}></img>
+                    <img src={this.props.data.picture} className="product-image img-thumbnail" alt={this.props.data.name}></img>
                 </td>
                 <td>{this.props.data.name}</td>
                 <td>{this.props.data.price}</td>
                 <td className='text-center'>
                     <QRCode
-                        id='qrcode'
+                    title={'Item address'}
                         value={this.props.data._id}
-                        size={100}
                         level={'H'}
-                        includeMargin={true}
+                        size={80}
                         onClick={() => alert('Address: ' + this.props.data._id)}
                     />
                 </td>
                 <td className='text-center'>
                     <QRCode
-                        id='qrcode'
+                        title={'Owner address'}
                         value={this.props.data.owner}
-                        size={100}
                         level={'H'}
-                        includeMargin={true}
+                        size={80}
                         onClick={() => alert('Address: ' + this.props.data.owner)}
                     />
                 </td>

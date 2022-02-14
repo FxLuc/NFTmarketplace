@@ -33,10 +33,17 @@ let itemSchema = mongoose.Schema({
   description: {
     type: String,
   },
-  img: {
+  specifications: {
     type: String,
-    default: "http://localhost:4000/pictures/defaut.png",
+    required: true,
   },
-}, {timestamps: true} )
+  externaLink: {
+    type: String,
+  },
+  picture: {
+    type: String,
+    default: "http://localhost:4000/pictures/default.png",
+  },
+}, {timestamps: true})
 
 module.exports = mongoose.model("Item", itemSchema)

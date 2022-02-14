@@ -1,10 +1,10 @@
-const { Item } = require('../models')
+const { Person } = require('../models')
 
 const multer = require('multer')
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './public/pictures/items/')
+        cb(null, './public/pictures/avatars/')
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -27,21 +27,25 @@ const upload = multer({
     }
 }).single('file')
 
-const getItem = (req, res) => {
-    Item.find({id: req.body.id }).then(item => res.status(200).json(item))
+const getPerson = (req, res) => {
+    Person.findById(req.body.id).then(person => res.status(200).json(person))
 }
 
-const getItems = (req, res) => {
-    Item.find().sort('-createdAt').limit(10).then(items => res.status(200).json(items))
+
+const signin = (req, res) => {
+    Person
+        .findById(req.body._id)
+        .then(person => {
+            if (person) res.status(200).json(person)
+            else {
+                const newPerson = Person({ _id: req.body._id })
+                newPerson.save(err => Person.findById(req.body._id).then(thisNewPerson => res.status(200).json(thisNewPerson)))
+            }
+        })
+
 }
 
-const searchItem = (req, res) => {
-    Item.find(({ name: { $regex: req.body.name, $options: 'i' }})).sort('-createdAt').limit(10).then( items => {
-        res.status(200).json(items)
-    })
-}
-
-const createItem = (req, res) => {
+const updateProfile = (req, res) => {
     upload(req, res, (err) => {
         if (err instanceof multer.MulterError) {
             console.log('A Multer error occurred when uploading.')
@@ -51,7 +55,7 @@ const createItem = (req, res) => {
             res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
         }
         const url = req.protocol + '://' + req.get('host')
-        req.body.picture = url + '/pictures/items/' + req.file.filename
+        req.body.picture = url + '/pictures/avatars/' + req.file.filename
         console.log(req.body.picture)
         const newItem = new Item(req.body)
         newItem.save().then(product => {
@@ -63,21 +67,8 @@ const createItem = (req, res) => {
     })
 }
 
-const updateItem = (req, res) => {
-    Item
-        .findByIdAndUpdate(req.body._id, {
-            state: req.body.state,
-            purchaser: req.body.purchaser
-        })
-        .exec(err =>
-            err ? res.status(500).json(err) : Item.findById(req.body._id).then(product => res.status(201).json(product))
-        )
-}
-
 module.exports = {
-    getItem,
-    getItems,
-    createItem,
-    updateItem,
-    searchItem
+    getPerson,
+    signin,
+    updateProfile
 }

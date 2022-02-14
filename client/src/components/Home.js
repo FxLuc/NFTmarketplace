@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-
-import ItemManagerContract from '../contracts/ItemManager.json'
-import ItemContract from '../contracts/Item.json'
-// import ItemRow from './ItemRow'
+import axios from 'axios'
+import ItemCard from './ItemCard'
 
 class Home extends Component {
   constructor(props) {
@@ -11,14 +9,27 @@ class Home extends Component {
       itemList: [],
     }
   }
+  componentDidMount = async() => {
+    // load items to table
+    axios
+      .get('http://localhost:4000/item/newest')
+      .then(res => this.setState({ itemList: res.data }))
+      .then(res => console.log(this.state.itemList))
+      .catch(console.log())
+  }
+
+  getAccount = () => {
+    console.log(this.props.account)
+  }
 
   render() {
     return (
       <div className='Home'>
         <div className=''>
           <h4>Newest</h4>
-          <div className='py-3 '>
-            <div className='table-responsive'>
+          <div className='btn btn-danger' onClick={this.getAccount}> Show account</div>
+          <div className='py-3 row'>
+            {/* <div className='table-responsive'>
               <table className='table table-bordered'>
                 <thead>
                   <tr>
@@ -29,10 +40,11 @@ class Home extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {this.state.itemList.map(item => <ItemRow data={item} key={item._id} buy={this.handleBuy} delivery={this.handleDelivery} />)} */}
+                  {this.state.itemList.map(item => <ItemCard data={item} key={item._id}/>)}
                 </tbody>
               </table>
-            </div>
+            </div> */}
+            {this.state.itemList.map(item => <ItemCard data={item} key={item._id}/>)}
           </div>
         </div>
       </div>

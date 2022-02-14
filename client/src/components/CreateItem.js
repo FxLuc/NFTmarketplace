@@ -13,8 +13,6 @@ class CreateItem extends React.Component {
             externaLink: 'https://semiconductor.samsung.com/dram/ddr/ddr3/',
             picture: undefined,
         }
-        this.handleInputChange = this.handleInputChange.bind(this)
-        this.getFileInfo = this.getFileInfo.bind(this)
     }
 
     handleInputChange = event => {
@@ -26,6 +24,7 @@ class CreateItem extends React.Component {
 
     getFileInfo = event => {
         this.setState({ picture: event.target.files[0] })
+        console.log(event.target.files[0]);
     }
 
     handleSubmit = async(event) => {
@@ -39,12 +38,14 @@ class CreateItem extends React.Component {
         const formData = new FormData()
         formData.append('file', picture, picture.name)
         formData.append('name', name)
+        formData.append('_id', '0xA000000000000000000000000000000000000000')
+        formData.append('owner', this.props.account)
         formData.append('specifications', specifications)
         formData.append('externaLink', externaLink)
         formData.append('description', description)
-        for (var pair of formData.entries()) {
-            console.log(pair[0]+ ':\n' + pair[1]); 
-        }
+        // for (var pair of formData.entries()) {
+        //     console.log(pair[0]+ ':\n' + pair[1]); 
+        // }
         
         axios
           .post('http://localhost:4000/item/create', formData, {

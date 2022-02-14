@@ -1,5 +1,6 @@
 import React from "react"
 import { Routes, Route } from 'react-router-dom'
+import axios from 'axios'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 import CreateItem from "./components/CreateItem"
@@ -19,6 +20,8 @@ class App extends React.Component {
     this.state = {
       loaded: false,
       itemList: [],
+      account: '0x0000000000000000000000000000000000000000',
+      person: {}
     }
   }
 
@@ -28,7 +31,16 @@ class App extends React.Component {
       this.web3 = await getWeb3()
 
       // Use web3 to get the user's accounts.
-      this.accounts = await this.web3.eth.getAccounts()
+      this.setState({ account: (await this.web3.eth.getAccounts())[0] })
+
+      window.ethereum.on('accountsChanged', accounts => {
+        this.setState({ account: accounts[0] })
+        axios
+        .post('http://localhost:4000/signin', { _id: accounts[0] })
+        .then(res => this.setState({ person: res.data }))
+        .then(res => console.log(this.state.person))
+        .catch(console.log())
+      })
 
       // Get the contract instance.
       const networkId = await this.web3.eth.net.getId()
@@ -43,6 +55,12 @@ class App extends React.Component {
         ItemContract.networks[networkId] && ItemContract.networks[networkId].address,
       )
 
+      axios
+      .post('http://localhost:4000/signin', { _id: this.state.account })
+      .then(res => this.setState({ person: res.data }))
+      .then(res => console.log(this.state.person))
+      .catch(console.log())
+
       this.setState({ loaded: true })
 
     } catch (error) {
@@ -56,7 +74,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <NavigationBar />
+        <NavigationBar account={this.state.account}/>
         <div className="container mt-5 py-5 ">
           <Routes>
             <Route
@@ -66,11 +84,18 @@ class App extends React.Component {
                 <Home
                   Item={this.Item}
                   ItemManager={this.ItemManager}
-                  accounts={this.accounts}
+                  account={this.state.account}
                 />
               }
             />
-            <Route path="/create" element={<CreateItem />} />
+            <Route
+              path="/create"
+              element={
+                <CreateItem
+                  account={this.state.account}
+                />
+              }
+            />
             <Route path="*" element={<Error />} />
           </Routes>
         </div>

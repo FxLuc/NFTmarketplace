@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500)
-  res.status(404).json({ message: '404 Not found' })
+  res.status(404).json('404 Not found')
 })
 
 const PORT = 4000
