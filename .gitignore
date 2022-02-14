@@ -1,5 +1,5 @@
 # run remix: 
-# remixd -s "/d/Office/DAPP/Blockchain1Laps" --remix-ide https://remix.ethereum.org
+# remixd -s "/d/Office/DAPP/Blockchain1Laps/blockchain01/contracts" --remix-ide https://remix.ethereum.org
 # MetaMask also lets the user create and manage their own identities, so when a Dapp wants to perform a transaction and write to the blockchain, the user gets a secure interface to review the transaction, before approving or rejecting it.
 # git rm -rf --cached .
 # git log --graph --abbrev-commit --decorate --date=relative --all

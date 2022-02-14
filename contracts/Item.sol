@@ -27,6 +27,7 @@ contract Item is Context {
         string memory _specifications,
         string memory _rawDataUrl,
         bytes32 _rawDataHash,
+        uint256 _price,
         uint256 _indexInParentContract
     ) {
         parentContract = _parentContract;
@@ -35,6 +36,7 @@ contract Item is Context {
         specifications = _specifications;
         rawDataUrl = _rawDataUrl;
         rawDataHash = _rawDataHash;
+        price = _price;
         indexInParentContract = _indexInParentContract;
     }
 

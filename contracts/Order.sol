@@ -5,6 +5,7 @@ pragma solidity ^0.8.11;
 import "./Context.sol";
 import "./Timers.sol";
 import "./Item.sol";
+import "./ItemManager.sol";
 
 contract Order is Context {
     using Timers for Timers.Timestamp;
@@ -96,10 +97,11 @@ contract Order is Context {
     function triggerReceived() public onlyPurchaser isPending {
         require(
             state == OrderState.Shipping,
-            'Order: state must be "Shipping" to trigger receive'
+            'Order: state must be "Shipping" to Received'
         );
         _timer.reset();
 
+        itemContract.parentContract().triggerDelivered(itemContract.indexInParentContract());
         payable(seller).transfer(address(this).balance);
         state = OrderState.Received;
         emit OrderStateChanged(_msgSender(), uint8(state), 0);
@@ -108,9 +110,11 @@ contract Order is Context {
     function triggerCancel() public onlyPurchaser {
         require(
             state == OrderState.Placed || _timer.isExpired(),
-            "Order: transaction is pending, can not cancel now"
+            "Order: transaction is pending or delivered, can not cancel now"
         );
+        _timer.reset();
         state = OrderState.Cancelled;
+        itemContract.parentContract().triggerCancel(itemContract.indexInParentContract());
         payable(purchaser).transfer(address(this).balance);
         emit OrderStateChanged(_msgSender(), uint8(state), 0);
     }

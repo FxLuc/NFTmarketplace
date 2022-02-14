@@ -12,9 +12,9 @@ contract ItemManager is Ownable {
     Counters.Counter private itemIndex;
     enum ItemState {
         Created,
-        Selling,
         Sold,
-        Delivered
+        Delivered,
+        Cancelled
     }
     struct S_Item {
         Item _item;
@@ -27,7 +27,7 @@ contract ItemManager is Ownable {
 
     modifier itemFound(uint256 _itemIndex) {
         require(
-            _itemIndex < itemIndex.current() ,
+            _itemIndex < itemIndex.current(),
             "ItemManager: item not found!"
         );
         _;
@@ -42,13 +42,15 @@ contract ItemManager is Ownable {
     }
 
     // 0x3031303230333034000000000000000000000000000000000000000000000000
+    // 0x4d741b6f1eb29cb2a9b9911c82f56fa8d73b04959d3d9d222895df6c0b28aa15
     function createItem(
         string memory _name,
         string memory _specifications,
         string memory _rawDataUrl,
-        bytes32 _rawDataHash
+        bytes32 _rawDataHash,
+        uint256 _price
     ) public {
-        uint curentItemIndex = itemIndex.current();
+        uint256 curentItemIndex = itemIndex.current();
         Item item = new Item(
             this,
             _msgSender(),
@@ -56,6 +58,7 @@ contract ItemManager is Ownable {
             _specifications,
             _rawDataUrl,
             _rawDataHash,
+            _price,
             curentItemIndex
         );
         S_Item storage s_item = items[curentItemIndex];
@@ -65,10 +68,7 @@ contract ItemManager is Ownable {
         itemIndex.increment();
     }
 
-    function triggerDeliverd(uint256 _itemIndex)
-        public
-        itemFound(_itemIndex)
-    {
+    function triggerDelivered(uint256 _itemIndex) public itemFound(_itemIndex) {
         require(
             items[_itemIndex]._state == ItemState.Sold,
             "ItemManager: this item has not been purchased"
@@ -77,7 +77,8 @@ contract ItemManager is Ownable {
             address(items[_itemIndex]._order) == _msgSender(),
             "ItemManager: this function must be call from Order contract"
         );
-        items[_itemIndex]._state == ItemState.Delivered;
+        items[_itemIndex]._item.transferOwnership(items[_itemIndex]._order.purchaser(), address(items[_itemIndex]._order));
+        items[_itemIndex]._state = ItemState.Delivered;
         emit ItemStateChanged(_itemIndex, uint8(items[_itemIndex]._state));
     }
 
@@ -92,8 +93,8 @@ contract ItemManager is Ownable {
             "ItemManager: this function must be call from Item contract"
         );
         require(
-            s_item._state == ItemState.Selling,
-            "ItemManager: this item is not for sale!"
+            s_item._state == ItemState.Created,
+            "ItemManager: this item is further on chain"
         );
         Order order = new Order{value: msg.value}(
             _purchaser,
@@ -105,18 +106,36 @@ contract ItemManager is Ownable {
         emit ItemStateChanged(_itemIndex, uint8(s_item._state));
     }
 
-    function triggerSelling(uint256 _itemIndex, uint256 _price)
+    function triggerResale(uint256 _itemIndex, uint256 _price)
         public
         itemFound(_itemIndex)
         onlyItemOwner(_itemIndex)
     {
         S_Item storage s_item = items[_itemIndex];
         require(
-            s_item._state == ItemState.Created,
-            'ItemManager: This item state must be "Created" to make for sale!'
+            s_item._state == ItemState.Delivered || s_item._state == ItemState.Cancelled,
+            'ItemManager: This item state must be "Delivered" or "Cancelled" to make for resale!'
         );
         s_item._item.changePrice(_price);
-        s_item._state = ItemState.Selling;
+        s_item._state = ItemState.Created;
+        emit ItemStateChanged(_itemIndex, uint8(s_item._state));
+    }
+
+    function triggerCancel(uint256 _itemIndex)
+        public
+        itemFound(_itemIndex)
+    {
+        S_Item storage s_item = items[_itemIndex];
+        require(
+            address(items[_itemIndex]._order) == _msgSender(),
+            "ItemManager: this function must be call from Order contract"
+        );
+        require(
+            s_item._state == ItemState.Sold,
+            "ItemManager: this item is further on chain"
+        );
+        s_item._item.changePrice(0);
+        s_item._state = ItemState.Cancelled;
         emit ItemStateChanged(_itemIndex, uint8(s_item._state));
     }
 
@@ -124,7 +143,7 @@ contract ItemManager is Ownable {
         return itemIndex.current();
     }
 
-    receive() external payable { }
+    receive() external payable {}
 
     fallback() external payable {}
 }
