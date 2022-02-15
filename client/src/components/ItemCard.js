@@ -12,7 +12,7 @@ class ItemCard extends React.Component {
     }
 
     addressOverflow(address) {
-        return `${address.substring(0, 5)}...${address.substring(39, 42)}`
+        return `${address.substring(0, 5)}...${address.substring(37, 42)}`
     }
 
     purchaserCheck(address) {

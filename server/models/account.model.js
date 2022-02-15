@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-let personSchema = mongoose.Schema({
+const accountSchema = new mongoose.Schema({
   _id: {
     type: String,
     lenght: 42,
@@ -24,4 +24,4 @@ let personSchema = mongoose.Schema({
   },
 }, {timestamps: true})
 
-module.exports = mongoose.model("Person", personSchema)
+module.exports = mongoose.model("Account", accountSchema)

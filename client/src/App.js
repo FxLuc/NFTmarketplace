@@ -31,15 +31,20 @@ class App extends React.Component {
       this.web3 = await getWeb3()
 
       // Use web3 to get the user's accounts.
-      this.setState({ account: (await this.web3.eth.getAccounts())[0] })
+      this.setState({ account: (await this.web3.eth.getAccounts())[0].toUpperCase() })
+      axios
+      .post('http://localhost:4000/signin', { _id: this.state.account })
+      .then(res => this.setState({ person: res.data }))
+      .then(res => console.log(this.state.person))
+      .catch(console.log())
 
       window.ethereum.on('accountsChanged', accounts => {
-        this.setState({ account: accounts[0] })
+        this.setState({ account: accounts[0].toUpperCase() })
         axios
-        .post('http://localhost:4000/signin', { _id: accounts[0] })
-        .then(res => this.setState({ person: res.data }))
-        .then(res => console.log(this.state.person))
-        .catch(console.log())
+          .post('http://localhost:4000/signin', { _id: accounts[0].toUpperCase() })
+          .then(res => this.setState({ person: res.data }))
+          .then(res => console.log(this.state.person))
+          .catch(console.log())
       })
 
       // Get the contract instance.
@@ -55,12 +60,6 @@ class App extends React.Component {
         ItemContract.networks[networkId] && ItemContract.networks[networkId].address,
       )
 
-      axios
-      .post('http://localhost:4000/signin', { _id: this.state.account })
-      .then(res => this.setState({ person: res.data }))
-      .then(res => console.log(this.state.person))
-      .catch(console.log())
-
       this.setState({ loaded: true })
 
     } catch (error) {
@@ -74,7 +73,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <NavigationBar account={this.state.account}/>
+        <NavigationBar account={this.state.account} />
         <div className="container mt-5 py-5 ">
           <Routes>
             <Route

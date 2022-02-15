@@ -1,4 +1,4 @@
-const { Person } = require('../models')
+const { Account } = require('../models')
 
 const multer = require('multer')
 
@@ -27,22 +27,22 @@ const upload = multer({
     }
 }).single('file')
 
-const getPerson = (req, res) => {
-    Person.findById(req.body.id).then(person => res.status(200).json(person))
+const getAccount = (req, res) => {
+    Account.findById(req.body.id).then(account => res.status(200).json(account))
 }
 
 
 const signin = (req, res) => {
-    Person
-        .findById(req.body._id)
-        .then(person => {
-            if (person) res.status(200).json(person)
+    const accountAddress = req.body._id.toUpperCase()
+    Account
+        .findById(accountAddress)
+        .then(account => {
+            if (account) res.status(200).json(account)
             else {
-                const newPerson = Person({ _id: req.body._id })
-                newPerson.save(err => Person.findById(req.body._id).then(thisNewPerson => res.status(200).json(thisNewPerson)))
+                const newAccount = Account({ _id: accountAddress })
+                newAccount.save(Account.findById(accountAddress).then(thisNewAccount => res.status(201).json(thisNewAccount)))
             }
         })
-
 }
 
 const updateProfile = (req, res) => {
@@ -54,21 +54,26 @@ const updateProfile = (req, res) => {
             console.log('An unknown error occurred when uploading: ' + err)
             res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
         }
+        const accountAddress = req.body._id.toUpperCase()
         const url = req.protocol + '://' + req.get('host')
         req.body.picture = url + '/pictures/avatars/' + req.file.filename
         console.log(req.body.picture)
-        const newItem = new Item(req.body)
-        newItem.save().then(product => {
-            res.status(201).json(product)
-        }).catch(error => {
-            console.log(error)
-            res.status(500).json({ error: error })
-        })
+        Account
+            .findByIdAndUpdate(accountAddress, {
+                name: req.body.name,
+                externaLink: req.body.externaLink,
+                avatar: req.body.picture
+            })
+            .exec(_ => res.status(200).json('Success'))
+            .catch(error => {
+                console.log(error)
+                res.status(400).json(error)
+            })
     })
 }
 
 module.exports = {
-    getPerson,
+    getAccount,
     signin,
     updateProfile
 }

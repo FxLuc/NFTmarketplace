@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-let itemSchema = mongoose.Schema({
+const itemSchema = new mongoose.Schema({
   _id: {
     type: String,
     lenght: 42,
@@ -24,11 +24,13 @@ let itemSchema = mongoose.Schema({
     type: String,
     lenght: 42,
     required: true,
+    ref: 'Account'
   },
   purchaser: {
     type: String,
     lenght: 42,
-    default: '0x0000000000000000000000000000000000000000'
+    default: '0x0000000000000000000000000000000000000000',
+    ref: 'Account'
   },
   description: {
     type: String,
