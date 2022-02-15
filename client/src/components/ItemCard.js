@@ -1,7 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
-import {  faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
 class ItemCard extends React.Component {
     covertStep(step) {
@@ -23,7 +23,7 @@ class ItemCard extends React.Component {
         return (
             <div className='col-12 col-sm-6 col-lg-4 col-xl-3 mb-4'>
                 <div className='card shadow-sm'>
-                    <img src={this.props.data.picture} className="w-100" style={{ objectFit: 'cover', height: '250px' }} alt={this.props.data.name}></img>
+                    <img src={this.props.data.picture} className="w-100" style={{ objectFit: 'cover', height: '250px' }} alt={this.props.data.name}/>
                     <div className="card-body">
                         <h5 className="card-title text-nowrap overflow-hidden" style={{ textOverflow: 'ellipsis' }}>{this.props.data.name}</h5>
                         <h6 className="card-subtitle mb-2">{this.addressOverflow(this.props.data.owner)}</h6>

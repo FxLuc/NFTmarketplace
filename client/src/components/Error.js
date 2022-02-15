@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 
-class Error extends Component {
+class Error extends React.Component {
   render() {
     return (
       <div className='Error text-center py-5'>

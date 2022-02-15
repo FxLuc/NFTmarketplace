@@ -33,16 +33,41 @@ const getAccount = (req, res) => {
 
 
 const signin = (req, res) => {
-    const accountAddress = req.body._id.toUpperCase()
+    const accountAddress = req.body._id.toLowerCase()
     Account
         .findById(accountAddress)
         .then(account => {
             if (account) res.status(200).json(account)
             else {
                 const newAccount = Account({ _id: accountAddress })
-                newAccount.save(Account.findById(accountAddress).then(thisNewAccount => res.status(201).json(thisNewAccount)))
+                newAccount.save(_ => Account.findById(accountAddress).then(thisNewAccount => res.status(201).json(thisNewAccount)))
             }
         })
+}
+
+const updateAvatar = (req, res) => {
+    upload(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            console.log('A Multer error occurred when uploading.')
+            res.status(500).json({ error: 'A Multer error occurred when uploading.' })
+        } else if (err) {
+            console.log('An unknown error occurred when uploading: ' + err)
+            res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
+        }
+        const accountAddress = req.body._id.toLowerCase()
+        const url = req.protocol + '://' + req.get('host')
+        req.body.picture = url + '/pictures/avatars/' + req.file.filename
+        console.log(req.body.picture)
+        Account
+            .findByIdAndUpdate(accountAddress, {
+                avatar: req.body.picture
+            })
+            .exec(_ => res.status(200).json('Success'))
+            .catch(error => {
+                console.log(error)
+                res.status(400).json(error)
+            })
+    })
 }
 
 const updateProfile = (req, res) => {
@@ -54,7 +79,7 @@ const updateProfile = (req, res) => {
             console.log('An unknown error occurred when uploading: ' + err)
             res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
         }
-        const accountAddress = req.body._id.toUpperCase()
+        const accountAddress = req.body._id.toLowerCase()
         const url = req.protocol + '://' + req.get('host')
         req.body.picture = url + '/pictures/avatars/' + req.file.filename
         console.log(req.body.picture)
@@ -75,5 +100,6 @@ const updateProfile = (req, res) => {
 module.exports = {
     getAccount,
     signin,
-    updateProfile
+    updateProfile,
+    updateAvatar
 }

@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 import CreateItem from "./components/CreateItem"
 import Home from "./components/Home"
+import Profile from "./components/Profile"
 
 import NavigationBar from './components/NavigationBar'
 import Footer from './components/Footer'
@@ -20,8 +21,7 @@ class App extends React.Component {
     this.state = {
       loaded: false,
       itemList: [],
-      account: '0x0000000000000000000000000000000000000000',
-      person: {}
+      account: { _id: '0x0000000000000000000000000000000000000000' },
     }
   }
 
@@ -31,19 +31,15 @@ class App extends React.Component {
       this.web3 = await getWeb3()
 
       // Use web3 to get the user's accounts.
-      this.setState({ account: (await this.web3.eth.getAccounts())[0].toUpperCase() })
       axios
-      .post('http://localhost:4000/signin', { _id: this.state.account })
-      .then(res => this.setState({ person: res.data }))
-      .then(res => console.log(this.state.person))
-      .catch(console.log())
+        .post('http://localhost:4000/account', { _id: (await this.web3.eth.getAccounts())[0].toLowerCase() })
+        .then(res => this.setState({ account: res.data }))
+        .catch(console.log())
 
       window.ethereum.on('accountsChanged', accounts => {
-        this.setState({ account: accounts[0].toUpperCase() })
         axios
-          .post('http://localhost:4000/signin', { _id: accounts[0].toUpperCase() })
-          .then(res => this.setState({ person: res.data }))
-          .then(res => console.log(this.state.person))
+          .post('http://localhost:4000/account', { _id: accounts[0].toLowerCase() })
+          .then(res => this.setState({ account: res.data }))
           .catch(console.log())
       })
 
@@ -91,6 +87,14 @@ class App extends React.Component {
               path="/create"
               element={
                 <CreateItem
+                  account={this.state.account}
+                />
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <Profile
                   account={this.state.account}
                 />
               }

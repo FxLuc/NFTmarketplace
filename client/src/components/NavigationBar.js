@@ -8,6 +8,10 @@ class NavigationBar extends React.Component {
         super(props);
     }
 
+    addressOverflow(address) {
+        return `${address.substr(0, 5)}...${address.substr(39, 42)}`
+    }
+
     render() {
         return (
             <Navbar collapseOnSelect expand="lg" bg="white" fixed="top" className='shadow-sm'>
@@ -33,8 +37,8 @@ class NavigationBar extends React.Component {
                         </Nav>
                         <Nav>
                             <Nav.Link href="/create" className='fw-bold mx-4'>Create</Nav.Link>
-                            <NavDropdown className='fw-bold' title={this.props.account} id="collasible-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
+                            <NavDropdown className='fw-bold' title={this.addressOverflow(this.props.account._id)} id="collasible-nav-dropdown">
+                                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.2">Setting</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item href="#action/3.4">Sign out</NavDropdown.Item>
