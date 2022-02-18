@@ -4,7 +4,6 @@ function Footer() {
     return (
         <div
             className="d-flex flex-column bg-primary text-light"
-        // style={{ minHeight: '90vh' }}
         >
             <div className='container'>
                 <div className='row py-1'>
@@ -25,7 +24,7 @@ function Footer() {
                 <hr className='m-0' />
                 <div className='row pt-1 pb-2'>
                     <div className='col-12 col-sm text-center text-sm-start'>
-                        © 2021-2022 <a href='https://fb.me/f127.admin' className='text-light'>F Organization</a>
+                        © 2021-2022 <a href='https://fb.me/fil.often127' className='text-light'>FIL Organization</a>
                     </div>
                     <div className='col-12 col-sm text-center text-sm-end'>
                         <a href='#privacy-policy' className='text-light me-3'>Privacy Policy</a>

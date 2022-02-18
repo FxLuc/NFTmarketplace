@@ -3,17 +3,17 @@ import { Routes, Route } from 'react-router-dom'
 import axios from 'axios'
 import "bootstrap/dist/css/bootstrap.min.css"
 
-import CreateItem from "./components/CreateItem"
-import Home from "./components/Home"
-import Profile from "./components/Profile"
+import CreateItem from "./components/create/CreateItem"
+import Home from "./components/home/Home"
+import Profile from "./components/profile/Profile"
 
 import NavigationBar from './components/NavigationBar'
 import Footer from './components/Footer'
 import Error from './components/Error'
 
-import getWeb3 from './getWeb3'
-import ItemManagerContract from './contracts/ItemManager.json'
-import ItemContract from './contracts/Item.json'
+import detectEthereumProvider from '@metamask/detect-provider'
+// import ItemManagerContract from './contracts/ItemManager.json'
+// import ItemContract from './contracts/Item.json'
 
 class App extends React.Component {
   constructor(props) {
@@ -28,33 +28,19 @@ class App extends React.Component {
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
-      this.web3 = await getWeb3()
-
+      const provider = await detectEthereumProvider()
       // Use web3 to get the user's accounts.
       axios
-        .post('http://localhost:4000/account', { _id: (await this.web3.eth.getAccounts())[0].toLowerCase() })
+        .post('http://localhost:4000/account', { _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase() })
         .then(res => this.setState({ account: res.data }))
         .catch(console.log())
 
-      window.ethereum.on('accountsChanged', accounts => {
+        provider.on('accountsChanged', accounts => {
         axios
           .post('http://localhost:4000/account', { _id: accounts[0].toLowerCase() })
           .then(res => this.setState({ account: res.data }))
           .catch(console.log())
       })
-
-      // Get the contract instance.
-      const networkId = await this.web3.eth.net.getId()
-
-      this.ItemManager = await new this.web3.eth.Contract(
-        ItemManagerContract.abi,
-        ItemManagerContract.networks[networkId] && ItemManagerContract.networks[networkId].address,
-      )
-
-      this.Item = await new this.web3.eth.Contract(
-        ItemContract.abi,
-        ItemContract.networks[networkId] && ItemContract.networks[networkId].address,
-      )
 
       this.setState({ loaded: true })
 
@@ -70,7 +56,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <NavigationBar account={this.state.account} />
-        <div className="container mt-5 py-5 ">
+        <div className="container mt-5 py-5 " style={{ minHeight: '90vh' }}>
           <Routes>
             <Route
               exact

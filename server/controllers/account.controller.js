@@ -57,17 +57,31 @@ const updateAvatar = (req, res) => {
         const accountAddress = req.body._id.toLowerCase()
         const url = req.protocol + '://' + req.get('host')
         req.body.picture = url + '/pictures/avatars/' + req.file.filename
-        console.log(req.body.picture)
         Account
             .findByIdAndUpdate(accountAddress, {
                 avatar: req.body.picture
             })
-            .exec(_ => res.status(200).json('Success'))
-            .catch(error => {
-                console.log(error)
-                res.status(400).json(error)
+            .exec(error => {
+                if (error) {
+                    console.log(error)
+                    res.status(400).json(error)
+                } else res.status(200).json(req.body.picture)
             })
     })
+}
+
+const updateName = (req, res) => {
+    const accountAddress = req.body._id.toLowerCase()
+    Account
+        .findByIdAndUpdate(accountAddress, {
+            name: req.body.name
+        })
+        .exec(error => {
+            if (error) {
+                console.log(error)
+                res.status(400).json(error)
+            } else res.status(200).json(req.body.name)
+        })
 }
 
 const updateProfile = (req, res) => {
@@ -101,5 +115,6 @@ module.exports = {
     getAccount,
     signin,
     updateProfile,
-    updateAvatar
+    updateAvatar,
+    updateName
 }
