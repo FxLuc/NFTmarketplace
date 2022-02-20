@@ -20,7 +20,6 @@ class App extends React.Component {
     super(props)
     this.state = {
       loaded: false,
-      itemList: [],
       account: { _id: '0x0000000000000000000000000000000000000000' },
     }
   }
@@ -74,6 +73,7 @@ class App extends React.Component {
                   Item={this.Item}
                   ItemManager={this.ItemManager}
                   account={this.state.account}
+                  web3={this.state.web3}
                 />
               }
             />
@@ -83,6 +83,7 @@ class App extends React.Component {
                 <CreateItem
                   account={this.state.account}
                   ItemManagerContract={this.state.ItemManagerContract}
+                  web3={this.state.web3}
                 />
               }
             />

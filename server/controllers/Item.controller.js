@@ -39,13 +39,14 @@ var ItemManagerContract, ItemContract, lastBlockNumber, lastItemIndex
                                                         specifications: itemhiden.specifications,
                                                         externalLink: itemhiden.externalLink,
                                                         rawDataHash: rawDataHash,
+                                                        picture: itemhiden.picture,
                                                         hiden: false
                                                     })
                                                     newItem.save()
                                                 })
                                                 .then(() => {
                                                     Item.findOneAndDelete({ rawDataHash: rawDataHash })
-                                                    .exec(error => error ? console.log(error) : console.log('done'))
+                                                    .exec(error => error ? console.log(error) : console.log(rawDataHash))
                                                 })
 
                                         })
@@ -86,11 +87,11 @@ const upload = multer({
 }).single('file')
 
 const getRawItem = (req, res) => {
-    Item.findById(req.params.address).select({ _id: 0, owner: 0, purchaser: 0, updatedAt: 0, rawDataHash: 0, hide: 0, __v: 0 }).then(item => res.status(200).json(item))
+    Item.findById(req.params.address).select('-_id name description specifications externalLink picture').then(item => res.status(200).json(item))
 }
 
 const getItems = (req, res) => {
-    Item.find().sort('-createdAt').where({ hide: false }).limit(10).then(items => res.status(200).json(items))
+    Item.find().sort('-createdAt').where({ hiden: false }).limit(12).then(items => res.status(200).json(items))
 }
 
 const searchItem = (req, res) => {
@@ -117,7 +118,7 @@ const createItem = (req, res) => {
             .then(item => {
                 Item
                     .findById(item._id)
-                    .select({ _id: 0, owner: 0, purchaser: 0, updatedAt: 0, rawDataHash: 0, hide: 0, __v: 0 })
+                    .select('-_id name description specifications externalLink picture')
                     .then(itemRawData => web3.utils.soliditySha3(itemRawData))
                     .then(rawDataHash => {
                         Item

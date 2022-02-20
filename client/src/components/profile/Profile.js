@@ -21,7 +21,7 @@ class Profile extends React.Component {
                         <Avatar avatar={this.props.account.avatar} _id={this.props.account._id} />
                         <Name accountName={this.props.account.name} _id={this.props.account._id} />
                         <div className='text-muted'>
-                            <ToastAutoHide message='Copy' feedback='Copied!' content={this.props.account._id} />
+                            <ToastAutoHide message='Copy' feedback='Copied!' title={this.props.account._id} content={this.props.account._id} />
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,6 @@ contract Item is Context {
     bytes32 public rawDataHash;
     string public name;
     string public specifications;
-    string public rawDataUrl;
     uint256 public indexInParentContract;
     uint256 public price;
 
@@ -25,7 +24,6 @@ contract Item is Context {
         address _owner,
         string memory _name,
         string memory _specifications,
-        string memory _rawDataUrl,
         bytes32 _rawDataHash,
         uint256 _price,
         uint256 _indexInParentContract
@@ -34,7 +32,6 @@ contract Item is Context {
         owner = _owner;
         name = _name;
         specifications = _specifications;
-        rawDataUrl = _rawDataUrl;
         rawDataHash = _rawDataHash;
         price = _price;
         indexInParentContract = _indexInParentContract;

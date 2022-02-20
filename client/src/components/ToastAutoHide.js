@@ -47,7 +47,7 @@ class ToastAutoHide extends React.Component {
                     style={{ textOverflow: 'ellipsis' }}
                 >
                     <FontAwesomeIcon icon={faCopy} /> { }
-                    {this.props.content}
+                    {this.props.title}
                 </p>
             </OverlayTrigger>
         )

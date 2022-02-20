@@ -47,7 +47,6 @@ contract ItemManager is Ownable {
     function createItem(
         string memory _name,
         string memory _specifications,
-        string memory _rawDataUrl,
         bytes32 _rawDataHash,
         uint256 _price
     ) public {
@@ -57,7 +56,6 @@ contract ItemManager is Ownable {
             _msgSender(),
             _name,
             _specifications,
-            _rawDataUrl,
             _rawDataHash,
             _price,
             curentItemIndex

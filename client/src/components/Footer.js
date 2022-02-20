@@ -2,10 +2,6 @@ import React from 'react'
 import ToastAutoHide from './ToastAutoHide'
 
 class Footer extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-    
     render() {
         return (
             <div
@@ -23,7 +19,7 @@ class Footer extends React.Component {
                             />
                             <p className='fw-bold fs-5 mb-0'>FINDEX</p>
                             <p>Freedom marketplace to buy, sell, and discover items.</p>
-                            <ToastAutoHide message='Copy this contract address' feedback='Copied to clipboard!' content={this.props.contractAddress} />
+                            <ToastAutoHide message='Copy this contract address' feedback='Copied to clipboard!' title={this.props.contractAddress} content={this.props.contractAddress} />
 
                         </div>
                         <div className='d-none d-sm-block col-sm text-end'>

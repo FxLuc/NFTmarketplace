@@ -1,7 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { faExclamationTriangle, faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import Spinner from 'react-bootstrap/Spinner'
 
 class CreateItem extends React.Component {
     constructor(props) {
@@ -12,6 +13,9 @@ class CreateItem extends React.Component {
             description: 'Perfect for every computing environment\nDeveloped in 2005, Samsung\'s industry-first DDR3 is the most used system solution, from PCs and home appliances, to automotive and medical devices.',
             externalLink: 'https://semiconductor.samsung.com/dram/ddr/ddr3/',
             picture: undefined,
+            price: 0,
+            unit: 'Ether',
+            loading: 0
         }
     }
 
@@ -22,20 +26,27 @@ class CreateItem extends React.Component {
         this.setState({ [name]: value })
     }
 
-    getFileInfo = event => {
-        this.setState({ picture: event.target.files[0] })
-        console.log(event.target.files[0]);
-    }
+    getFileInfo = event => this.setState({ picture: event.target.files[0] })
 
     handleSubmit = async (event) => {
         event.preventDefault()
-        const { picture, name, specifications, description, externalLink } = this.state
+        this.setState({ loading: 1 })
+        const { picture, name, specifications, description, externalLink, price, unit } = this.state
+        let value = price
+        if (value !== 0) {
+            if (unit === 'Ether') {
+                value = this.props.web3.utils.toWei(price, 'ether')
+            } else if (unit === 'Gwei') {
+                value = this.props.web3.utils.toWei(price, 'gwei')
+            }
+        }
 
         // add new item to server
         const formData = new FormData()
         formData.append('file', picture, picture.name)
         formData.append('name', name)
         formData.append('owner', this.props.account._id)
+        formData.append('price', value)
         formData.append('specifications', specifications)
         formData.append('externalLink', externalLink)
         formData.append('description', description)
@@ -45,24 +56,21 @@ class CreateItem extends React.Component {
                 headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res => {
-                console.log(res)
                 // add item to blockchain
                 this.props.ItemManagerContract.methods
-                    .createItem(name, specifications, 'http://localhost:4000/raw/item/', res.data, '0')
-                    .send({ from: this.props.account._id })
-                    .then(console.log)
-                    .catch(console.log)
+                    .createItem(name, specifications, res.data, value).send({ from: this.props.account._id })
+                    .then(_ => this.setState({ loading: 3 }))
+                    .catch(_ => this.setState({ loading: 2 }))
                 // window.location = 'http://localhost:65535/'
             })
             .catch(error => console.log(error))
 
-        // this.props.ItemManagerContract.methods.currentItemIndex().call().then(data => console.log(data))
     }
 
     render() {
         return (
             <div className='CreateItem'>
-                <form>
+                <form onSubmit={this.handleSubmit}>
                     <h1 className='fw-bold text-uppercase'>Create new item</h1>
 
                     <div className='text-muted'><span className='text-danger'>*</span> Required fields</div>
@@ -71,14 +79,14 @@ class CreateItem extends React.Component {
                         <label htmlFor='picture' className='fw-bold'>Picture <span className='text-danger'>*</span></label>
                         <br />
                         <small className='text-muted'>File types supported: JPG, PNG, GIF, SVG. Max size: 100 MB</small>
-                        <input type='file' name='picture' id='picture' className='form-control' onChange={this.getFileInfo} accept="image/*"></input>
+                        <input type='file' name='picture' id='picture' className='form-control' onChange={this.getFileInfo} accept="image/*" required></input>
                     </div>
 
                     <div className='form-group my-3'>
                         <label htmlFor='name' className='fw-bold'>Name <span className='text-danger'>*</span></label>
                         <br />
                         <small className='text-muted'>Everyone can find your item by this name.</small>
-                        <input name='name' id='name' value={this.state.name} onChange={this.handleInputChange} type='text' className='form-control' placeholder='Item name' />
+                        <input name='name' id='name' value={this.state.name} onChange={this.handleInputChange} type='text' className='form-control' placeholder='Item name' required />
                     </div>
 
                     <div className='form-group my-3'>
@@ -93,7 +101,40 @@ class CreateItem extends React.Component {
                             value={this.state.specifications}
                             className='form-control'
                             placeholder='Specifications of your item.'
+                            required
                         ></textarea>
+                    </div>
+
+                    <div className='row my-3'>
+                        <div className='col'>
+                            <div className='form-group'>
+                                <label htmlFor='price' className='fw-bold'>Price: <span className='text-danger'>*</span></label>
+                                <br />
+                                <small className='text-muted'>You can change item price after.</small>
+                                <input
+                                    name='price'
+                                    id='price'
+                                    onChange={this.handleInputChange}
+                                    type='number'
+                                    className='form-control'
+                                    value={this.state.price}
+                                    min={0}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className='col-4'>
+                            <div className='form-group'>
+                                <label htmlFor='unit' className='fw-bold'>Unit:</label>
+                                <br />
+                                <small className='text-muted'>Price in </small>
+                                <select className='form-control' onChange={this.handleInputChange} name='unit' id='unit' defaultValue='Ether'>
+                                    <option>Wei</option>
+                                    <option>Gwei</option>
+                                    <option>Ether</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div className='form-group my-3'>
@@ -120,9 +161,38 @@ class CreateItem extends React.Component {
 
                     <div className='my-3 fw-bold fst-italic text-danger'><FontAwesomeIcon icon={faExclamationTriangle} /> Freeze metadata: <span className='fw-normal text-dark'>Your metadata will permanently lock and store all of this item's content in decentralized file storage.</span></div>
 
-                    <button className='btn btn-primary fw-bold px-5' type='submit' onClick={this.handleSubmit}>Create</button>
+                    {(this.state.loading !== 0) ? <IsLoading isLoading={this.state.loading} /> : <button className='btn btn-primary fw-bold px-5' type='submit'>Create</button>}
                 </form>
             </div>
+        )
+    }
+}
+
+class IsLoading extends React.Component {
+    render() {
+        return (
+            <>
+                {(this.props.isLoading === 1)
+                    ?
+                    <button className='btn btn-secondary fw-bold px-5' type='submit'>
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        /> { } Pending...
+                    </button>
+
+                    : (this.props.isLoading === 3)
+                        ? <button className='btn btn-primary fw-bold px-5' type='submit'>
+                            <FontAwesomeIcon icon={faCheckCircle} /> { } Done!
+                        </button>
+                        : <button className='btn btn-danger fw-bold px-5' type='submit'>
+                            <FontAwesomeIcon icon={faExclamationCircle} /> { } Rejected
+                        </button>
+                }
+            </>
         )
     }
 }
