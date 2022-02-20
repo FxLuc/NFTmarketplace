@@ -14,7 +14,7 @@ class Home extends Component {
     axios
       .get('http://localhost:4000/item/newest')
       .then(res => this.setState({ itemList: res.data }))
-      .then(res => console.log(this.state.itemList))
+      // .then(res => console.log(this.state.itemList))
       .catch(console.log())
   }
 
@@ -27,23 +27,7 @@ class Home extends Component {
       <div className='Home'>
         <div className=''>
           <h4>Newest</h4>
-          <div className='btn btn-danger' onClick={this.getAccount}> Show account</div>
           <div className='py-3 row'>
-            {/* <div className='table-responsive'>
-              <table className='table table-bordered'>
-                <thead>
-                  <tr>
-                    <th>Picture</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Owner</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.itemList.map(item => <ItemCard data={item} key={item._id}/>)}
-                </tbody>
-              </table>
-            </div> */}
             {this.state.itemList.map(item => <ItemCard data={item} key={item._id}/>)}
           </div>
         </div>

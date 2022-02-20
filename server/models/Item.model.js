@@ -39,13 +39,22 @@ const itemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  externaLink: {
+  externalLink: {
     type: String,
   },
   picture: {
     type: String,
     default: "http://localhost:4000/pictures/default.png",
   },
+  rawDataHash: {
+    type: String,
+    lenght: 66,
+    default: '0x0000000000000000000000000000000000000000000000000000000000000000',
+  },
+  hiden: {
+    type: Boolean,
+    default: true,
+  }
 }, {timestamps: true})
 
 module.exports = mongoose.model("Item", itemSchema)

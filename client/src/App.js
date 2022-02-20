@@ -12,8 +12,8 @@ import Footer from './components/Footer'
 import Error from './components/Error'
 
 import detectEthereumProvider from '@metamask/detect-provider'
-// import ItemManagerContract from './contracts/ItemManager.json'
-// import ItemContract from './contracts/Item.json'
+import getWeb3 from './getWeb3'
+import ItemManagerContractJSON from './contracts/ItemManager.json'
 
 class App extends React.Component {
   constructor(props) {
@@ -28,7 +28,9 @@ class App extends React.Component {
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
+      const web3 = await getWeb3()
       const provider = await detectEthereumProvider()
+
       // Use web3 to get the user's accounts.
       axios
         .post('http://localhost:4000/account', { _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase() })
@@ -42,7 +44,13 @@ class App extends React.Component {
           .catch(console.log())
       })
 
-      this.setState({ loaded: true })
+      const networkId = await web3.eth.net.getId()
+      const ItemManagerContract = await new web3.eth.Contract(
+          ItemManagerContractJSON.abi,
+          ItemManagerContractJSON.networks[networkId] && ItemManagerContractJSON.networks[networkId].address,
+      )
+        
+      this.setState({ loaded: true, web3: web3, ItemManagerContract: ItemManagerContract })
 
     } catch (error) {
       alert(
@@ -74,6 +82,7 @@ class App extends React.Component {
               element={
                 <CreateItem
                   account={this.state.account}
+                  ItemManagerContract={this.state.ItemManagerContract}
                 />
               }
             />
@@ -88,7 +97,7 @@ class App extends React.Component {
             <Route path="*" element={<Error />} />
           </Routes>
         </div>
-        <Footer />
+        <Footer contractAddress={this.state.ItemManagerContract? this.state.ItemManagerContract._address : null }/>
       </div>
     )
   }

@@ -1,5 +1,5 @@
 import React from 'react'
-import ToastAutoHide from './ToastAutoHide'
+import ToastAutoHide from '../ToastAutoHide'
 import Avatar from './Avatar'
 import Name from './Name'
 
