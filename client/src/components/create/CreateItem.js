@@ -174,7 +174,7 @@ class IsLoading extends React.Component {
             <>
                 {(this.props.isLoading === 1)
                     ?
-                    <button className='btn btn-secondary fw-bold px-5' type='submit'>
+                    <button className='btn btn-secondary fw-bold px-5' type='submit' disabled>
                         <Spinner
                             as="span"
                             animation="border"

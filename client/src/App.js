@@ -4,6 +4,7 @@ import axios from 'axios'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 import CreateItem from "./components/create/CreateItem"
+import CheckRawData from "./components/check/CheckRawData"
 import Home from "./components/home/Home"
 import Profile from "./components/profile/Profile"
 
@@ -92,6 +93,14 @@ class App extends React.Component {
               element={
                 <Profile
                   account={this.state.account}
+                />
+              }
+            />
+            <Route
+              path="/checkrawdata"
+              element={
+                <CheckRawData
+                  web3={this.state.web3}
                 />
               }
             />
