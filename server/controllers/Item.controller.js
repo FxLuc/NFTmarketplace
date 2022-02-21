@@ -33,7 +33,7 @@ var ItemManagerContract, lastBlockNumber, lastItemIndex
                                                         _id: ItemContractInstance._address,
                                                         name: itemhiden.name,
                                                         price: itemhiden.price,
-                                                        owner: itemhiden.owner,
+                                                        owner: itemhiden.owner.toLowerCase(),
                                                         description: itemhiden.description,
                                                         specifications: itemhiden.specifications,
                                                         externalLink: itemhiden.externalLink,
@@ -52,7 +52,7 @@ var ItemManagerContract, lastBlockNumber, lastItemIndex
                             }
                             if (currentItemIndex == lastItemIndex) {
                                 ItemManagerContract.getPastEvents().then(event => {
-                                    if (event != []) {
+                                    if (typeof(event[0]) != 'undefined') {
                                         ItemManagerContract.methods.items(event[0].returnValues.itemIndex).call()
                                             .then(sItemStruct => {
                                                 Item.findByIdAndUpdate(sItemStruct._item, {
@@ -70,10 +70,10 @@ var ItemManagerContract, lastBlockNumber, lastItemIndex
                                                         const newOrder = new Order({
                                                             _id: OrderContract._address,
                                                             price: await OrderContract.methods.getBalance().call(),
-                                                            seller: await OrderContract.methods.seller().call(),
+                                                            seller: (await OrderContract.methods.seller().call()).toLowerCase(),
                                                             deadline: await OrderContract.methods.getDeadline().call(),
                                                             itemContract: await OrderContract.methods.itemContract().call(),
-                                                            purchaser: await OrderContract.methods.purchaser().call(),
+                                                            purchaser: (await OrderContract.methods.purchaser().call()).toLowerCase(),
                                                         })
                                                         newOrder.save()
                                                         Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
@@ -87,7 +87,7 @@ var ItemManagerContract, lastBlockNumber, lastItemIndex
                                                     (async () => {
                                                         const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
                                                         Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
-                                                            owner: await OrderContract.methods.purchaser().call(),
+                                                            owner: (await OrderContract.methods.purchaser().call()).toLowerCase(),
                                                             hiden: false
                                                         }).exec(error => {
                                                             if (error) console.log(error)
@@ -143,6 +143,29 @@ const getItems = (req, res) => {
     Item.find().sort('-createdAt').where({ hiden: false }).select('name picture price owner').limit(12).then(items => res.status(200).json(items))
 }
 
+const getMyItems = (req, res) => {
+    Item.find().sort('-createdAt').where({ owner: req.query._id }).select('name picture price owner').limit(12).then(items => res.status(200).json(items))
+}
+
+const getMyOrders = (req, res) => {
+    Order.find({ purchaser: req.query._id })
+    .sort('-createdAt').limit(12)
+    .populate('itemContract')
+    .then(items => {
+        res.status(200).json(items)
+    })
+}
+
+const getMySolds = (req, res) => {
+    Order.find({ seller: req.query._id })
+    .sort('-createdAt').limit(12)
+    .populate('itemContract')
+    .then(items => {
+        res.status(200).json(items)
+    })
+}
+
+
 const getItem = (req, res) => {
     Item.findById(req.query._id).then(item => res.status(200).json(item)).catch(error => res.status(404).json(error))
 }
@@ -191,14 +214,14 @@ const createItem = (req, res) => {
     })
 }
 
-const updateItem = (req, res) => {
-    Item
+const updateOrder = (req, res) => {
+    Order
         .findByIdAndUpdate(req.body._id, {
             state: req.body.state,
-            purchaser: req.body.purchaser
+            deadline: req.body.deadline
         })
         .exec(err =>
-            err ? res.status(500).json(err) : Item.findById(req.body._id).then(product => res.status(201).json(product))
+            err ? res.status(500).json(err) : Order.findById(req.body._id).then(order => res.status(201).json(order))
         )
 }
 
@@ -206,7 +229,10 @@ module.exports = {
     getRawItem,
     getItem,
     getItems,
+    getMyItems,
+    getMyOrders,
+    getMySolds,
     createItem,
-    updateItem,
+    updateOrder,
     searchItem
 }

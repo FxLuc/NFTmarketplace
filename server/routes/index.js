@@ -9,9 +9,13 @@ module.exports = app => {
 
     app.get('/raw/item/:address', itemController.getRawItem)
     app.get('/item/newest', itemController.getItems)
+    app.get('/item/my', itemController.getMyItems)
     app.get('/item', itemController.getItem)
     app.post('/item/create', itemController.createItem)
-    app.put('/item/update', itemController.updateItem)
     app.get('/item/search', itemController.searchItem)
+
+    app.get('/order/my', itemController.getMyOrders)
+    app.get('/order/sold', itemController.getMySolds)
+    app.put('/order/update', itemController.updateOrder)
 
 }

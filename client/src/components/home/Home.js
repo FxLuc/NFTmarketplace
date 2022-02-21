@@ -8,7 +8,7 @@ class Home extends Component {
       itemList: [],
     }
   }
-  componentDidMount = async() => {
+  componentDidMount = () => {
     // load items to table
     axios
       .get('http://localhost:4000/item/newest')

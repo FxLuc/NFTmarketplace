@@ -26,7 +26,7 @@ class Avatar extends React.Component {
             .then(res => {
                 this.setState({ avatar: res.data})
             })
-            .catch(error => console.log(error))
+            .catch(_ => window.location = 'http://localhost:65535/error')
     }
 
     showEditAvatarElement = () => {

@@ -89,7 +89,10 @@ class App extends React.Component {
             <Route
               path="/profile"
               element={
-                <Profile account={this.state.account} />
+                <Profile
+                  account={this.state.account}
+                  web3={this.state.web3}
+                />
               }
             />
             <Route
