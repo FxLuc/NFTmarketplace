@@ -15,11 +15,6 @@ const itemSchema = new mongoose.Schema({
     min: 0,
     default: 0,
   },
-  state: {
-    type: Number,
-    min: 0,
-    default: 0
-  },
   owner: {
     type: String,
     lenght: 42,
@@ -31,6 +26,12 @@ const itemSchema = new mongoose.Schema({
     lenght: 42,
     default: '0x0000000000000000000000000000000000000000',
     ref: 'Account'
+  },
+  order: {
+    type: String,
+    lenght: 42,
+    default: '0x0000000000000000000000000000000000000000',
+    ref: 'Order'
   },
   description: {
     type: String,

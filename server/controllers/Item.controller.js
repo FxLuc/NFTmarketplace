@@ -1,16 +1,18 @@
-const { Item } = require('../models')
+const { Item, Order } = require('../models')
 
 const ItemManagerContractJSON = require('../contracts/ItemManager.json')
+const OrderContractJSON = require('../contracts/Order.json')
 const ItemContractJSON = require('../contracts/Item.json')
 var Web3 = require('web3')
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
-var ItemManagerContract, ItemContract, lastBlockNumber, lastItemIndex
+var ItemManagerContract, lastBlockNumber, lastItemIndex
 
 (async () => {
-    const networkId = await web3.eth.net.getId()
+    // const networkId = await web3.eth.net.getId()
     ItemManagerContract = await new web3.eth.Contract(
         ItemManagerContractJSON.abi,
-        ItemManagerContractJSON.networks[networkId] && ItemManagerContractJSON.networks[networkId].address,
+        '0xeAC54f01b8EE5C6AD2aA94a1aCF551d015bDA870'
+        // ItemManagerContractJSON.networks[networkId] && ItemManagerContractJSON.networks[networkId].address,
     )
     lastBlockNumber = await web3.eth.getBlockNumber()
     lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
@@ -18,9 +20,6 @@ var ItemManagerContract, ItemContract, lastBlockNumber, lastItemIndex
         web3.eth.getBlockNumber()
             .then(currentBlockNumber => {
                 if (currentBlockNumber > lastBlockNumber) {
-                    // ItemManagerContract.getPastEvents().then(event => {
-                    //     ItemManagerContract.methods.items(event[0].returnValues.itemIndex).call().then(sItemStruct => console.log(sItemStruct._item))
-                    // })
                     ItemManagerContract.methods.currentItemIndex().call()
                         .then(currentItemIndex => {
                             for (lastItemIndex; currentItemIndex > lastItemIndex; lastItemIndex++) {
@@ -48,9 +47,56 @@ var ItemManagerContract, ItemContract, lastBlockNumber, lastItemIndex
                                                     Item.findOneAndDelete({ rawDataHash: rawDataHash })
                                                         .exec(error => error ? console.log(error) : console.log(rawDataHash))
                                                 })
-
                                         })
                                     )
+                            }
+                            if (currentItemIndex == lastItemIndex) {
+                                ItemManagerContract.getPastEvents().then(event => {
+                                    if (event != []) {
+                                        ItemManagerContract.methods.items(event[0].returnValues.itemIndex).call()
+                                            .then(sItemStruct => {
+                                                Item.findByIdAndUpdate(sItemStruct._item, {
+                                                    state: sItemStruct._state,
+                                                    order: sItemStruct._order
+                                                }).exec(error => {
+                                                    if (error) console.log(error)
+                                                })
+                                                return sItemStruct
+                                            })
+                                            .then(sItemStruct => {
+                                                if (sItemStruct._state == 1) {
+                                                    (async () => {
+                                                        const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
+                                                        const newOrder = new Order({
+                                                            _id: OrderContract._address,
+                                                            price: await OrderContract.methods.getBalance().call(),
+                                                            seller: await OrderContract.methods.seller().call(),
+                                                            deadline: await OrderContract.methods.getDeadline().call(),
+                                                            itemContract: await OrderContract.methods.itemContract().call(),
+                                                            purchaser: await OrderContract.methods.purchaser().call(),
+                                                        })
+                                                        newOrder.save()
+                                                        Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
+                                                            hiden: true
+                                                        }).exec(error => {
+                                                            if (error) console.log(error)
+                                                        })
+                                                    })()
+                                                }
+                                                if (sItemStruct._state == 2) {
+                                                    (async () => {
+                                                        const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
+                                                        Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
+                                                            owner: await OrderContract.methods.purchaser().call(),
+                                                            hiden: false
+                                                        }).exec(error => {
+                                                            if (error) console.log(error)
+                                                        })
+                                                    })()
+                                                }
+                                            })
+                                    }
+                                })
                             }
                         })
                     lastBlockNumber = currentBlockNumber
@@ -94,7 +140,7 @@ const getRawItem = (req, res) => {
 }
 
 const getItems = (req, res) => {
-    Item.find().sort('-createdAt').where({ hiden: false }).limit(12).then(items => res.status(200).json(items))
+    Item.find().sort('-createdAt').where({ hiden: false }).select('name picture price owner').limit(12).then(items => res.status(200).json(items))
 }
 
 const getItem = (req, res) => {
