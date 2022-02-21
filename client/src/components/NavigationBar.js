@@ -32,7 +32,7 @@ function NavigationBar(props) {
                     </Nav>
                     <Nav>
                         <Nav.Link href="/create" className='fw-bold me-4'>Create</Nav.Link>
-                        <Nav.Link href="/create" className='fw-bold me-4'>Check</Nav.Link>
+                        <Nav.Link href="/checkRawData" className='fw-bold me-4'>Check</Nav.Link>
                         <NavDropdown className='fw-bold' title={addressOverflow(props.account._id)} id="collasible-nav-dropdown">
                             <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">Setting</NavDropdown.Item>

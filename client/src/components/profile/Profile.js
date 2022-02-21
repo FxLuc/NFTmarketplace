@@ -20,9 +20,9 @@ class Profile extends React.Component {
                     <div className='col-12 text-center'>
                         <Avatar avatar={this.props.account.avatar} _id={this.props.account._id} />
                         <Name accountName={this.props.account.name} _id={this.props.account._id} />
-                        <div className='text-muted'>
+                        <h4 className='text-muted'>
                             <ToastAutoHide message='Copy' feedback='Copied!' title={this.props.account._id} content={this.props.account._id} />
-                        </div>
+                        </h4>
                     </div>
                 </div>
             </div>

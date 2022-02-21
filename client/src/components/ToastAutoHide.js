@@ -12,7 +12,8 @@ class ToastAutoHide extends React.Component {
         }
     }
 
-    copyToClipboard = () => {
+    copyToClipboard = event => {
+        event.stopPropagation()
         navigator.clipboard.writeText(this.props.content)
         this.setState({ message: this.props.feedback })
     }
@@ -39,16 +40,16 @@ class ToastAutoHide extends React.Component {
                 )}
                 placement="bottom"
             >
-                <p
+                <span
                     onClick={this.copyToClipboard}
                     onMouseEnter={this.showTooltip}
                     onMouseLeave={this.hideTooltip}
-                    className='text-nowrap overflow-hidden'
-                    style={{ textOverflow: 'ellipsis' }}
+                    className='overflow-hidden text-nowrap'
+                    style={{ zIndex: 999 }}
                 >
                     <FontAwesomeIcon icon={faCopy} /> { }
-                    {this.props.title}
-                </p>
+                    <span className='overflow-hidden text-wrap text-break'>{this.props.title}</span>
+                </span>
             </OverlayTrigger>
         )
     }

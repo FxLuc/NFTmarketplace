@@ -45,7 +45,7 @@ class CheckRawData extends React.Component {
                 <form className='' onSubmit={this.handleSubmit}>
                     <h1>Check raw data hash</h1>
                     <div className='form-group my-3'>
-                        <label htmlFor='originalHash' className='fw-bold'>Original hash </label>
+                        <label htmlFor='originalHash' className='fw-bold'>Original hash (soliditySha3)</label>
                         <br />
                         <small className='text-muted'>Item rawDataHash in blockchain</small>
                         <input name='originalHash' id='originalHash' value={this.state.originalHash} onChange={this.handleInputChange} type='text' className='form-control' placeholder='0x08ad4fc28a304171effc0d6e6f6600e97262606149311cb02ab367ed9cddfb12' />

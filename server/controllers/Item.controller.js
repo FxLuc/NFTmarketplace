@@ -46,7 +46,7 @@ var ItemManagerContract, ItemContract, lastBlockNumber, lastItemIndex
                                                 })
                                                 .then(() => {
                                                     Item.findOneAndDelete({ rawDataHash: rawDataHash })
-                                                    .exec(error => error ? console.log(error) : console.log(rawDataHash))
+                                                        .exec(error => error ? console.log(error) : console.log(rawDataHash))
                                                 })
 
                                         })
@@ -87,11 +87,18 @@ const upload = multer({
 }).single('file')
 
 const getRawItem = (req, res) => {
-    Item.findById(req.params.address).select('-_id name description specifications externalLink picture').then(item => res.status(200).json(item))
+    Item.findById(req.params.address)
+        .select('-_id name description specifications externalLink picture')
+        .then(item => res.status(200).json(item))
+        .catch(error => res.status(404).json(error))
 }
 
 const getItems = (req, res) => {
     Item.find().sort('-createdAt').where({ hiden: false }).limit(12).then(items => res.status(200).json(items))
+}
+
+const getItem = (req, res) => {
+    Item.findById(req.query._id).then(item => res.status(200).json(item)).catch(error => res.status(404).json(error))
 }
 
 const searchItem = (req, res) => {
@@ -151,6 +158,7 @@ const updateItem = (req, res) => {
 
 module.exports = {
     getRawItem,
+    getItem,
     getItems,
     createItem,
     updateItem,

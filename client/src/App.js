@@ -5,6 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 import CreateItem from "./components/create/CreateItem"
 import CheckRawData from "./components/check/CheckRawData"
+import ItemDetail from './components/home/ItemDetail'
+
 import Home from "./components/home/Home"
 import Profile from "./components/profile/Profile"
 
@@ -37,7 +39,7 @@ class App extends React.Component {
         .then(res => this.setState({ account: res.data }))
         .catch(console.log())
 
-        provider.on('accountsChanged', accounts => {
+      provider.on('accountsChanged', accounts => {
         axios
           .post('http://localhost:4000/account', { _id: accounts[0].toLowerCase() })
           .then(res => this.setState({ account: res.data }))
@@ -46,16 +48,14 @@ class App extends React.Component {
 
       const networkId = await web3.eth.net.getId()
       const ItemManagerContract = await new web3.eth.Contract(
-          ItemManagerContractJSON.abi,
-          ItemManagerContractJSON.networks[networkId] && ItemManagerContractJSON.networks[networkId].address,
+        ItemManagerContractJSON.abi,
+        ItemManagerContractJSON.networks[networkId] && ItemManagerContractJSON.networks[networkId].address,
       )
-        
+
       this.setState({ loaded: true, web3: web3, ItemManagerContract: ItemManagerContract })
 
     } catch (error) {
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`,
-      )
+      window.location = 'http://localhost:65535/error'
       console.error(error)
     }
   }
@@ -71,8 +71,6 @@ class App extends React.Component {
               path="/"
               element={
                 <Home
-                  Item={this.Item}
-                  ItemManager={this.ItemManager}
                   account={this.state.account}
                   web3={this.state.web3}
                 />
@@ -91,26 +89,32 @@ class App extends React.Component {
             <Route
               path="/profile"
               element={
-                <Profile
-                  account={this.state.account}
-                />
+                <Profile account={this.state.account} />
               }
             />
             <Route
               path="/checkrawdata"
               element={
-                <CheckRawData
+                <CheckRawData web3={this.state.web3} />
+              }
+            />
+            <Route
+              path="/item/:itemAddress"
+              element={
+                <ItemDetail
                   web3={this.state.web3}
+                  account={this.state.account}
                 />
               }
             />
             <Route path="*" element={<Error />} />
           </Routes>
         </div>
-        <Footer contractAddress={this.state.ItemManagerContract? this.state.ItemManagerContract._address : null }/>
+        <Footer contractAddress={this.state.ItemManagerContract ? this.state.ItemManagerContract._address : null} />
       </div>
     )
   }
 }
+
 
 export default App
