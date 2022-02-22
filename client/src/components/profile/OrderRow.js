@@ -53,16 +53,19 @@ class OrderRow extends React.Component {
 
     triggerNext = () => {
         if (this.state.orderState === '0') {
+            this.setState({ loading: 1 })
             this.state.OrderContract.methods.triggerConfirm().send({ from: this.props.accountId })
                 .then(_ => this.updateOrder())
                 .catch(_ => this.setState({ loading: 2 }))
         }
         else if (this.state.orderState === '1') {
+            this.setState({ loading: 1 })
             this.state.OrderContract.methods.triggerShipping().send({ from: this.props.accountId })
                 .then(_ => this.updateOrder())
                 .catch(_ => this.setState({ loading: 2 }))
         }
         else if (this.state.orderState === '2') {
+            this.setState({ loading: 1 })
             this.state.OrderContract.methods.triggerReceived().send({ from: this.props.accountId })
                 .then(_ => this.updateOrder())
                 .catch(_ => this.setState({ loading: 2 }))
