@@ -1,13 +1,13 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const path = require('path');
+const path = require('path')
 const cors = require('cors')
-const config = require('./config/db')
+require('dotenv').config()
 
 // mongoose connect
 const mongoose = require('mongoose')
-mongoose.connect(config.DB)
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('mongodb connected'))
   .catch(error => handleError(error))
 

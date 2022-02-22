@@ -7,6 +7,8 @@ var Web3 = require('web3')
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
 var ItemManagerContract, lastBlockNumber, lastItemIndex
 
+
+// listten Item in chain
 (async () => {
     // const networkId = await web3.eth.net.getId()
     ItemManagerContract = await new web3.eth.Contract(
@@ -52,7 +54,7 @@ var ItemManagerContract, lastBlockNumber, lastItemIndex
                             }
                             if (currentItemIndex == lastItemIndex) {
                                 ItemManagerContract.getPastEvents().then(event => {
-                                    if (typeof(event[0]) != 'undefined') {
+                                    if (typeof (event[0]) != 'undefined') {
                                         ItemManagerContract.methods.items(event[0].returnValues.itemIndex).call()
                                             .then(sItemStruct => {
                                                 Item.findByIdAndUpdate(sItemStruct._item, {
@@ -149,20 +151,20 @@ const getMyItems = (req, res) => {
 
 const getMyOrders = (req, res) => {
     Order.find({ purchaser: req.query._id })
-    .sort('-createdAt').limit(12)
-    .populate('itemContract')
-    .then(items => {
-        res.status(200).json(items)
-    })
+        .sort('-createdAt').limit(12)
+        .populate('itemContract')
+        .then(items => {
+            res.status(200).json(items)
+        })
 }
 
 const getMySolds = (req, res) => {
     Order.find({ seller: req.query._id })
-    .sort('-createdAt').limit(12)
-    .populate('itemContract')
-    .then(items => {
-        res.status(200).json(items)
-    })
+        .sort('-createdAt').limit(12)
+        .populate('itemContract')
+        .then(items => {
+            res.status(200).json(items)
+        })
 }
 
 
@@ -192,6 +194,7 @@ const createItem = (req, res) => {
         newItem
             .save()
             .then(item => {
+                // return soliditySha3 data
                 Item
                     .findById(item._id)
                     .select('-_id name description specifications externalLink picture')

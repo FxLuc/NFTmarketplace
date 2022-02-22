@@ -7,8 +7,6 @@ import { faEthereum, } from '@fortawesome/free-brands-svg-icons'
 import { faWallet, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import Spinner from 'react-bootstrap/Spinner'
 
-// import ItemContractJSON from '../../contracts/Item.json'
-
 function ItemDetail(props) {
   let { itemAddress } = useParams()
   return (

@@ -1,7 +1,6 @@
 import React from "react"
 import Spinner from 'react-bootstrap/Spinner'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEthereum, } from '@fortawesome/free-brands-svg-icons'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 
 class OrderNextStep extends React.Component {
