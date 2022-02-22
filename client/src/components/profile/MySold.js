@@ -26,9 +26,6 @@ class MySold extends React.Component {
         return (
             <>
                 <h4>{this.props.title}</h4>
-                <div className='py-3 row'>
-                    {/* {this.state.loaded ? this.state.myOrderList.map(item => <ItemCard item={item} key={item._id} />) : null} */}
-                </div>
                 <div className='py-3 '>
                     <div className='table-responsive'>
                         <table className='table table-bordered'>
