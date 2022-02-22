@@ -23,7 +23,6 @@ class OrderRow extends React.Component {
 
     componentDidMount = async () => {
         if (this.props.order.itemContract.owner === this.props.accountId) this.setState({ isOwner: true })
-
         const OrderContract = await new this.props.web3.eth.Contract(OrderContractJSON.abi, this.props.order._id)
         this.setState({ OrderContract: OrderContract })
         this.updateOrder()
@@ -33,20 +32,22 @@ class OrderRow extends React.Component {
         const deadline = await this.state.OrderContract.methods.getDeadline().call()
         this.state.OrderContract.methods.state().call()
             .then(orderState => {
-                this.setState({ orderState: orderState })
-                const body = {
-                    _id: this.props.order._id,
-                    deadline: deadline,
-                    state: orderState
+                if (Number(orderState) !== this.props.order.state) {
+                    this.setState({ orderState: orderState })
+                    const body = {
+                        _id: this.props.order._id,
+                        deadline: deadline,
+                        state: orderState
+                    }
+                    axios
+                        .put('http://localhost:4000/order/update', body)
+                        .then(_ => this.setState({
+                            orderState: body.state,
+                            orderDeadline: body.deadline,
+                            loading: 0
+                        }))
+                        .catch(_ => window.location = 'http://localhost:65535/error')
                 }
-                axios
-                    .put('http://localhost:4000/order/update', body)
-                    .then(_ => this.setState({
-                        orderState: body.state,
-                        orderDeadline: body.deadline,
-                        loading: 0
-                    }))
-                    .catch(_ => window.location = 'http://localhost:65535/error')
             })
     }
 
@@ -135,7 +136,7 @@ class OrderRow extends React.Component {
                     {this.addressQR(this.props.order._id)}
                 </td>
                 <td className='text-center'>
-                    {this.addressQR(this.props.order.itemContract.owner)}
+                    {this.addressQR(this.props.order.seller)}
                 </td>
                 <td className='text-center'>
                     {this.addressQR(this.props.order.purchaser)}

@@ -38,7 +38,7 @@ class MySold extends React.Component {
                                     <th>Price</th>
                                     <th>Item</th>
                                     <th>Order</th>
-                                    <th>Owner</th>
+                                    <th>Seller</th>
                                     <th>Purchaser</th>
                                     <th>State</th>
                                     <th>Deadline</th>
