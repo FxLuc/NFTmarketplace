@@ -1,27 +1,8 @@
 import React from 'react'
-import axios from 'axios'
 import OrderRow from './OrderRow'
-import HOST from  '../../env'
 
 
 class MyOrder extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            myOrderList: null,
-            loaded: false
-        }
-    }
-
-    componentDidMount() {
-        axios
-            .get(`${HOST}:50667/order/my`, { params: { _id: this.props.accountId } })
-            .then(res => this.setState({
-                myOrderList: res.data,
-                loaded: true
-            }))
-            .catch(_ => window.location = `${HOST}:50666/error`)
-    }
 
     render() {
         return (
@@ -44,8 +25,8 @@ class MyOrder extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.loaded
-                                    ? this.state.myOrderList.map(order => <OrderRow order={order} web3={this.props.web3} accountId={this.props.accountId} key={order._id} />)
+                                {this.props.loaded
+                                    ? this.props.myOrderList.map(order => <OrderRow order={order} web3={this.props.web3} accountId={this.props.accountId} key={order._id} />)
                                     : null
                                 }
                             </tbody>

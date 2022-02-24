@@ -5,14 +5,33 @@ import Name from './Name'
 import MyItem from './MyItem'
 import MyOrder from './MyOrder'
 import MySold from './MySold'
+import axios from 'axios'
+import HOST from '../../env'
 
 class Profile extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             name: this.props.account.name,
+            accountId: this.props.account._id,
             externaLink: '',
+            myList: null,
+            myOrderList: null,
+            mySoldList: null,
+            loaded: false
         }
+    }
+
+    componentDidMount() {
+        axios
+            .get(`${HOST}:50667/order/my`, { params: { _id: this.props.account._id } })
+            .then(res => this.setState({
+                myList: res.data,
+                myOrderList: (res.data).filter(order => order.purchaser === this.props.account._id),
+                mySoldList: (res.data).filter(order => order.seller === this.props.account._id),
+                accountId: this.props.account._id,
+                loaded: true
+            }))
     }
 
     render() {
@@ -29,9 +48,9 @@ class Profile extends React.Component {
                     </div>
                 </div>
                 <div className='row'>
-                    {(this.props.account._id === '0x0000000000000000000000000000000000000000') ? null : <MyItem accountId={this.props.account._id} />}
-                    {(this.props.account._id === '0x0000000000000000000000000000000000000000') ? null : <MyOrder title='My orders' accountId={this.props.account._id} web3={this.props.web3} />}
-                    {(this.props.account._id === '0x0000000000000000000000000000000000000000') ? null : <MySold title='Sold' accountId={this.props.account._id} web3={this.props.web3} />}
+                    <MyItem accountId={this.props.account._id} />
+                    <MySold title='Sold' accountId={this.props.account._id} web3={this.props.web3} mySoldList={this.state.mySoldList} loaded={this.state.loaded} />
+                    <MyOrder title='Paid' accountId={this.props.account._id} web3={this.props.web3} myOrderList={this.state.myOrderList} loaded={this.state.loaded} />
                 </div>
             </div>
         )

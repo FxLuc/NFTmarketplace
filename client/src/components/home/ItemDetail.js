@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum, } from '@fortawesome/free-brands-svg-icons'
 import { faWallet, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import Spinner from 'react-bootstrap/Spinner'
-import HOST from  '../../env'
+import HOST from '../../env'
 
 function ItemDetail(props) {
   let { itemAddress } = useParams()
@@ -108,9 +108,9 @@ class Detail extends React.Component {
                   <strong className='text-dark'>Raw data url:</strong><br />
                   <a
                     className='overflow-hidden text-wrap text-break text-secondary'
-                    href={'http://localhost:4000/raw/item/' + this.state.item._id}
+                    href={`${HOST}:50667/raw/item/${this.state.item._id}`}
                   >
-                    http://localhost:4000/raw/item/{this.state.item._id}
+                    {`${HOST}:50666/raw/item/${this.state.item._id}`}
                   </a>
                 </p>
               </div>
