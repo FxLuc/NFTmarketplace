@@ -13,7 +13,6 @@ class Profile extends React.Component {
         super(props)
         this.state = {
             name: this.props.account.name,
-            accountId: this.props.account._id,
             externaLink: '',
             myList: null,
             myOrderList: null,
@@ -25,13 +24,15 @@ class Profile extends React.Component {
     componentDidMount() {
         axios
             .get(`${HOST}:50667/order/my`, { params: { _id: this.props.account._id } })
-            .then(res => this.setState({
+            .then(res => {this.setState({
                 myList: res.data,
                 myOrderList: (res.data).filter(order => order.purchaser === this.props.account._id),
                 mySoldList: (res.data).filter(order => order.seller === this.props.account._id),
-                accountId: this.props.account._id,
                 loaded: true
-            }))
+            })
+            console.log(res.data)
+        
+        })
     }
 
     render() {
