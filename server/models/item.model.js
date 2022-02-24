@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 require('dotenv').config({path: '../.env'})
-const defaultAddress = `${process.env.ADDRESS}/pictures/default.png`
+const defaultAddress = `http://${process.env.ADDRESS}/pictures/default.png`
 
 const itemSchema = new mongoose.Schema({
   _id: {

@@ -18,4 +18,5 @@ module.exports = app => {
     app.get('/order/sold', itemController.getMySolds)
     app.put('/order/update', itemController.updateOrder)
 
+    app.post('/item/delivery', itemController.delivery)
 }
