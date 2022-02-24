@@ -3,6 +3,7 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import Spinner from 'react-bootstrap/Spinner'
+import HOST from  '../../env'
 
 class CreateItem extends React.Component {
     constructor(props) {
@@ -52,7 +53,7 @@ class CreateItem extends React.Component {
         formData.append('description', description)
 
         axios
-            .post('http://localhost:4000/item/create', formData, {
+            .post(`${HOST}:50667/item/create`, formData, {
                 headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res => {
@@ -61,7 +62,6 @@ class CreateItem extends React.Component {
                     .createItem(name, specifications, res.data, value).send({ from: this.props.account._id })
                     .then(_ => this.setState({ loading: 3 }))
                     .catch(_ => this.setState({ loading: 2 }))
-                // window.location = 'http://localhost:65535/'
             })
             .catch(error => console.log(error))
 

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum, } from '@fortawesome/free-brands-svg-icons'
 import { faWallet, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import Spinner from 'react-bootstrap/Spinner'
+import HOST from  '../../env'
 
 function ItemDetail(props) {
   let { itemAddress } = useParams()
@@ -39,9 +40,9 @@ class Detail extends React.Component {
   componentDidMount() {
     // load item
     axios
-      .get('http://localhost:4000/item', { params: { _id: this.props.itemAddress } })
+      .get(`${HOST}:50667/item`, { params: { _id: this.props.itemAddress } })
       .then(res => this.setState({ item: res.data }))
-      .catch(_ => window.location = 'http://localhost:65535/error')
+      .catch(_ => window.location = `${HOST}:50666/error`)
   }
   render() {
     if (this.state.item !== null) {

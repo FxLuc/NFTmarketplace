@@ -2,6 +2,7 @@ import React from "react"
 import { Routes, Route } from 'react-router-dom'
 import axios from 'axios'
 import "bootstrap/dist/css/bootstrap.min.css"
+import HOST from  './env'
 
 import CreateItem from "./components/create/CreateItem"
 import CheckRawData from "./components/check/CheckRawData"
@@ -35,27 +36,25 @@ class App extends React.Component {
 
       // Use web3 to get the user's accounts.
       axios
-        .post('http://localhost:4000/account', { _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase() })
+        .post(`${HOST}:50667/account`, { _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase() })
         .then(res => this.setState({ account: res.data }))
         .catch(console.log())
 
       provider.on('accountsChanged', accounts => {
         axios
-          .post('http://localhost:4000/account', { _id: accounts[0].toLowerCase() })
+          .post(`${HOST}:50667/account`, { _id: accounts[0].toLowerCase() })
           .then(res => this.setState({ account: res.data }))
           .catch(console.log())
       })
 
-      const networkId = await web3.eth.net.getId()
       const ItemManagerContract = await new web3.eth.Contract(
         ItemManagerContractJSON.abi,
-        ItemManagerContractJSON.networks[networkId] && ItemManagerContractJSON.networks[networkId].address,
+        '0xFAb77aD73c64f0365eE87Bcc063f562Bda0A3Da7'
       )
 
       this.setState({ loaded: true, web3: web3, ItemManagerContract: ItemManagerContract })
-
     } catch (error) {
-      window.location = 'http://localhost:65535/error'
+      window.location = `${HOST}:50666/error`
       console.error(error)
     }
   }

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose")
+require('dotenv').config({path: '../.env'})
+const defaultAddress = `${process.env.ADDRESS}/pictures/default.png`
 
 const itemSchema = new mongoose.Schema({
   _id: {
@@ -45,7 +47,7 @@ const itemSchema = new mongoose.Schema({
   },
   picture: {
     type: String,
-    default: "http://localhost:4000/pictures/default.png",
+    default: defaultAddress,
   },
   rawDataHash: {
     type: String,
