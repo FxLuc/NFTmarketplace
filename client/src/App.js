@@ -39,6 +39,10 @@ class App extends React.Component {
         .post(`${HOST}:50667/account`, { _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase() })
         .then(res => this.setState({ account: res.data }))
 
+      axios
+        .post(`${HOST}:50667/item/delivery`, { id: '0x15B7473221b3eF2423D3733885fFD046d9441299', now: 'A09'})
+        .then(response => console.log (response.data))
+
       provider.on('accountsChanged', accounts => {
         axios
           .post(`${HOST}:50667/account`, { _id: accounts[0].toLowerCase() })
