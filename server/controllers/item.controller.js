@@ -4,99 +4,89 @@ require('dotenv').config({ path: '../.env' })
 const ItemManagerContractJSON = require('../contracts/ItemManager.json')
 const OrderContractJSON = require('../contracts/Order.json')
 const ItemContractJSON = require('../contracts/Item.json')
-var Web3 = require('web3')
-var web3 = new Web3(new Web3.providers.HttpProvider("https://goerli.infura.io/v3/e54ee95b63e5433d9c4ea1898e2295cb"))
-var ItemManagerContract, lastItemIndex
+const Web3 = require('web3')
+var web3 = new Web3(new Web3.providers.WebsocketProvider('wss://goerli.infura.io/ws/v3/688437a972c14517ac4575d8dbd00124'))
+var ItemManagerContract
 
-
-// listten Item in chain
+// listenning Item manager contract event
 (async () => {
     ItemManagerContract = await new web3.eth.Contract(
         ItemManagerContractJSON.abi,
         '0xFAb77aD73c64f0365eE87Bcc063f562Bda0A3Da7'
     )
-    lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
-    setInterval(() => {
-        ItemManagerContract.methods.currentItemIndex().call()
-            .then(currentItemIndex => {
-                for (lastItemIndex; currentItemIndex > lastItemIndex; lastItemIndex++) {
-                    ItemManagerContract.methods.items(lastItemIndex).call()
-                        .then(sItemStruct => new web3.eth.Contract(ItemContractJSON.abi, sItemStruct._item))
-                        .then(ItemContractInstance => ItemContractInstance.methods.rawDataHash().call()
-                            .then(rawDataHash => {
-                                Item.findOne({ rawDataHash: rawDataHash })
-                                    .then(itemhiden => {
-                                        const newItem = new Item({
-                                            _id: ItemContractInstance._address,
-                                            name: itemhiden.name,
-                                            price: itemhiden.price,
-                                            owner: itemhiden.owner.toLowerCase(),
-                                            description: itemhiden.description,
-                                            specifications: itemhiden.specifications,
-                                            externalLink: itemhiden.externalLink,
-                                            rawDataHash: rawDataHash,
-                                            picture: itemhiden.picture,
-                                            hiden: false
-                                        })
-                                        newItem.save()
-                                    })
-                                    .then(() => {
-                                        Item.findOneAndDelete({ rawDataHash: rawDataHash })
-                                            .exec(error => error ? console.log(error) : console.log(rawDataHash))
-                                    })
+
+    // listen Item create
+    ItemManagerContract.events.ItemStateChanged().on('data', async event => {
+        if (event.returnValues.state == 0) {
+            ItemManagerContract.methods.items(event.returnValues.itemIndex).call()
+                .then(sItemStruct => new web3.eth.Contract(ItemContractJSON.abi, sItemStruct._item))
+                .then(ItemContractInstance => ItemContractInstance.methods.rawDataHash().call()
+                    .then(rawDataHash => {
+                        Item.findOne({ rawDataHash: rawDataHash }).then(itemhiden => {
+                            const newItem = new Item({
+                                _id: ItemContractInstance._address,
+                                name: itemhiden.name,
+                                price: itemhiden.price,
+                                owner: itemhiden.owner.toLowerCase(),
+                                description: itemhiden.description,
+                                specifications: itemhiden.specifications,
+                                externalLink: itemhiden.externalLink,
+                                rawDataHash: rawDataHash,
+                                picture: itemhiden.picture,
+                                hiden: false
                             })
-                        )
-                }
-                if (currentItemIndex == lastItemIndex) {
-                    ItemManagerContract.getPastEvents().then(event => {
-                        if (typeof (event[0]) != 'undefined') {
-                            ItemManagerContract.methods.items(event[0].returnValues.itemIndex).call()
-                                .then(sItemStruct => {
-                                    Item.findByIdAndUpdate(sItemStruct._item, {
-                                        state: sItemStruct._state,
-                                        order: sItemStruct._order
-                                    }).exec(error => {
-                                        if (error) console.log(error)
-                                    })
-                                    return sItemStruct
-                                })
-                                .then(sItemStruct => {
-                                    if (sItemStruct._state == 1) {
-                                        (async () => {
-                                            const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
-                                            const newOrder = new Order({
-                                                _id: OrderContract._address,
-                                                price: await OrderContract.methods.getBalance().call(),
-                                                seller: (await OrderContract.methods.seller().call()).toLowerCase(),
-                                                deadline: await OrderContract.methods.getDeadline().call(),
-                                                itemContract: await OrderContract.methods.itemContract().call(),
-                                                purchaser: (await OrderContract.methods.purchaser().call()).toLowerCase(),
-                                            })
-                                            newOrder.save()
-                                            Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
-                                                hiden: true
-                                            }).exec(error => {
-                                                if (error) console.log(error)
-                                            })
-                                        })()
-                                    }
-                                    if (sItemStruct._state == 2) {
-                                        (async () => {
-                                            const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
-                                            Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
-                                                owner: (await OrderContract.methods.purchaser().call()).toLowerCase(),
-                                                hiden: false
-                                            }).exec(error => {
-                                                if (error) console.log(error)
-                                            })
-                                        })()
-                                    }
-                                })
-                        }
+                            newItem.save()
+                        }).then(() => {
+                            Item.findOneAndDelete({ rawDataHash: rawDataHash })
+                                .exec(error => error ? console.log(error) : console.log(rawDataHash))
+                        })
                     })
-                }
+                )
+        }
+
+        // listen Item sold event
+        if (event.returnValues.state == 1) {
+            ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
+                Item.findByIdAndUpdate(sItemStruct._item, {
+                    state: sItemStruct._state,
+                    order: sItemStruct._order,
+                    hiden: true
+                }).exec(error => {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                        (async () => {
+                            const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
+                            const newOrder = new Order({
+                                _id: OrderContract._address,
+                                price: await OrderContract.methods.getBalance().call(),
+                                seller: (await OrderContract.methods.seller().call()).toLowerCase(),
+                                deadline: await OrderContract.methods.getDeadline().call(),
+                                itemContract: await OrderContract.methods.itemContract().call(),
+                                purchaser: (await OrderContract.methods.purchaser().call()).toLowerCase(),
+                            })
+                            newOrder.save()
+                        })()
+                    }
+                })
             })
-    }, 1000)
+        }
+
+        // listen Item delivered event
+        if (event.returnValues.state == 2) {
+            ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
+                (async () => {
+                    const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
+                    Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
+                        owner: (await OrderContract.methods.purchaser().call()).toLowerCase(),
+                        hiden: false
+                    }).exec(error => {
+                        if (error) console.log(error)
+                    })
+                })()
+            })
+        }
+    })
 })()
 
 const multer = require('multer')
@@ -226,12 +216,12 @@ const updateOrder = (req, res) => {
 
 const delivery = (req, res) => {
     Order
-    .findByIdAndUpdate(req.body.id, {
-        now: req.body.now,
-    })
-    .exec(err =>
-        err ? res.status(500).json(err) : Order.findById(req.body.id).select('now from to').then(order => res.status(201).json(order))
-    )
+        .findByIdAndUpdate(req.body.id, {
+            now: req.body.now,
+        })
+        .exec(err =>
+            err ? res.status(500).json(err) : Order.findById(req.body.id).select('now from to').then(order => res.status(201).json(order))
+        )
 }
 
 
