@@ -18,12 +18,12 @@ var ItemManagerContract
     // listen Item create
     ItemManagerContract.events.ItemStateChanged().on('data', async event => {
         const lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
-        console.log(event.returnValues.itemIndex + " and " + (lastItemIndex-2))
         if (event.returnValues.state == 0 && event.returnValues.itemIndex == (lastItemIndex-1)) {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call()
                 .then(sItemStruct => new web3.eth.Contract(ItemContractJSON.abi, sItemStruct._item))
                 .then(ItemContractInstance => ItemContractInstance.methods.rawDataHash().call()
                     .then(rawDataHash => {
+                        //  add item to database include raw data hash
                         Item.findOne({ rawDataHash: rawDataHash }).then(itemhiden => {
                             const newItem = new Item({
                                 _id: ItemContractInstance._address,
@@ -39,8 +39,13 @@ var ItemManagerContract
                             })
                             newItem.save()
                         }).then(() => {
+                            // delete old item data
                             Item.findOneAndDelete({ rawDataHash: rawDataHash })
-                                .exec(error => error ? console.log(error) : console.log(rawDataHash))
+                                .exec(error => {
+                                    if (error) {
+                                        console.log(error)
+                                    }
+                                })
                         })
                     })
                 ).catch(error => console.log(error))
@@ -49,6 +54,7 @@ var ItemManagerContract
         // listen Item sold event
         if (event.returnValues.state == 1) {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
+                // change item state and hide item
                 Item.findByIdAndUpdate(sItemStruct._item, {
                     state: sItemStruct._state,
                     order: sItemStruct._order,
@@ -58,6 +64,7 @@ var ItemManagerContract
                         console.log(error)
                     } else {
                         (async () => {
+                            // save order object in the database
                             const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
                             const newOrder = new Order({
                                 _id: OrderContract._address,
@@ -78,6 +85,7 @@ var ItemManagerContract
         if (event.returnValues.state == 2) {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
                 (async () => {
+                    // change ownership and show item
                     const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
                     Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
                         owner: (await OrderContract.methods.purchaser().call()).toLowerCase(),
