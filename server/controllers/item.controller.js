@@ -17,7 +17,9 @@ var ItemManagerContract
 
     // listen Item create
     ItemManagerContract.events.ItemStateChanged().on('data', async event => {
-        if (event.returnValues.state == 0) {
+        const lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
+        console.log(event.returnValues.itemIndex + " and " + (lastItemIndex-2))
+        if (event.returnValues.state == 0 && event.returnValues.itemIndex == (lastItemIndex-1)) {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call()
                 .then(sItemStruct => new web3.eth.Contract(ItemContractJSON.abi, sItemStruct._item))
                 .then(ItemContractInstance => ItemContractInstance.methods.rawDataHash().call()
@@ -41,7 +43,7 @@ var ItemManagerContract
                                 .exec(error => error ? console.log(error) : console.log(rawDataHash))
                         })
                     })
-                )
+                ).catch(error => console.log(error))
         }
 
         // listen Item sold event
