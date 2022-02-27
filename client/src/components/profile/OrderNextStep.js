@@ -25,7 +25,7 @@ class OrderNextStep extends React.Component {
     else if (data === '1') {
       if (this.props.isOwner) {
         return (
-          <button className="btn btn-warning py-4" type="button" onClick={this.triggerNext}>Shipping &#x276F;&#x276F;</button>
+          <button className="btn btn-warning py-4" type="button" onClick={this.triggerNext}>Shipped &#x276F;&#x276F;</button>
         )
       } else {
         return (<button className="btn btn-secondary py-4" type="button" disabled>Not available &#x276F;&#x276F;</button>)
@@ -37,7 +37,7 @@ class OrderNextStep extends React.Component {
           <button className="btn btn-secondary py-4" type="button" disabled>Not available</button>
         )
       } else {
-        return (<button className="btn btn-warning py-4" type="button" onClick={this.triggerNext}>Delivered &#x276F;&#x276F;</button>)
+        return (<button className="btn btn-warning py-4" type="button" onClick={this.triggerNext}>Received &#x276F;&#x276F;</button>)
       }
     }
     else if (data === '3') return (<button className="btn btn-secondary py-4" type="button" disabled>Not available</button>)

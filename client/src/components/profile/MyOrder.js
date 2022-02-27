@@ -1,13 +1,32 @@
 import React from 'react'
 import OrderRow from './OrderRow'
-
+import axios from 'axios'
 
 class MyOrder extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            myOrderList: [],
+            loaded: false
+        }
+    }
+
+    componentDidMount() {
+        axios
+            .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/paid`, { params: { _id: this.props.accountId } })
+            .then(res => {
+                this.setState({
+                    myOrderList: res.data,
+                    loaded: true
+                })
+            })
+            .catch(err => console.log(err))
+    }
 
     render() {
         return (
             <>
-                <h4>{this.props.title}</h4>
+                <h4>Paid</h4>
                 <div className='py-3 '>
                     <div className='table-responsive'>
                         <table className='table table-bordered'>
@@ -25,8 +44,8 @@ class MyOrder extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.props.loaded
-                                    ? this.props.myOrderList.map(order => <OrderRow
+                                {this.state.loaded
+                                    ? this.state.myOrderList.map(order => <OrderRow
                                         order={order}
                                         web3={this.props.web3}
                                         accountId={this.props.accountId}

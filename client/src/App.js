@@ -83,7 +83,7 @@ class App extends React.Component {
                     ItemManagerContract={this.state.ItemManagerContract}
                     web3={this.state.web3}
                   />
-                  : <Error />
+                  : null
               }
             />
             <Route
@@ -94,7 +94,7 @@ class App extends React.Component {
                     account={this.state.account}
                     web3={this.state.web3}
                   />
-                  : <Error />
+                  : null
               }
             />
             <Route

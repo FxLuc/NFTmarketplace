@@ -45,7 +45,7 @@ const orderSchema = new mongoose.Schema({
   to: {
     type: String,
   },
-  now: {
+  nowIn: {
     type: String,
   }
 }, {timestamps: true})

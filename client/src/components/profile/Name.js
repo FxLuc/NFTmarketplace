@@ -6,7 +6,9 @@ class Name extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            editNameElement: false
+            editNameElement: false,
+            accountName: this.props.accountName,
+            newName: this.props.accountName
         }
     }
 
@@ -53,8 +55,6 @@ class Name extends React.Component {
                         <input type='text' className='form-control' name='accountName' id='accountName' onBlur={this.hideEditNameElement} onChange={this.handleNameChange} value={this.state.newName}></input>
                     </form>
                 ) : null}
-
-
             </>
         )
     }

@@ -1,23 +1,32 @@
 import React from 'react'
 import OrderRow from './OrderRow'
-
+import axios from 'axios'
 
 class MySold extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mySoldList: [],
+            loaded: false
+        }
+    }
 
-    // componentDidMount() {
-    //     axios
-    //         .get(`${HOST}:50667/order/sold`, { params: { _id: this.props.accountId } })
-    //         .then(res => this.setState({
-    //             myOrderList: res.data,
-    //             loaded: true
-    //         }))
-    //         .catch(_ => window.location = `${HOST}:50666/error`)
-    // }
+    componentDidMount() {
+        axios
+            .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/sold`, { params: { _id: this.props.accountId } })
+            .then(res => {
+                this.setState({
+                    mySoldList: res.data,
+                    loaded: true
+                })
+            })
+            .catch(err => console.log(err))
+    }
 
     render() {
         return (
             <>
-                <h4>{this.props.title}</h4>
+                <h4>Sold</h4>
                 <div className='py-3 '>
                     <div className='table-responsive'>
                         <table className='table table-bordered'>
@@ -35,8 +44,8 @@ class MySold extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.props.loaded
-                                    ? this.props.mySoldList.map(order => <OrderRow order={order} web3={this.props.web3} accountId={this.props.accountId} key={order._id} />)
+                                {(this.state.loaded)
+                                    ? this.state.mySoldList.map(order => <OrderRow order={order} web3={this.props.web3} accountId={this.props.accountId} key={order._id} />)
                                     : null
                                 }
                             </tbody>

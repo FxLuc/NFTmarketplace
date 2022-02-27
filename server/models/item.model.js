@@ -54,9 +54,10 @@ const itemSchema = new mongoose.Schema({
     lenght: 66,
     default: '0x0000000000000000000000000000000000000000000000000000000000000000',
   },
-  hiden: {
-    type: Boolean,
-    default: true,
+  state: {
+    type: Number,
+    min: 0,
+    default: 0,
   }
 }, {timestamps: true})
 

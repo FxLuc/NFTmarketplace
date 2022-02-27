@@ -38,7 +38,7 @@ var ItemManagerContract
                                 externalLink: itemhiden.externalLink,
                                 rawDataHash: rawDataHash,
                                 picture: itemhiden.picture,
-                                hiden: false
+                                state: 1
                             })
                             newItem.save()
                         }).then(() => {
@@ -59,9 +59,8 @@ var ItemManagerContract
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
                 // change item state and hide item
                 Item.findByIdAndUpdate(sItemStruct._item, {
-                    state: sItemStruct._state,
                     order: sItemStruct._order,
-                    hiden: true
+                    state: 2
                 }).exec(error => {
                     if (error) {
                         console.log(error)
@@ -92,7 +91,6 @@ var ItemManagerContract
                     const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
                     Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
                         owner: (await OrderContract.methods.purchaser().call()).toLowerCase(),
-                        hiden: false
                     }).exec(error => {
                         if (error) console.log(error)
                     })
@@ -137,34 +135,38 @@ const getRawItem = (req, res) => {
 }
 
 const getItems = (req, res) => {
-    Item.find().sort('-createdAt').where({ hiden: false }).select('name picture price owner').limit(12).then(items => res.status(200).json(items))
+    Item
+        .find({ state: 1 })
+        .sort('-createdAt')
+        .select('name picture price owner')
+        .limit(12)
+        .then(items => res.status(200).json(items))
 }
 
 const getMyItems = (req, res) => {
-    Item.find().sort('-createdAt').where({ owner: req.query._id }).select('name picture price owner').limit(12).then(items => res.status(200).json(items))
+    Item
+        .find({ owner: req.query._id })
+        .where({ $or: [{ state: 1 }, { state: 2 }] })
+        .sort('-createdAt')
+        .select('name picture price owner')
+        .limit(12)
+        .then(items => res.status(200).json(items))
 }
 
-const getMyOrders = (req, res) => {
-    Order.find({
-        $or: [
-            { purchaser: req.query._id },
-            { seller: req.query._id }
-        ]
-    })
+const getMyPaids = (req, res) => {
+    Order
+        .find({ purchaser: req.query._id })
         .sort('-createdAt').limit(12)
-        .populate('itemContract')
-        .then(items => {
-            res.status(200).json(items)
-        })
+        .populate('itemContract', '_id name picture price owner')
+        .then(items => res.status(200).json(items))
 }
 
 const getMySolds = (req, res) => {
-    Order.find({ seller: req.query._id })
+    Order
+        .find({ seller: req.query._id })
         .sort('-createdAt').limit(12)
-        .populate('itemContract')
-        .then(items => {
-            res.status(200).json(items)
-        })
+        .populate('itemContract', '_id name picture price owner')
+        .then(items => res.status(200).json(items))
 }
 
 
@@ -179,7 +181,7 @@ const searchItem = (req, res) => {
     Item
         .find(({ name: { $regex: req.body.name, $options: 'i' } }))
         .sort('-createdAt')
-        .limit(10)
+        .limit(12)
         .then(items => {
             res.status(200).json(items)
         })
@@ -223,15 +225,16 @@ const createItem = (req, res) => {
     })
 }
 
-const updateOrder = (req, res) => {
+const updateOrder = async (req, res) => {
+    const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, req.body._id)
+    const orderState = await OrderContract.methods.state().call()
+    const orderDealine = await OrderContract.methods.getDeadline().call()
     Order
         .findByIdAndUpdate(req.body._id, {
-            state: req.body.state,
-            deadline: req.body.deadline
+            state: orderState,
+            deadline: orderDealine
         })
-        .exec(err =>
-            err ? res.status(500).json(err) : Order.findById(req.body._id).then(order => res.status(201).json(order))
-        )
+        .exec(err => err ? res.status(500).json(err) : res.status(201).json({ state: orderState, deadline: orderDealine }))
 }
 
 const changePrice = async (req, res) => {
@@ -248,10 +251,10 @@ const changePrice = async (req, res) => {
 const delivery = (req, res) => {
     Order
         .findByIdAndUpdate(req.body.id, {
-            now: req.body.now,
+            nowIn: req.body.nowIn,
         })
         .exec(err =>
-            err ? res.status(500).json(err) : Order.findById(req.body.id).select('now from to').then(order => res.status(201).json(order))
+            err ? res.status(500).json(err) : Order.findById(req.body.id).select('nowIn from to').then(order => res.status(201).json(order))
         )
 }
 
@@ -261,7 +264,7 @@ module.exports = {
     getItem,
     getItems,
     getMyItems,
-    getMyOrders,
+    getMyPaids,
     getMySolds,
     createItem,
     updateOrder,

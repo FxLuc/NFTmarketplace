@@ -47,17 +47,17 @@ class ChangeItemPrice extends React.Component {
         }
         const ItemContract = await new this.props.web3.eth.Contract(ItemContractJSON.abi, this.props.item._id)
         ItemContract.methods.changePrice(value).send({ from: this.props.account._id })
-        .then(_ => {
-            axios
-            .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/changeprice`, {
-                _id: this.props.item._id
+            .then(_ => {
+                axios
+                    .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/changeprice`, {
+                        _id: this.props.item._id
+                    })
+                    .then(res => {
+                        this.setState({ loading: 2, realPrice: res.data, price: res.data })
+                    })
+                    .catch(error => console.log(error))
             })
-            .then(res => {
-                this.setState({ loading: 2, realPrice: res.data, price: res.data })
-            })
-            .catch(error => console.log(error))
-        })
-        .catch(_ => this.setState({ loading: 3 }))
+            .catch(_ => this.setState({ loading: 3 }))
     }
 
     render() {

@@ -13,8 +13,6 @@ class OrderRow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderState: '0',
-            orderDeadline: 0,
             loading: 0,
             OrderContract: null,
             isOwner: false
@@ -23,46 +21,23 @@ class OrderRow extends React.Component {
 
 
     componentDidMount = async () => {
+        console.log(this.props.order)
         if (this.props.order.itemContract.owner === this.props.accountId) this.setState({ isOwner: true })
         const OrderContract = await new this.props.web3.eth.Contract(OrderContractJSON.abi, this.props.order._id)
         this.setState({ OrderContract: OrderContract })
-        const deadline = await this.state.OrderContract.methods.getDeadline().call()
-        const orderState = await this.state.OrderContract.methods.state().call()
-        console.log(orderState)
-        if (orderState !== this.props.order.state) {
-            const body = {
-                _id: this.props.order._id,
-                deadline: deadline,
-                state: orderState
-            }
-            axios
-                .put(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/update`, body)
-                .then(_ => this.setState({
-                    orderState: orderState,
-                    orderDeadline: deadline,
-                    loading: 0
-                }))
-        }
     }
 
     updateOrder = async () => {
-        const deadline = await this.state.OrderContract.methods.getDeadline().call()
-        const orderState = await this.state.OrderContract.methods.state().call()
-        console.log(orderState)
-        if (Number(orderState) !== Number(this.props.order.state)) {
-            const body = {
-                _id: this.props.order._id,
-                deadline: deadline,
-                state: orderState
-            }
-            axios
-                .put(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/update`, body)
-                .then(_ => this.setState({
-                    orderState: body.state,
-                    orderDeadline: body.deadline,
-                    loading: 0
-                }))
+        const body = {
+            _id: this.props.order._id,
         }
+        axios
+            .put(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/update`, body)
+            .then(res => this.setState({
+                orderState: res.data.state,
+                orderDeadline: res.data.deadline,
+                loading: 0
+            }))
     }
 
     triggerNext = () => {
