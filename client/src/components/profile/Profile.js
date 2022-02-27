@@ -6,7 +6,6 @@ import MyItem from './MyItem'
 import MyOrder from './MyOrder'
 import MySold from './MySold'
 import axios from 'axios'
-import HOST from '../../env'
 
 class Profile extends React.Component {
     constructor(props) {
@@ -23,7 +22,7 @@ class Profile extends React.Component {
 
     componentDidMount() {
         axios
-            .get(`${HOST}:50667/order/my`, { params: { _id: this.props.account._id } })
+            .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/my`, { params: { _id: this.props.account._id } })
             .then(res => {this.setState({
                 myList: res.data,
                 myOrderList: (res.data).filter(order => order.purchaser === this.props.account._id),

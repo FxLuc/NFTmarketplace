@@ -1,7 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import ItemCard from '../home/ItemCard'
-import HOST from  '../../env'
 
 
 class MyItem extends React.Component {
@@ -15,12 +14,12 @@ class MyItem extends React.Component {
 
     componentDidMount() {
         axios
-            .get(`${HOST}:50667/item/my`, { params: { _id: this.props.accountId } })
+            .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/my`, { params: { _id: this.props.accountId } })
             .then(res => this.setState({
                 myItemList: res.data,
                 loaded: true
             }))
-            .catch(_ => window.location = `${HOST}:50666/error`)
+            .catch(_ => window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
     }
 
     render() {

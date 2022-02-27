@@ -2,7 +2,6 @@ import React from "react"
 import { Routes, Route } from 'react-router-dom'
 import axios from 'axios'
 import "bootstrap/dist/css/bootstrap.min.css"
-import HOST from './env'
 
 import CreateItem from "./components/create/CreateItem"
 import CheckRawData from "./components/check/CheckRawData"
@@ -36,27 +35,25 @@ class App extends React.Component {
 
       // Use web3 to get the user's accounts.
       axios
-        .post(`${HOST}:50667/account`, { _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase() })
-        .then(res => this.setState({ account: res.data }))
-
-      axios
-        .post(`${HOST}:50667/item/delivery`, { id: '0x15B7473221b3eF2423D3733885fFD046d9441299', now: 'A09'})
-        .then(response => console.log (response.data))
+        .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account`, {
+          _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase()
+        }).then(res => this.setState({ account: res.data }))
 
       provider.on('accountsChanged', accounts => {
         axios
-          .post(`${HOST}:50667/account`, { _id: accounts[0].toLowerCase() })
-          .then(res => this.setState({ account: res.data }))
+          .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account`, {
+            _id: accounts[0].toLowerCase()
+          }).then(res => this.setState({ account: res.data }))
       })
 
       const ItemManagerContract = await new web3.eth.Contract(
         ItemManagerContractJSON.abi,
-        '0xFAb77aD73c64f0365eE87Bcc063f562Bda0A3Da7'
+        process.env.REACT_APP_ITEM_MANAGER_ADDRESS
       )
 
       this.setState({ loaded: true, web3: web3, ItemManagerContract: ItemManagerContract })
     } catch (error) {
-      window.location = `${HOST}:50666/error`
+      window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`
       console.error(error)
     }
   }
@@ -80,20 +77,24 @@ class App extends React.Component {
             <Route
               path="/create"
               element={
-                <CreateItem
-                  account={this.state.account}
-                  ItemManagerContract={this.state.ItemManagerContract}
-                  web3={this.state.web3}
-                />
+                (this.state.account._id !== '0x0000000000000000000000000000000000000000')
+                  ? <CreateItem
+                    account={this.state.account}
+                    ItemManagerContract={this.state.ItemManagerContract}
+                    web3={this.state.web3}
+                  />
+                  : <Error />
               }
             />
             <Route
               path="/profile"
               element={
-                (this.state.account._id !== '0x0000000000000000000000000000000000000000') ? <Profile
-                  account={this.state.account}
-                  web3={this.state.web3}
-                /> : null
+                (this.state.account._id !== '0x0000000000000000000000000000000000000000')
+                  ? <Profile
+                    account={this.state.account}
+                    web3={this.state.web3}
+                  />
+                  : <Error />
               }
             />
             <Route

@@ -26,7 +26,12 @@ class MyOrder extends React.Component {
                             </thead>
                             <tbody>
                                 {this.props.loaded
-                                    ? this.props.myOrderList.map(order => <OrderRow order={order} web3={this.props.web3} accountId={this.props.accountId} key={order._id} />)
+                                    ? this.props.myOrderList.map(order => <OrderRow
+                                        order={order}
+                                        web3={this.props.web3}
+                                        accountId={this.props.accountId}
+                                        key={order._id}
+                                    />)
                                     : null
                                 }
                             </tbody>

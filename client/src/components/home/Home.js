@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import ItemCard from './ItemCard'
-import HOST from  '../../env'
 
 class Home extends Component {
   constructor(props) {
@@ -13,9 +12,9 @@ class Home extends Component {
   componentDidMount = () => {
     // load items to table
     axios
-      .get(`${HOST}:50667/item/newest`)
+      .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/newest`)
       .then(res => this.setState({ itemList: res.data }))
-      .catch(_=> window.location = `${HOST}:50666/error`)
+      .catch(_=> window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
   }
 
   render() {

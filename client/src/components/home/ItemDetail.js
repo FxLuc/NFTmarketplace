@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 import ToastAutoHide from '../ToastAutoHide'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum, } from '@fortawesome/free-brands-svg-icons'
-import { faWallet, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { faWallet, faCheckCircle, faExclamationCircle, faEdit } from '@fortawesome/free-solid-svg-icons'
 import Spinner from 'react-bootstrap/Spinner'
-import HOST from '../../env'
+import ItemContractJSON from '../../contracts/Item.json'
 
 function ItemDetail(props) {
   let { itemAddress } = useParams()
@@ -26,10 +26,7 @@ class Detail extends React.Component {
     }
   }
 
-
   triggerBuy = async () => {
-    // load ItemContract
-    // const ItemContract = await new this.props.web3.eth.Contract(ItemContractJSON.abi, this.props.itemAddress)
     this.setState({ loading: 1 })
     this.props.web3.eth
       .sendTransaction({ from: this.props.account._id, to: this.state.item._id, value: this.state.item.price })
@@ -37,13 +34,23 @@ class Detail extends React.Component {
       .catch(_ => this.setState({ loading: 3 }))
   }
 
+  handleChangePrice = async () => {
+    // load ItemContract
+    const ItemContract = await new this.props.web3.eth.Contract(ItemContractJSON.abi, this.props.itemAddress)
+    this.setState({ loading: 1 })
+    ItemContract.methods.changePrice('500').send({ from: this.props.account._id })
+      .then(_ => this.setState({ loading: 2 }))
+      .catch(_ => this.setState({ loading: 3 }))
+  }
+
   componentDidMount() {
     // load item
     axios
-      .get(`${HOST}:50667/item`, { params: { _id: this.props.itemAddress } })
+      .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item`, { params: { _id: this.props.itemAddress } })
       .then(res => this.setState({ item: res.data }))
-      .catch(_ => window.location = `${HOST}:50666/error`)
+      .catch(_ => window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
   }
+
   render() {
     if (this.state.item !== null) {
       return (
@@ -74,12 +81,17 @@ class Detail extends React.Component {
                 <span className='fs-5 fw-light'>(Wei: {this.state.item.price})</span>
               </p>
               <p>Shipping to: <i>Unavailable</i></p>
-              {
-                (this.state.loading !== 0)
+              {(this.props.account._id !== this.state.item.owner)
+                ? (this.state.loading !== 0)
                   ? <IsLoading isLoading={this.state.loading} />
                   : <button className='btn btn-primary px-5 fw-bold' onClick={this.triggerBuy}>
                     <FontAwesomeIcon icon={faWallet} /> { } Buy now
                   </button>
+                : (this.state.loading !== 0)
+                ? <IsLoading isLoading={this.state.loading} />
+                : <button className='btn btn-primary px-5 fw-bold' onClick={this.handleChangePrice}>
+                  <FontAwesomeIcon icon={faEdit} /> { } Change selling price
+                </button>
               }
             </div>
           </div>
@@ -108,10 +120,18 @@ class Detail extends React.Component {
                   <strong className='text-dark'>Raw data url:</strong><br />
                   <a
                     className='overflow-hidden text-wrap text-break text-secondary'
-                    href={`${HOST}:50667/raw/item/${this.state.item._id}`}
+                    href={`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/raw/item/${this.state.item._id}`}
                   >
-                    {`${HOST}:50666/raw/item/${this.state.item._id}`}
-                  </a>
+                    {`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/raw/item/${this.state.item._id}`}
+                  </a><br />
+                  <strong className='text-dark'>Raw data hash:</strong><br />
+                  <span className='text-secondary'>
+                    <ToastAutoHide
+                      message='Copy'
+                      feedback='Copied!'
+                      title={this.state.item.rawDataHash}
+                      content={this.state.item.rawDataHash} />
+                  </span>
                 </p>
               </div>
             </div>

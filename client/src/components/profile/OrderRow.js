@@ -3,7 +3,6 @@ import axios from 'axios'
 import QRCode from 'react-qr-code'
 import ToastAutoHide from '../ToastAutoHide'
 import OrderNextStep from './OrderNextStep'
-import HOST from  '../../env'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
@@ -37,7 +36,7 @@ class OrderRow extends React.Component {
                 state: orderState
             }
             axios
-                .put(`${HOST}:50667/order/update`, body)
+                .put(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/update`, body)
                 .then(_ => this.setState({
                     orderState: orderState,
                     orderDeadline: deadline,
@@ -57,7 +56,7 @@ class OrderRow extends React.Component {
                 state: orderState
             }
             axios
-                .put(`${HOST}:50667/order/update`, body)
+                .put(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/update`, body)
                 .then(_ => this.setState({
                     orderState: body.state,
                     orderDeadline: body.deadline,
