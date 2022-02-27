@@ -5,20 +5,23 @@ const ItemManagerContractJSON = require('../contracts/ItemManager.json')
 const OrderContractJSON = require('../contracts/Order.json')
 const ItemContractJSON = require('../contracts/Item.json')
 const Web3 = require('web3')
-var web3 = new Web3(new Web3.providers.WebsocketProvider('wss://goerli.infura.io/ws/v3/688437a972c14517ac4575d8dbd00124'))
+var web3 = new Web3(new Web3.providers.WebsocketProvider(process.env.INFURA_WS_ENDPOINT))
+console.log(`Listening Infura Websocket provider: ${process.env.INFURA_WS_ENDPOINT}`)
 var ItemManagerContract
 
 // listenning Item manager contract event
 (async () => {
     ItemManagerContract = await new web3.eth.Contract(
         ItemManagerContractJSON.abi,
-        '0xFAb77aD73c64f0365eE87Bcc063f562Bda0A3Da7'
+        process.env.ITEM_MANAGER_ADDRESS
     )
+    console.log(`Item manager Smart contract address: ${process.env.ITEM_MANAGER_ADDRESS}`)
 
-    // listen Item create
     ItemManagerContract.events.ItemStateChanged().on('data', async event => {
         const lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
-        if (event.returnValues.state == 0 && event.returnValues.itemIndex == (lastItemIndex-1)) {
+
+        //  Item created
+        if (event.returnValues.state == 0 && event.returnValues.itemIndex == (lastItemIndex - 1)) {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call()
                 .then(sItemStruct => new web3.eth.Contract(ItemContractJSON.abi, sItemStruct._item))
                 .then(ItemContractInstance => ItemContractInstance.methods.rawDataHash().call()
