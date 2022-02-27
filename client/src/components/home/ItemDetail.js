@@ -72,7 +72,7 @@ class Detail extends React.Component {
                   message='Copy'
                   feedback='Copied!'
                   title={this.state.item.owner}
-                  ontent={this.state.item.owner} />
+                  content={this.state.item.owner} />
               </span>
               <h3 className="pb-3 col-12 mt-2">{this.state.item.name}</h3>
               <p className='fs-1 fw-bold'>
