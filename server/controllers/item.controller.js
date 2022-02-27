@@ -169,13 +169,20 @@ const getMySolds = (req, res) => {
 
 
 const getItem = (req, res) => {
-    Item.findById(req.query._id).then(item => res.status(200).json(item)).catch(error => res.status(404).json(error))
+    Item
+        .findById(req.query._id)
+        .then(item => res.status(200).json(item))
+        .catch(error => res.status(404).json(error))
 }
 
 const searchItem = (req, res) => {
-    Item.find(({ name: { $regex: req.body.name, $options: 'i' } })).sort('-createdAt').limit(10).then(items => {
-        res.status(200).json(items)
-    })
+    Item
+        .find(({ name: { $regex: req.body.name, $options: 'i' } }))
+        .sort('-createdAt')
+        .limit(10)
+        .then(items => {
+            res.status(200).json(items)
+        })
 }
 
 const createItem = (req, res) => {
@@ -227,6 +234,17 @@ const updateOrder = (req, res) => {
         )
 }
 
+const changePrice = async (req, res) => {
+    const ItemContract = await new web3.eth.Contract(
+        ItemContractJSON.abi,
+        req.body._id
+    )
+    const ItemPrice = await ItemContract.methods.price().call()
+    Item
+        .findByIdAndUpdate(req.body._id, { price: ItemPrice })
+        .exec(err => err ? res.status(500).json(err) : res.status(201).json(ItemPrice))
+}
+
 const delivery = (req, res) => {
     Order
         .findByIdAndUpdate(req.body.id, {
@@ -248,5 +266,6 @@ module.exports = {
     createItem,
     updateOrder,
     searchItem,
+    changePrice,
     delivery
 }

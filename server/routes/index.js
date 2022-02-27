@@ -13,6 +13,7 @@ module.exports = app => {
     app.get('/item', itemController.getItem)
     app.post('/item/create', itemController.createItem)
     app.get('/item/search', itemController.searchItem)
+    app.post('/item/changeprice', itemController.changePrice)
 
     app.get('/order/my', itemController.getMyOrders)
     app.get('/order/sold', itemController.getMySolds)

@@ -39,7 +39,7 @@ class ItemCard extends React.Component {
                             </div>
                             <div className='col text-end'>
                                 <p className="card-text">
-                                    <FontAwesomeIcon icon={faEthereum} className='text-primary' /> {(Number(this.props.item.price) / 1000000000000000000).toFixed(2)}
+                                    <FontAwesomeIcon icon={faEthereum} className='text-primary' /> {(Number(this.props.item.price) / 1000000000000000000).toFixed(5)}
                                 </p>
                             </div>
                         </div>

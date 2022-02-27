@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 function addressOverflow(address) {
-    return `${address.substr(0, 5)}...${address.substr(39, 42)}`
+    return `${address.substr(0, 3)}...${address.substr(39, 42)}`
 }
 
 function NavigationBar(props) {
