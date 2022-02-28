@@ -71,7 +71,7 @@ var ItemManagerContract
                     } else {
                         (async () => {
                             // wait for node fully synced
-                            await new Promise(resolve => setTimeout(resolve, 2000))
+                            await new Promise(resolve => setTimeout(resolve, 5000))
                             // save order object in the database
                             const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
                             const newOrder = new Order({
@@ -82,7 +82,7 @@ var ItemManagerContract
                                 itemContract: await OrderContract.methods.itemContract().call(),
                                 purchaser: (await OrderContract.methods.purchaser().call()).toLowerCase(),
                             })
-                            newOrder.save()
+                            newOrder.save().catch(err => console.log(err))
                             console.log("Order: " + OrderContract._address)
                         })()
                     }
