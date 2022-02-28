@@ -26,20 +26,15 @@ class MySold extends React.Component {
     render() {
         return (
             <>
-                <h4>Sold</h4>
                 <div className='py-3 '>
                     <div className='table-responsive'>
                         <table className='table table-bordered'>
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Item</th>
                                     <th>Order</th>
-                                    <th>Seller</th>
-                                    <th>Purchaser</th>
+                                    <th>Name</th>
+                                    <th>Item</th>
                                     <th>State</th>
-                                    <th>Deadline</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

@@ -61,8 +61,11 @@ class OrderRow extends React.Component {
     }
 
     triggerCancel = async () => {
+        this.setState({ loading: 1 })
         const OrderContract = await new this.props.web3.eth.Contract(OrderContractJSON.abi, this.props.order._id)
         OrderContract.methods.triggerCancel().send({ from: this.props.accountId })
+            .then(_ => this.updateOrder())
+            .catch(_ => this.setState({ loading: 2 }))
     }
 
     convertTimestamp(unix_timestamp) {
@@ -92,8 +95,7 @@ class OrderRow extends React.Component {
     }
 
     addressQR(address) {
-        if (address === '0x0000000000000000000000000000000000000000') return 'Not yet'
-        else return (
+        return (
             <>
                 <QRCode
                     value={address}
@@ -115,27 +117,48 @@ class OrderRow extends React.Component {
     render() {
         return (
             <tr>
-                <td>
-                    <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >{this.props.order.itemContract.name}
-                    </p>
-                </td>
-                <td><p className='text-nowrap'>
-                    <FontAwesomeIcon icon={faEthereum} className='text-primary' /> { } {(Number(this.props.order.price) / 1000000000000000000).toFixed(5)} { }
-                </p></td>
-                <td className='text-center'>
-                    {this.addressQR(this.props.order.itemContract._id)}
-                </td>
                 <td className='text-center'>
                     {this.addressQR(this.props.order._id)}
                 </td>
-                <td className='text-center'>
-                    {this.addressQR(this.props.order.seller)}
+                <td className='col-4'>
+                    <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
+                        {this.props.order.itemContract.name}
+                    </p>
+                </td>
+                <td className='text-start'>
+                    <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
+                        Item: { }
+                        <ToastAutoHide
+                            message='Copy'
+                            feedback='Copied!'
+                            title={this.addressOverflow(this.props.order.itemContract._id)}
+                            content={this.props.order.itemContract._id}
+                        /><br />
+                        Seller: { }
+                        <ToastAutoHide
+                            message='Copy'
+                            feedback='Copied!'
+                            title={this.addressOverflow(this.props.order.seller)}
+                            content={this.props.order.seller}
+                        /><br />
+                        Purchaser: { }
+                        <ToastAutoHide
+                            message='Copy'
+                            feedback='Copied!'
+                            title={this.addressOverflow(this.props.order.purchaser)}
+                            content={this.props.order.purchaser}
+                        />
+                    </p>
                 </td>
                 <td className='text-center'>
-                    {this.addressQR(this.props.order.purchaser)}
+                    <p>
+                        {this.convertTimestamp(this.state.orderDeadline)}<br />
+                        {this.covertStep(this.state.orderState)}<br />
+                        <span className='text-nowrap'>
+                            <FontAwesomeIcon icon={faEthereum} className='text-primary' /> { } {(Number(this.props.order.price) / 1000000000000000000).toFixed(5)} { }
+                        </span>
+                    </p>
                 </td>
-                <td className='text-center'>{this.covertStep(this.state.orderState)}</td>
-                <td className='text-center'>{this.convertTimestamp(this.state.orderDeadline)}</td>
                 <OrderNextStep
                     state={this.state.orderState}
                     triggerNext={this.triggerNext}
@@ -143,7 +166,7 @@ class OrderRow extends React.Component {
                     isSeller={this.state.isSeller}
                     loading={this.state.loading}
                 />
-            </tr>
+            </tr >
         )
     }
 

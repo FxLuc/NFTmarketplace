@@ -25,7 +25,6 @@ class MyItem extends React.Component {
     render() {
         return (
             <>
-                <h4>My items</h4>
                 <div className='py-3 row'>
                     {this.state.loaded ? this.state.myItemList.map(item => <ItemCard item={item} key={item._id} />) : null}
                 </div>

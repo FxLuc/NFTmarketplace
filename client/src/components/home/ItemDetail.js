@@ -40,7 +40,6 @@ class Detail extends React.Component {
       return (
         <>
           <div className='row'>
-
             <div className='col-12 col-md-6 col-lg-4 ps-0 pe-0 pe-md-3 mb-3'>
               <img
                 src={this.state.item.picture}
