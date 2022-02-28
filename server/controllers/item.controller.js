@@ -19,9 +19,12 @@ var ItemManagerContract
 
     ItemManagerContract.events.ItemStateChanged().on('data', async event => {
         const lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
-
         //  Item created
-        if (event.returnValues.state == 0 && event.returnValues.itemIndex == (lastItemIndex - 1)) {
+        console.log(event.returnValues.state)
+        if (event.returnValues.state == '0' && event.returnValues.itemIndex == (lastItemIndex - 1)) {
+            // wait for node fully synced
+            await new Promise(resolve => setTimeout(resolve, 2000))
+
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call()
                 .then(sItemStruct => new web3.eth.Contract(ItemContractJSON.abi, sItemStruct._item))
                 .then(ItemContractInstance => ItemContractInstance.methods.rawDataHash().call()
@@ -38,9 +41,10 @@ var ItemManagerContract
                                 externalLink: itemhiden.externalLink,
                                 rawDataHash: rawDataHash,
                                 picture: itemhiden.picture,
-                                state: 1
+                                state: 0
                             })
                             newItem.save()
+                            console.log("New Item: " + ItemContractInstance._address)
                         }).then(() => {
                             // delete old item data
                             Item.findOneAndDelete({ rawDataHash: rawDataHash })
@@ -55,17 +59,19 @@ var ItemManagerContract
         }
 
         // listen Item sold event
-        if (event.returnValues.state == 1) {
+        else if (event.returnValues.state == '1') {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
                 // change item state and hide item
                 Item.findByIdAndUpdate(sItemStruct._item, {
                     order: sItemStruct._order,
-                    state: 2
+                    state: 1
                 }).exec(error => {
                     if (error) {
                         console.log(error)
                     } else {
                         (async () => {
+                            // wait for node fully synced
+                            await new Promise(resolve => setTimeout(resolve, 2000))
                             // save order object in the database
                             const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
                             const newOrder = new Order({
@@ -77,6 +83,7 @@ var ItemManagerContract
                                 purchaser: (await OrderContract.methods.purchaser().call()).toLowerCase(),
                             })
                             newOrder.save()
+                            console.log("Order: " + OrderContract._address)
                         })()
                     }
                 })
@@ -84,13 +91,33 @@ var ItemManagerContract
         }
 
         // listen Item delivered event
-        if (event.returnValues.state == 2) {
+        else if (event.returnValues.state == '2') {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
                 (async () => {
+                    // wait for node fully synced
+                    await new Promise(resolve => setTimeout(resolve, 2000))
                     // change ownership and show item
+                    console.log("Delivered item: " + sItemStruct._item)
                     const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
                     Item.findByIdAndUpdate(await OrderContract.methods.itemContract().call(), {
                         owner: (await OrderContract.methods.purchaser().call()).toLowerCase(),
+                        state: 2
+                    }).exec(error => {
+                        if (error) console.log(error)
+                    })
+                })()
+            })
+        }
+
+        // listen Item delivered event
+        else if (event.returnValues.state == '3') {
+            ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
+                (async () => {
+                    // wait for node fully synced
+                    await new Promise(resolve => setTimeout(resolve, 2000))
+                    console.log("Cancel item: " + sItemStruct._item)
+                    Item.findByIdAndUpdate(sItemStruct._item, {
+                        state: 3
                     }).exec(error => {
                         if (error) console.log(error)
                     })
@@ -136,7 +163,7 @@ const getRawItem = (req, res) => {
 
 const getItems = (req, res) => {
     Item
-        .find({ state: 1 })
+        .find({ state: 0 })
         .sort('-createdAt')
         .select('name picture price owner')
         .limit(12)
@@ -146,7 +173,7 @@ const getItems = (req, res) => {
 const getMyItems = (req, res) => {
     Item
         .find({ owner: req.query._id })
-        .where({ $or: [{ state: 1 }, { state: 2 }] })
+        .where({ state: { $ne: 4 } })
         .sort('-createdAt')
         .select('name picture price owner')
         .limit(12)
@@ -156,7 +183,8 @@ const getMyItems = (req, res) => {
 const getMyPaids = (req, res) => {
     Order
         .find({ purchaser: req.query._id })
-        .sort('-createdAt').limit(12)
+        .sort('-createdAt')
+        .limit(12)
         .populate('itemContract', '_id name picture price owner')
         .then(items => res.status(200).json(items))
 }
@@ -164,7 +192,8 @@ const getMyPaids = (req, res) => {
 const getMySolds = (req, res) => {
     Order
         .find({ seller: req.query._id })
-        .sort('-createdAt').limit(12)
+        .sort('-createdAt')
+        .limit(12)
         .populate('itemContract', '_id name picture price owner')
         .then(items => res.status(200).json(items))
 }

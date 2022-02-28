@@ -23,12 +23,6 @@ const itemSchema = new mongoose.Schema({
     required: true,
     ref: 'Account'
   },
-  purchaser: {
-    type: String,
-    lenght: 42,
-    default: '0x0000000000000000000000000000000000000000',
-    ref: 'Account'
-  },
   order: {
     type: String,
     lenght: 42,
@@ -57,7 +51,7 @@ const itemSchema = new mongoose.Schema({
   state: {
     type: Number,
     min: 0,
-    default: 0,
+    default: 4,
   }
 }, {timestamps: true})
 
