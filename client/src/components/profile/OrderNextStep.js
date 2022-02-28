@@ -12,9 +12,9 @@ class OrderNextStep extends React.Component {
     this.props.triggerCancel()
   }
 
-  covertOrderNextStep(data) {
-    if (data === '0') {
-      if (this.props.isOwner) {
+  covertOrderNextStep(state) {
+    if (state === 0) {
+      if (this.props.isSeller) {
         return (
           <button className="btn btn-warning py-4" type="button" onClick={this.triggerNext}>Confirm &#x276F;&#x276F;</button>
         )
@@ -22,8 +22,8 @@ class OrderNextStep extends React.Component {
         return (<button className="btn btn-secondary py-4" type="button" onClick={this.triggerCancel}>Call cancel</button>)
       }
     }
-    else if (data === '1') {
-      if (this.props.isOwner) {
+    else if (state === 1) {
+      if (this.props.isSeller) {
         return (
           <button className="btn btn-warning py-4" type="button" onClick={this.triggerNext}>Shipped &#x276F;&#x276F;</button>
         )
@@ -31,8 +31,8 @@ class OrderNextStep extends React.Component {
         return (<button className="btn btn-secondary py-4" type="button" disabled>Not available &#x276F;&#x276F;</button>)
       }
     }
-    else if (data === '2') {
-      if (this.props.isOwner) {
+    else if (state === 2) {
+      if (this.props.isSeller) {
         return (
           <button className="btn btn-secondary py-4" type="button" disabled>Not available</button>
         )
@@ -40,8 +40,8 @@ class OrderNextStep extends React.Component {
         return (<button className="btn btn-warning py-4" type="button" onClick={this.triggerNext}>Received &#x276F;&#x276F;</button>)
       }
     }
-    else if (data === '3') return (<button className="btn btn-secondary py-4" type="button" disabled>Not available</button>)
-    else return (<button className="btn btn-secondary py-4" type="button" disabled>Canceled</button>)
+    else if (state === 3) return (<button className="btn btn-secondary py-4" type="button" disabled>Not available</button>)
+    else return (<button className="btn btn-secondary py-4" type="button" disabled>Not available</button>)
   }
 
   render() {

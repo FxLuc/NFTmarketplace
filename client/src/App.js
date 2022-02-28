@@ -40,10 +40,7 @@ class App extends React.Component {
         }).then(res => this.setState({ account: res.data }))
 
       provider.on('accountsChanged', accounts => {
-        axios
-          .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account`, {
-            _id: accounts[0].toLowerCase()
-          }).then(res => this.setState({ account: res.data }))
+        window.location.reload()
       })
 
       const ItemManagerContract = await new web3.eth.Contract(
