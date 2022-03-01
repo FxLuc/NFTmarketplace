@@ -23,7 +23,7 @@ var ItemManagerContract
         console.log(event.returnValues.state)
         if (event.returnValues.state == '0' && event.returnValues.itemIndex == (lastItemIndex - 1)) {
             // wait for node fully synced
-            await new Promise(resolve => setTimeout(resolve, 2000))
+            await new Promise(resolve => setTimeout(resolve, 5000))
 
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call()
                 .then(sItemStruct => new web3.eth.Contract(ItemContractJSON.abi, sItemStruct._item))
@@ -95,7 +95,7 @@ var ItemManagerContract
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
                 (async () => {
                     // wait for node fully synced
-                    await new Promise(resolve => setTimeout(resolve, 2000))
+                    await new Promise(resolve => setTimeout(resolve, 5000))
                     // change ownership and show item
                     console.log("Delivered item: " + sItemStruct._item)
                     const OrderContract = await new web3.eth.Contract(OrderContractJSON.abi, sItemStruct._order)
@@ -109,13 +109,10 @@ var ItemManagerContract
             })
         }
 
-        // listen Item delivered event
+        // listen Item cancel event
         else if (event.returnValues.state == '3') {
             ItemManagerContract.methods.items(event.returnValues.itemIndex).call().then(sItemStruct => {
                 (async () => {
-                    // wait for node fully synced
-                    await new Promise(resolve => setTimeout(resolve, 2000))
-                    console.log("Cancel item: " + sItemStruct._item)
                     Item.findByIdAndUpdate(sItemStruct._item, {
                         state: 3
                     }).exec(error => {

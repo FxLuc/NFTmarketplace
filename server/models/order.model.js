@@ -41,12 +41,15 @@ const orderSchema = new mongoose.Schema({
   },
   from: {
     type: String,
+    default: 'Nowhere'
   },
   to: {
     type: String,
+    default: 'Nowhere'
   },
   nowIn: {
     type: String,
+    default: 'Nowhere'
   }
 }, {timestamps: true})
 
