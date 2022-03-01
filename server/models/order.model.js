@@ -39,6 +39,18 @@ const orderSchema = new mongoose.Schema({
     required: true,
     ref: 'Item'
   },
+  from: {
+    type: String,
+    default: 'Nowhere'
+  },
+  to: {
+    type: String,
+    default: 'Nowhere'
+  },
+  nowIn: {
+    type: String,
+    default: 'Nowhere'
+  }
 }, {timestamps: true})
 
 module.exports = mongoose.model("Order", orderSchema)

@@ -12,9 +12,16 @@ class ToastAutoHide extends React.Component {
         }
     }
 
-    copyToClipboard = event => {
+    copyToClipboard = async event => {
         event.stopPropagation()
-        navigator.clipboard.writeText(this.props.content)
+        // await navigator.clipboard.writeText(this.props.content)
+        const textField = document.createElement('textarea')
+        textField.innerText = this.props.content
+        document.body.appendChild(textField)
+        textField.select()
+        document.execCommand('copy')
+        textField.remove()
+
         this.setState({ message: this.props.feedback })
     }
 

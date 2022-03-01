@@ -2,7 +2,6 @@ import React from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
-import HOST from  '../../env'
 
 
 class Avatar extends React.Component {
@@ -21,13 +20,13 @@ class Avatar extends React.Component {
         formData.append('_id', this.props._id)
 
         axios
-            .post(`${HOST}:50667/account/update/avatar`, formData, {
+            .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account/update/avatar`, formData, {
                 headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res => {
                 this.setState({ avatar: res.data})
             })
-            .catch(_ => window.location = `${HOST}:50666/error`)
+            .catch(_ => window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
     }
 
     showEditAvatarElement = () => {

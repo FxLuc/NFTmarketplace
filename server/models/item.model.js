@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 require('dotenv').config({path: '../.env'})
-const defaultAddress = `${process.env.ADDRESS}/pictures/default.png`
+const defaultAddress = `http://${process.env.ADDRESS}/pictures/default.png`
 
 const itemSchema = new mongoose.Schema({
   _id: {
@@ -21,12 +21,6 @@ const itemSchema = new mongoose.Schema({
     type: String,
     lenght: 42,
     required: true,
-    ref: 'Account'
-  },
-  purchaser: {
-    type: String,
-    lenght: 42,
-    default: '0x0000000000000000000000000000000000000000',
     ref: 'Account'
   },
   order: {
@@ -54,9 +48,10 @@ const itemSchema = new mongoose.Schema({
     lenght: 66,
     default: '0x0000000000000000000000000000000000000000000000000000000000000000',
   },
-  hiden: {
-    type: Boolean,
-    default: true,
+  state: {
+    type: Number,
+    min: 0,
+    default: 4,
   }
 }, {timestamps: true})
 

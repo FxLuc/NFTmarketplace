@@ -3,7 +3,6 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import Spinner from 'react-bootstrap/Spinner'
-import HOST from  '../../env'
 
 class CreateItem extends React.Component {
     constructor(props) {
@@ -53,7 +52,7 @@ class CreateItem extends React.Component {
         formData.append('description', description)
 
         axios
-            .post(`${HOST}:50667/item/create`, formData, {
+            .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/create`, formData, {
                 headers: { 'content-type': 'multipart/form-data' }
             })
             .then(res => {

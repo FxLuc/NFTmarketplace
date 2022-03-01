@@ -9,7 +9,7 @@ class Footer extends React.Component {
             >
                 <div className='container'>
                     <div className='row py-1'>
-                        <div className='col-12 col-sm text-center text-sm-start'>
+                        <div className='col-12 col-md text-center text-md-start'>
                             <img
                                 src="/logo_F_white.png"
                                 alt="findex_logo"

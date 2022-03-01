@@ -8,7 +8,7 @@ require('dotenv').config()
 // mongoose connect
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('mongodb connected'))
+  .then(() => console.log('MongoDB connected'))
   .catch(error => console.log(error))
 
 
