@@ -21,4 +21,5 @@ module.exports = app => {
     app.put('/order/update', itemController.updateOrder)
 
     app.post('/item/delivery', itemController.delivery)
+    app.put('/item/deliveryto', itemController.setDeliveryTo)
 }

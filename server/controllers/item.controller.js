@@ -279,8 +279,34 @@ const changePrice = async (req, res) => {
 
 const delivery = (req, res) => {
     Order
+        .findById(req.body.id)
+        .select('nowIn')
+        .then(orderNowIn => {
+            if (orderNowIn.nowIn === 'Nowhere') {
+                Order
+                    .findByIdAndUpdate(req.body.id, {
+                        from: req.body.nowIn,
+                        nowIn: req.body.nowIn
+                    })
+                    .exec(err =>
+                        err ? res.status(500).json(err) : Order.findById(req.body.id).select('nowIn from to').then(order => res.status(201).json(order))
+                    )
+            } else {
+                Order
+                    .findByIdAndUpdate(req.body.id, {
+                        nowIn: req.body.nowIn,
+                    })
+                    .exec(err =>
+                        err ? res.status(500).json(err) : Order.findById(req.body.id).select('nowIn from to').then(order => res.status(201).json(order))
+                    )
+            }
+        })
+}
+
+const setDeliveryTo = async (req, res) => {
+    Order
         .findByIdAndUpdate(req.body.id, {
-            nowIn: req.body.nowIn,
+            to: req.body.to,
         })
         .exec(err =>
             err ? res.status(500).json(err) : Order.findById(req.body.id).select('nowIn from to').then(order => res.status(201).json(order))
@@ -299,5 +325,6 @@ module.exports = {
     updateOrder,
     searchItem,
     changePrice,
-    delivery
+    delivery,
+    setDeliveryTo
 }
