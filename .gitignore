@@ -20,5 +20,5 @@
 **/remix-project
 **/node_modules
 /server/.env
-/server/public
+/client/.env
 *.drawio
