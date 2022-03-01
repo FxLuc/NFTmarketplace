@@ -3,6 +3,7 @@ import axios from 'axios'
 import QRCode from 'react-qr-code'
 import ToastAutoHide from '../ToastAutoHide'
 import OrderNextStep from './OrderNextStep'
+import DeliveryTo from './DeliveryTo'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
@@ -120,12 +121,12 @@ class OrderRow extends React.Component {
                 <td className='text-center'>
                     {this.addressQR(this.props.order._id)}
                 </td>
-                <td className='col-4'>
+                <td className='col-3'>
                     <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
                         {this.props.order.itemContract.name}
                     </p>
                 </td>
-                <td className='text-start'>
+                <td className='col-3 text-start'>
                     <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
                         Item: { }
                         <ToastAutoHide
@@ -150,8 +151,19 @@ class OrderRow extends React.Component {
                         />
                     </p>
                 </td>
-                <td className='text-center'>
-                    <p>
+                <td className='col-3 text-start'>
+                    <div style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
+                        Now in: {this.props.order.nowIn}<br />
+                        From: {this.props.order.from}<br />
+                        To: {
+                            (this.state.isSeller)
+                                ? <>{this.props.order.to}<br /></>
+                                : <DeliveryTo deliveryTo={this.props.order.to} _id={this.props.order._id} />
+                        }
+                    </div>
+                </td>
+                <td className='col-2 text-center'>
+                    <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
                         {this.convertTimestamp(this.state.orderDeadline)}<br />
                         {this.covertStep(this.state.orderState)}<br />
                         <span className='text-nowrap'>

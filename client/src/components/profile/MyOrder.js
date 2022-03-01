@@ -15,6 +15,7 @@ class MyOrder extends React.Component {
         axios
             .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/paid`, { params: { _id: this.props.accountId } })
             .then(res => {
+                console.log(res.data)
                 this.setState({
                     myOrderList: res.data,
                     loaded: true
@@ -34,6 +35,7 @@ class MyOrder extends React.Component {
                                     <th>Order</th>
                                     <th>Name</th>
                                     <th>Item</th>
+                                    <th>Delivery</th>
                                     <th>State</th>
                                     <th>Action</th>
                                 </tr>
