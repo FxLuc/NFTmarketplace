@@ -1,9 +1,9 @@
-# Team FINDEX 06 gPBL-NetSoft 2022
+# BLOCKCHAIN
 
 
 ## How to run
 
-### 1. Client on port 50666
+### 1. Client on port 50666 (edit file .env)
 
 ```console
 cd ./client
@@ -11,7 +11,7 @@ npm install
 npm start
 ```
 
-### 2. Server on port 50667
+### 2. Server on port 50667 (edit file .env)
 
 ```console
 cd ./server
