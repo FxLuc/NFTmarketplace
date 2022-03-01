@@ -17,7 +17,7 @@ class Footer extends React.Component {
                                 height="42"
                                 className="d-inline-block align-top mt-2"
                             />
-                            <p className='fw-bold fs-5 mb-0'>FINDEX</p>
+                            <p className='fw-bold fs-5 mb-0'>FINDEX - #06pGBL-NetSoft</p>
                             <p>Freedom marketplace to buy, sell, and discover items.</p>
                             <ToastAutoHide message='Copy this contract address' feedback='Copied to clipboard!' title={this.props.contractAddress} content={this.props.contractAddress} />
 
@@ -28,7 +28,7 @@ class Footer extends React.Component {
                     <hr className='m-0' />
                     <div className='row pt-1 pb-2'>
                         <div className='col-12 col-sm text-center text-sm-start'>
-                            © 2021-2022 <a href='https://fb.me/fil.often127' className='text-light'>FIL Organization</a>
+                            © 2022 <a href='https://fb.me/fil.often127' className='text-light'>FIL</a>
                         </div>
                         <div className='col-12 col-sm text-center text-sm-end'>
                             <a href='#privacy-policy' className='text-light me-3'>Privacy Policy</a>

@@ -9,7 +9,7 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('mongodb connected'))
-  .catch(error => handleError(error))
+  .catch(error => console.log(error))
 
 
 app.use(cors())
@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
   res.status(404).json('404 Not found')
 })
 
-const PORT = 4000
+const PORT = (process.env.PORT || 50667)
 app.listen(PORT, () => {
   console.log('Server is running on Port:', PORT)
 })

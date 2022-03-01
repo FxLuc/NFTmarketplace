@@ -2,6 +2,7 @@ import React from 'react'
 import ToastAutoHide from '../ToastAutoHide'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
+import HOST from  '../../env'
 
 class ItemCard extends React.Component {
     covertStep(step) {
@@ -20,7 +21,7 @@ class ItemCard extends React.Component {
     }
 
     viewDetail = evernt => {
-        const page= 'http://localhost:65535/item/'+this.props.item._id
+        const page= `${HOST}:50666/item/`+this.props.item._id
         window.location = page
     }
 

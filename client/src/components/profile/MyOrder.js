@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import OrderRow from './OrderRow'
+import HOST from  '../../env'
 
 
 class MyOrder extends React.Component {
@@ -14,12 +15,12 @@ class MyOrder extends React.Component {
 
     componentDidMount() {
         axios
-            .get('http://localhost:4000/order/my', { params: { _id: this.props.accountId } })
+            .get(`${HOST}:50667/order/my`, { params: { _id: this.props.accountId } })
             .then(res => this.setState({
                 myOrderList: res.data,
                 loaded: true
             }))
-            .catch(_ => window.location = 'http://localhost:65535/error')
+            .catch(_ => window.location = `${HOST}:50666/error`)
     }
 
     render() {

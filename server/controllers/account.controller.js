@@ -1,4 +1,5 @@
 const { Account } = require('../models')
+require('dotenv').config({path: '../.env'})
 
 const multer = require('multer')
 
@@ -55,8 +56,7 @@ const updateAvatar = (req, res) => {
             res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
         }
         const accountAddress = req.body._id.toLowerCase()
-        const url = req.protocol + '://' + req.get('host')
-        req.body.picture = url + '/pictures/avatars/' + req.file.filename
+        req.body.picture = `http://${process.env.ADDRESS}/pictures/avatars/${req.file.filename}`
         Account
             .findByIdAndUpdate(accountAddress, {
                 avatar: req.body.picture

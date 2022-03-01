@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import HOST from  '../../env'
 
 
 class Name extends React.Component {
@@ -20,7 +21,7 @@ class Name extends React.Component {
     handleNameSubmit = event => {
         event.preventDefault()
         axios
-            .post('http://localhost:4000/account/update/name', {
+            .post(`${HOST}:50667/account/update/name`, {
                 name: this.state.newName,
                 _id: this.props._id
             })

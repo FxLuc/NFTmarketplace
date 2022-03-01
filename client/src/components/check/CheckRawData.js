@@ -2,6 +2,7 @@ import React from 'react'
 import ToastAutoHide from '../ToastAutoHide'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import HOST from  '../../env'
 
 class CheckRawData extends React.Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class CheckRawData extends React.Component {
                     <div className='form-group my-3'>
                         <label htmlFor='rawData' className='fw-bold'>Raw data<span className='text-danger'>*</span></label>
                         <br />
-                        <small className='text-muted'>Get raw data at http://localhost:4000/raw/item/itemAddress<br />(http://localhost:4000/raw/item/0x0000000000000000000000000000000000000000)</small>
+                        <small className='text-muted'>Get raw data at {HOST}:50667/raw/item/itemAddress<br />({HOST}:50667/raw/item/0x0000000000000000000000000000000000000000)</small>
                         <textarea
                             name='rawData'
                             id='rawData'
