@@ -10,11 +10,11 @@ class Home extends Component {
     }
   }
   componentDidMount = () => {
-    // load items to table
+    // load items
     axios
       .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/newest`)
       .then(res => this.setState({ itemList: res.data }))
-      .catch(_=> window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
+      // .catch(_=> window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
   }
 
   render() {
