@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 
 class ToastAutoHide extends React.Component {
+    _isMounted = false;
     constructor(props) {
         super(props)
         this.state = {
@@ -12,7 +13,15 @@ class ToastAutoHide extends React.Component {
         }
     }
 
-    copyToClipboard = async event => {
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+
+    copyToClipboard = event => {
         event.stopPropagation()
         // await navigator.clipboard.writeText(this.props.content)
         const textField = document.createElement('textarea')
@@ -31,7 +40,7 @@ class ToastAutoHide extends React.Component {
 
     hideTooltip = () => {
         this.setState({ show: false })
-        setTimeout(() => this.setState({ message: this.props.message }), 3000)
+        setTimeout(() => (this._isMounted) ? this.setState({ message: this.props.message }) : null, 5000)
     }
 
     render() {
