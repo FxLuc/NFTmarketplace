@@ -5,11 +5,9 @@ import ToastAutoHide from '../ToastAutoHide'
 import ChangeItemPrice from './ChangeItemPrice'
 
 function ItemDetail(props) {
-  let { itemAddress } = useParams()
+  const { itemAddress } = useParams()
   return (
-    <>
-      <Detail itemAddress={itemAddress} web3={props.web3} account={props.account} />
-    </>
+    <Detail itemAddress={itemAddress} web3={props.web3} account={props.account} />
   )
 }
 

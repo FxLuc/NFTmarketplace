@@ -17,8 +17,8 @@ class Footer extends React.Component {
                                 height="42"
                                 className="d-inline-block align-top mt-2"
                             />
-                            <p className='fw-bold fs-5 mb-0'>FINDEX - #06pGBL-NetSoft</p>
-                            <p>Freedom marketplace to buy, sell, and discover items.</p>
+                            <p className='fw-bold fs-5 mb-0'>FINDEX</p>
+                            <p>Freedom marketplace to buy, sell, and discover NFT items.</p>
                             <ToastAutoHide message='Copy this contract address' feedback='Copied to clipboard!' title={this.props.contractAddress} content={this.props.contractAddress} />
 
                         </div>

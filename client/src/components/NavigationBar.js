@@ -2,16 +2,18 @@ import React from 'react'
 import { Nav, Navbar, NavDropdown, Container } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom'
 
 function addressOverflow(address) {
     return `${address.substr(0, 3)}...${address.substr(39, 42)}`
 }
 
 function NavigationBar(props) {
+    const navigate = useNavigate()
     return (
         <Navbar collapseOnSelect expand="lg" bg="white" fixed="top" className='shadow-sm'>
             <Container>
-                <Navbar.Brand href="/" className='fw-bold fs-4'>
+                <Navbar.Brand onClick={() => navigate('/')} className='fw-bold fs-4'>
                     <img
                         src="/logo_F_primary.png"
                         alt="findex_logo"
@@ -31,13 +33,13 @@ function NavigationBar(props) {
                         </div>
                     </Nav>
                     <Nav>
-                        <Nav.Link href="/create" className='fw-bold me-4'>Create</Nav.Link>
-                        <Nav.Link href="/checkRawData" className='fw-bold me-4'>Check</Nav.Link>
+                        <Nav.Link className='fw-bold me-4' onClick={() => navigate('/create')}>Create</Nav.Link>
+                        <Nav.Link onClick={() => navigate('/checkRawData')} className='fw-bold me-4'>Check</Nav.Link>
                         <NavDropdown className='fw-bold' title={addressOverflow(props.account._id)} id="collasible-nav-dropdown">
-                            <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Setting</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => navigate('/profile')}>Profile</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => navigate('/setting')}>Setting</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Sign out</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => navigate('/signout')}>Sign out</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>
