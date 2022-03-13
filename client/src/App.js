@@ -9,6 +9,7 @@ import CheckRawData from "./components/check/CheckRawData"
 import ItemDetail from './components/home/ItemDetail'
 
 import Home from "./components/home/Home"
+import Search from "./components/search/Search"
 import Profile from "./components/profile/Profile"
 import Login from './components/Login'
 
@@ -25,6 +26,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       loaded: false,
+      keywords: '',
       account: { _id: '0x0000000000000000000000000000000000000000' },
     }
   }
@@ -40,7 +42,6 @@ class App extends React.Component {
       )
       this.setState({ loaded: true, web3: web3, ItemManagerContract: ItemManagerContract })
     } catch (error) {
-      // window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`
       console.error(error)
     }
 
@@ -64,10 +65,14 @@ class App extends React.Component {
     }
   }
 
+  handleKeywordsChange = (keywords) => {
+    this.setState({ keywords: keywords })
+  }
+
   render() {
     return (
       <>
-        <NavigationBar account={this.state.account} />
+        <NavigationBar account={this.state.account} handleKeywordsChange={this.handleKeywordsChange}/>
         <div className="container mt-5 py-5 " style={{ minHeight: '90vh' }}>
           <Routes>
             <Route
@@ -116,6 +121,12 @@ class App extends React.Component {
                   web3={this.state.web3}
                   account={this.state.account}
                 />
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <Search keywords={this.state.keywords}/>
               }
             />
             <Route path="*" element={<Error />} />

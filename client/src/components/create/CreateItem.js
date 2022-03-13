@@ -67,7 +67,6 @@ class CreateItem extends React.Component {
     }
 
     render() {
-        console.log(this.props.account)
         return (
             <div className='CreateItem'>
                 <form onSubmit={this.handleSubmit}>

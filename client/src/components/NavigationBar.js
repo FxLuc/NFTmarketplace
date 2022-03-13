@@ -27,10 +27,21 @@ function NavigationBar(props) {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="col"></Nav>
                     <Nav className="col-12 col-lg-6 me-4">
-                        <div className="input-group">
+                        <form
+                            className="input-group"
+                            onSubmit={ e => {
+                                    e.preventDefault()
+                                    const value = document.getElementById('search').value
+                                    if (value) {
+                                        props.handleKeywordsChange(value)
+                                        navigate('/search')
+                                    }
+                                }
+                            }
+                        >
                             <label className="input-group-text bg-white" htmlFor='search'><FontAwesomeIcon icon={faSearch} /></label>
                             <input type="search" className="form-control" name='search' id='search' placeholder="Find index, item name, and address" />
-                        </div>
+                        </form>
                     </Nav>
                     <Nav>
                         <Nav.Link className='fw-bold me-4' onClick={() => navigate('/create')}>Create</Nav.Link>

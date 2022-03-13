@@ -205,7 +205,7 @@ const getItem = (req, res) => {
 
 const searchItem = (req, res) => {
     Item
-        .find(({ name: { $regex: req.body.name, $options: 'i' } }))
+        .find(({ name: { $regex: req.query.keywords, $options: 'i' } }))
         .sort('-createdAt')
         .limit(12)
         .then(items => {
