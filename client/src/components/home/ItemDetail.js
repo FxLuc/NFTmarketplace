@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import ToastAutoHide from '../ToastAutoHide'
-import ChangeItemPrice from './ChangeItemPrice'
+import BuyButton from './BuyButton'
 
 function ItemDetail(props) {
   const { itemAddress } = useParams()
@@ -42,11 +42,14 @@ class Detail extends React.Component {
               <img
                 src={this.state.item.picture}
                 className="bg-light rounded-3 h-100"
-                style={{ objectFit: 'contain', height: '400px', width: '100%' }}
+                style={{ objectFit: 'contain', maxHeight: '350px', width: '100%' }}
                 alt={this.state.item.name}
               />
             </div>
-            <div className='col-12 col-md-6 col-lg-8 bg-light rounded-3 py-3 mb-3 p-4 h-100 text-center text-md-start border border-2'>
+            <div 
+            className='col-12 col-md-6 col-lg-8 bg-light rounded-3 py-3 mb-3 p-4 h-100 text-center text-md-start border border-2'
+            style={{ minHeight: '350px' }}
+            >
               Owned by: { }
               <span className='text-secondary'>
                 <ToastAutoHide
@@ -56,7 +59,7 @@ class Detail extends React.Component {
                   content={this.state.item.owner} />
               </span>
               <h3 className="pb-3 col-12 mt-2">{this.state.item.name}</h3>
-              <ChangeItemPrice web3={this.props.web3} account={this.props.account} item={this.state.item} />
+              <BuyButton web3={this.props.web3} account={this.props.account} item={this.state.item} />
             </div>
           </div>
 

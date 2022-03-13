@@ -109,6 +109,12 @@ class App extends React.Component {
               }
             />
             <Route
+              path="/login"
+              element={
+                <Login login={this.login} />
+              }
+            />
+            <Route
               path="/checkrawdata"
               element={
                 <CheckRawData web3={this.state.web3} />

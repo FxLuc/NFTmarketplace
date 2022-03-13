@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum, } from '@fortawesome/free-brands-svg-icons'
@@ -6,7 +7,7 @@ import { faWallet, faCheckCircle, faExclamationCircle } from '@fortawesome/free-
 import Spinner from 'react-bootstrap/Spinner'
 import ItemContractJSON from '../../contracts/Item.json'
 
-class ChangeItemPrice extends React.Component {
+class BuyButton extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -65,54 +66,56 @@ class ChangeItemPrice extends React.Component {
             <>
                 <p className='fs-1 fw-bold'>
                     <FontAwesomeIcon icon={faEthereum} className='text-primary' /> { }
-                    {(Number(this.state.realPrice) / 1000000000000000000).toFixed(5)} { }
+                    {(Number(this.state.realPrice) / 1000000000000000000).toFixed(5)} ETH { }
                     <span className='fs-5 fw-light'>({this.state.realPrice} wei)</span>
                 </p>
                 {
-                    (this.props.account._id !== this.props.item.owner)
-                        ? (this.state.loading !== 0)
-                            ? <IsLoading isLoading={this.state.loading} />
-                            : <button className='btn btn-primary px-5 fw-bold' onClick={this.triggerBuy}>
-                                <FontAwesomeIcon icon={faWallet} /> { } Buy now
-                            </button>
-                        : (this.state.loading !== 0)
-                            ? <IsLoading isLoading={this.state.loading} />
-                            : <>
-                                <form className='form-group' onSubmit={this.handleChangePrice}>
-                                    <div className='row my-3'>
-                                        <div className='col'>
-                                            <div className='form-group'>
-                                                <label htmlFor='price' className='fw-bold'>Price:</label>
-                                                <br />
-                                                <small className='text-muted'>You can change item price anytime.</small>
-                                                <input
-                                                    name='price'
-                                                    id='price'
-                                                    onChange={this.handleInputChange}
-                                                    type='number'
-                                                    className='form-control'
-                                                    value={this.state.price}
-                                                    min={0}
-                                                    required
-                                                />
+                    (this.props.account._id === '0x0000000000000000000000000000000000000000') ?
+                        <Link className='btn btn-primary px-5 fw-bold' to='/login'>Sign in to buy</Link>
+                        : (this.props.account._id !== this.props.item.owner)
+                            ? (this.state.loading !== 0)
+                                ? <IsLoading isLoading={this.state.loading} />
+                                : <button className='btn btn-primary px-5 fw-bold' onClick={this.triggerBuy}>
+                                    <FontAwesomeIcon icon={faWallet} /> { } Buy now
+                                </button>
+                            : (this.state.loading !== 0)
+                                ? <IsLoading isLoading={this.state.loading} />
+                                : <>
+                                    <form className='form-group' onSubmit={this.handleChangePrice}>
+                                        <div className='row my-3'>
+                                            <div className='col'>
+                                                <div className='form-group'>
+                                                    <label htmlFor='price' className='fw-bold'>Price:</label>
+                                                    <br />
+                                                    <small className='text-muted'>You can change item price anytime.</small>
+                                                    <input
+                                                        name='price'
+                                                        id='price'
+                                                        onChange={this.handleInputChange}
+                                                        type='number'
+                                                        className='form-control'
+                                                        value={this.state.price}
+                                                        min={0}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className='col-4'>
+                                                <div className='form-group'>
+                                                    <label htmlFor='unit' className='fw-bold'>Unit:</label>
+                                                    <br />
+                                                    <small className='text-muted'>Price in </small>
+                                                    <select className='form-control' onChange={this.handleInputChange} name='unit' id='unit'>
+                                                        <option>Wei</option>
+                                                        <option>Gwei</option>
+                                                        <option>Ether</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className='col-4'>
-                                            <div className='form-group'>
-                                                <label htmlFor='unit' className='fw-bold'>Unit:</label>
-                                                <br />
-                                                <small className='text-muted'>Price in </small>
-                                                <select className='form-control' onChange={this.handleInputChange} name='unit' id='unit'>
-                                                    <option>Wei</option>
-                                                    <option>Gwei</option>
-                                                    <option>Ether</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button className='btn btn-primary fw-bold px-5' type='submit'>Change price</button>
-                                </form>
-                            </>
+                                        <button className='btn btn-primary fw-bold px-5' type='submit'>Change price</button>
+                                    </form>
+                                </>
                 }
             </>
         )
@@ -149,4 +152,4 @@ class IsLoading extends React.Component {
 }
 
 
-export default ChangeItemPrice
+export default BuyButton
