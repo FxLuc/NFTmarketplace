@@ -30,9 +30,12 @@ class Search extends Component {
 
   render() {
     return (
-      <div className='py-3 row'>
-        {this.state.itemList.map(item => <ItemCard item={item} key={item._id} />)}
-      </div>
+      <>
+        <h4>{(this.state.itemList.length === 0) ? 'Not founds' : 'Results'}</h4>
+        <div className='py-3 row'>
+          {this.state.itemList.map(item => <ItemCard item={item} key={item._id} />)}
+        </div>
+      </>
     )
   }
 }
