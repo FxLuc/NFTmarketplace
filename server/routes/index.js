@@ -16,8 +16,8 @@ module.exports = app => {
 
     app.get('/item/my', itemController.getMyItems)
     
-    app.get('/order/paid', itemController.getMyPaids)
-    app.get('/order/sold', itemController.getMySolds)
+    app.get('/order/purchase', itemController.getPurchaseOrder)
+    app.get('/order/sales', itemController.getSalesOrder)
     app.put('/order/update', itemController.updateOrder)
 
     app.post('/item/delivery', itemController.delivery)

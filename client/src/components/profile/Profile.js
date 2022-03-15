@@ -4,7 +4,6 @@ import Avatar from './Avatar'
 import Name from './Name'
 import MyItem from './MyItem'
 import MyOrder from './MyOrder'
-import MySold from './MySold'
 import { Tabs, Tab } from 'react-bootstrap'
 
 class Profile extends React.Component {
@@ -16,7 +15,7 @@ class Profile extends React.Component {
                     className="mt-5 w-100"
                     style={{
                         objectFit: 'cover',
-                        height: '250px',
+                        height: '280px',
                         position: 'absolute',
                         left: '0px',
                         top: '0px',
@@ -24,7 +23,7 @@ class Profile extends React.Component {
                     }}
                     src='background_cover.jpg'
                 />
-                <div className='row mb-5'>
+                <div className='row mb-4'>
                     <div className='col-12 text-center'>
                         <Avatar avatar={this.props.account.avatar} _id={this.props.account._id} />
                         <Name accountName={this.props.account.name} _id={this.props.account._id} />
@@ -47,11 +46,11 @@ class Profile extends React.Component {
                         <Tab eventKey="items" title="Items">
                             <MyItem accountId={this.props.account._id} />
                         </Tab>
-                        <Tab eventKey="solds" title="Sales order">
-                            <MySold accountId={this.props.account._id} web3={this.props.web3} />
+                        <Tab eventKey="sales" title="Sales order">
+                            <MyOrder accountId={this.props.account._id} web3={this.props.web3} order='sales' />
                         </Tab>
-                        <Tab eventKey="paids" title="Purchase order">
-                            <MyOrder accountId={this.props.account._id} web3={this.props.web3} />
+                        <Tab eventKey="purchase" title="Purchase order">
+                            <MyOrder accountId={this.props.account._id} web3={this.props.web3} order='purchase' />
                         </Tab>
                     </Tabs>
                 </div>

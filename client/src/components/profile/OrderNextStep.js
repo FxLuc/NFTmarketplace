@@ -12,6 +12,14 @@ class OrderNextStep extends React.Component {
     this.props.triggerCancel()
   }
 
+  covertStep(step) {
+    if (step === 0) return 'Placed'
+    else if (step === 1) return 'Comfirmed'
+    else if (step === 2) return 'Shipping'
+    else if (step === 3) return 'Delivered'
+    else return 'Canceled'
+  }
+
   covertOrderNextStep(state) {
     if (state === 0) {
       if (this.props.isSeller) {
@@ -46,7 +54,7 @@ class OrderNextStep extends React.Component {
 
   render() {
     return (
-      <td className="d-flex justify-content-between">
+      <td className="col-1 text-center">
         {(this.props.loading === 0)
           ? (this.covertOrderNextStep(this.props.state))
           : (this.props.loading === 1)
@@ -62,6 +70,7 @@ class OrderNextStep extends React.Component {
             : <button className="btn btn-secondary py-4" type="button" disabled>
               <FontAwesomeIcon icon={faExclamationCircle} /> { } Rejected
             </button>}
+        <strong>{this.covertStep(this.props.state)}</strong>
       </td>
     )
   }

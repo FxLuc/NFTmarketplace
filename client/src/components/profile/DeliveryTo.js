@@ -42,7 +42,7 @@ class DeliveryTo extends React.Component {
         return (
             <>
                 <label
-                    classDeliveryTo={this.state.editDeliveryToElement ? 'd-none' : 'd-block'}
+                    className={this.state.editDeliveryToElement ? 'd-none' : 'd-block'}
                     htmlFor="deliveryTo"
                 >
                     <span onClick={this.showEditDeliveryToElement}>
@@ -50,10 +50,10 @@ class DeliveryTo extends React.Component {
                     </span>
                 </label>
                 {this.state.editDeliveryToElement ? (
-                    <form classDeliveryTo={this.state.editDeliveryToElement ? 'd-block' : 'd-none'} onSubmit={this.handleDeliveryToSubmit}>
+                    <form className={this.state.editDeliveryToElement ? 'd-block' : 'd-none'} onSubmit={this.handleDeliveryToSubmit}>
                         <input
                             type='text'
-                            classDeliveryTo='form-control my-1'
+                            className='form-control my-1'
                             name='deliveryTo'
                             id='deliveryTo'
                             onBlur={this.hideEditDeliveryToElement}

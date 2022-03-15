@@ -177,7 +177,7 @@ const getMyItems = (req, res) => {
         .then(items => res.status(200).json(items))
 }
 
-const getMyPaids = (req, res) => {
+const getPurchaseOrder = (req, res) => {
     Order
         .find({ purchaser: req.query._id })
         .sort('-createdAt')
@@ -186,7 +186,7 @@ const getMyPaids = (req, res) => {
         .then(items => res.status(200).json(items))
 }
 
-const getMySolds = (req, res) => {
+const getSalesOrder = (req, res) => {
     Order
         .find({ seller: req.query._id })
         .sort('-createdAt')
@@ -316,8 +316,8 @@ module.exports = {
     getItem,
     getItems,
     getMyItems,
-    getMyPaids,
-    getMySolds,
+    getPurchaseOrder,
+    getSalesOrder,
     createItem,
     updateOrder,
     searchItem,

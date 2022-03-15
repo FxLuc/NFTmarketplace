@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import QRCode from 'react-qr-code'
+import { Link } from 'react-router-dom'
+
 import ToastAutoHide from '../ToastAutoHide'
 import OrderNextStep from './OrderNextStep'
 import DeliveryTo from './DeliveryTo'
@@ -83,16 +85,8 @@ class OrderRow extends React.Component {
         return time
     }
 
-    covertStep(step) {
-        if (step === 0) return 'Placed'
-        else if (step === 1) return 'Comfirmed'
-        else if (step === 2) return 'Shipping'
-        else if (step === 3) return 'Delivered'
-        else return 'Canceled'
-    }
-
     addressOverflow(address) {
-        return `${address.substring(0, 3)}...${address.substring(39, 42)}`
+        return `${address.substring(0, 5)}...${address.substring(39, 42)}`
     }
 
     addressQR(address) {
@@ -101,7 +95,7 @@ class OrderRow extends React.Component {
                 <QRCode
                     value={address}
                     level={'H'}
-                    size={85}
+                    size={100}
                 />
                 <p className='mt-1 mb-0'>
                     <ToastAutoHide
@@ -121,53 +115,73 @@ class OrderRow extends React.Component {
                 <td className='text-center'>
                     {this.addressQR(this.props.order._id)}
                 </td>
-                <td className='col-3'>
-                    <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
-                        {this.props.order.itemContract.name}
+
+                <td className=''>
+                    <p style={{ height: '124px', overflowY: 'scroll', marginBottom: '0px' }} >
+                        <Link
+                            to={`/item/${this.props.order.itemContract._id}`}
+                            className='text-reset text-decoration-none'
+                        >
+                            {this.props.order.itemContract.name}
+                        </Link>
                     </p>
                 </td>
-                <td className='col-3 text-start'>
-                    <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
-                        Item: { }
+
+                <td className='col-2 text-start'>
+                    <p style={{ height: '124px', overflowY: 'scroll', marginBottom: '0px' }} >
+                        <strong>Item:</strong> <br />
                         <ToastAutoHide
                             message='Copy'
                             feedback='Copied!'
                             title={this.addressOverflow(this.props.order.itemContract._id)}
                             content={this.props.order.itemContract._id}
                         /><br />
-                        Seller: { }
+                        <strong>Seller:</strong> <br />
                         <ToastAutoHide
                             message='Copy'
                             feedback='Copied!'
                             title={this.addressOverflow(this.props.order.seller)}
                             content={this.props.order.seller}
                         /><br />
-                        Purchaser: { }
+                        <strong>Purchaser:</strong> <br />
                         <ToastAutoHide
                             message='Copy'
                             feedback='Copied!'
                             title={this.addressOverflow(this.props.order.purchaser)}
                             content={this.props.order.purchaser}
+                        /><br />
+                        <strong>Order:</strong> <br />
+                        <ToastAutoHide
+                            message='Copy'
+                            feedback='Copied!'
+                            title={this.addressOverflow(this.props.order._id)}
+                            content={this.props.order._id}
                         />
+
                     </p>
                 </td>
-                <td className='col-3 text-start'>
-                    <div style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
-                        Now in: {this.props.order.nowIn}<br />
-                        From: {this.props.order.from}<br />
-                        To: {
-                            (this.state.isSeller)
-                                ? <>{this.props.order.to}<br /></>
-                                : <DeliveryTo deliveryTo={this.props.order.to} _id={this.props.order._id} />
+
+                <td className='col-2 text-start'>
+                    <div style={{ height: '124px', overflowY: 'scroll', marginBottom: '0px' }} >
+                        <strong>From: </strong>
+                        <br />{this.props.order.from}<br />
+                        <strong>Now in:</strong>
+                        <br />{this.props.order.nowIn}<br />
+                        <strong>To:</strong>
+                        {(this.state.isSeller)
+                            ? <>{this.props.order.to}</>
+                            : <DeliveryTo deliveryTo={this.props.order.to} _id={this.props.order._id} />
                         }
                     </div>
                 </td>
+
                 <td className='col-2 text-center'>
-                    <p style={{ height: '105px', overflowY: 'scroll', marginBottom: '0px' }} >
+                    <p style={{ height: '124px', overflowY: 'scroll', marginBottom: '0px' }} >
+                        <strong>Deadline: </strong><br />
                         {this.convertTimestamp(this.state.orderDeadline)}<br />
-                        {this.covertStep(this.state.orderState)}<br />
+                        <strong>Paid: </strong><br />
                         <span className='text-nowrap'>
-                            <FontAwesomeIcon icon={faEthereum} className='text-primary' /> { } {(Number(this.props.order.price) / 1000000000000000000).toFixed(5)} { }
+                            <FontAwesomeIcon icon={faEthereum} className='text-primary' /> { } {(Number(this.props.order.price) / 1000000000000000000).toFixed(9)} { } ETH
                         </span>
                     </p>
                 </td>
