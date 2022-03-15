@@ -71,7 +71,7 @@ class BuyButton extends React.Component {
                 </p>
                 {
                     (this.props.account._id === '0x0000000000000000000000000000000000000000') ?
-                        <Link className='btn btn-primary px-5 fw-bold' to='/login'>Sign in to buy</Link>
+                        <Link className='btn btn-primary px-5 fw-bold' to='/login'>Log in to buy</Link>
                         : (this.props.account._id !== this.props.item.owner)
                             ? (this.state.loading !== 0)
                                 ? <IsLoading isLoading={this.state.loading} />

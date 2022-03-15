@@ -6,7 +6,7 @@ class Login extends React.Component {
   render() {
     return (
       <div className='text-center'>
-        <img src="metamask_logo.png" style={{ height: '72px', marginBottom: '18px' }} />
+        <img src="metamask_logo.png" style={{ height: '72px', marginBottom: '18px' }} alt='MetaMask logo'/>
 
         <h1 className='text-danger'><FontAwesomeIcon icon={faExclamationCircle} /> <strong>CANNOT LOG IN AUTOMATICALLY</strong></h1>
         <h5>Failed to connect to your account on MetaMask</h5>

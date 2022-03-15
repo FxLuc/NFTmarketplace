@@ -104,8 +104,8 @@ class Detail extends React.Component {
             </div>
             <div className='col-12 col-md-6 col-lg-8 bg-light rounded-3 py-3 mb-3'>
               <h5 className='text-center'>Description</h5>
-              <div className=' px-4 text-wrap' style={{ textAlign: 'justify', overflowY: 'scroll', height: '150px' }}>
-                {this.state.item.description}
+              <div className='text-center px-4 text-wrap' style={{ overflowY: 'scroll', height: '150px' }}>
+                {this.state.item.description.split('\n').map(str => <p key={str}>{str}</p>)}
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ class Detail extends React.Component {
             <div className='col-12 bg-light rounded-3 py-3 mb-3'>
               <h5 className='text-center'>Specifications</h5>
               <div className=' px-4 text-wrap' style={{ textAlign: 'justify' }}>
-                {this.state.item.specifications}
+              {this.state.item.specifications.split('\n').map(str => <p key={str}>{str}</p>)}
               </div>
             </div>
           </div>
