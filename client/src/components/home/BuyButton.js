@@ -75,7 +75,7 @@ class BuyButton extends React.Component {
                         : (this.state.loading !== 0)
                             ? <IsLoading isLoading={this.state.loading} />
                             : (this.props.account._id !== this.props.item.owner)
-                                ? (this.props.item.state === '0')
+                                ? (this.props.item.state === 0)
                                     ? <button className='btn btn-primary px-5 fw-bold' onClick={this.triggerBuy}>
                                     <FontAwesomeIcon icon={faWallet} /> { } Buy now
                                     </button>
