@@ -73,7 +73,7 @@ class App extends React.Component {
     return (
       <>
         <NavigationBar account={this.state.account} handleKeywordsChange={this.handleKeywordsChange}/>
-        <div className="container mt-5 py-5 " style={{ minHeight: '90vh' }}>
+        <div className="container mt-5 py-5 " style={{ minHeight: '75vh' }}>
           <Routes>
             <Route
               exact
@@ -94,7 +94,7 @@ class App extends React.Component {
                     ItemManagerContract={this.state.ItemManagerContract}
                     web3={this.state.web3}
                   />
-                  : <Login login={this.login} />
+                  : <Login/>
               }
             />
             <Route
@@ -105,13 +105,13 @@ class App extends React.Component {
                     account={this.state.account}
                     web3={this.state.web3}
                   />
-                  : <Login login={this.login} />
+                  : <Login/>
               }
             />
             <Route
               path="/login"
               element={
-                <Login login={this.login} />
+                <Login/>
               }
             />
             <Route
