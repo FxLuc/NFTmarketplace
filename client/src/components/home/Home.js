@@ -19,14 +19,12 @@ class Home extends Component {
 
   render() {
     return (
-      <div className='Home'>
-        <div className=''>
+        <>
           <h4>Newest</h4>
           <div className='py-3 row'>
             {this.state.itemList.map(item => <ItemCard item={item} key={item._id}/>)}
           </div>
-        </div>
-      </div>
+        </>
     )
   }
 }
