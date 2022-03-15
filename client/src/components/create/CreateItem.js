@@ -1,8 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle, faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import Spinner from 'react-bootstrap/Spinner'
+import CreateButton from './CreateButton'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
 class CreateItem extends React.Component {
     constructor(props) {
@@ -85,29 +85,13 @@ class CreateItem extends React.Component {
                         <label htmlFor='name' className='fw-bold'>Name <span className='text-danger'>*</span></label>
                         <br />
                         <small className='text-muted'>Everyone can find your item by this name.</small>
-                        <input name='name' id='name' value={this.state.name} onChange={this.handleInputChange} type='text' className='form-control' placeholder='Item name' required />
-                    </div>
-
-                    <div className='form-group my-3'>
-                        <label htmlFor='specifications' className='fw-bold'>Specifications <span className='text-danger'>*</span></label>
-                        <br />
-                        <small className='text-muted'>All specifications of your item.</small>
-                        <textarea
-                            name='specifications'
-                            id='specifications'
-                            rows='5'
-                            onChange={this.handleInputChange}
-                            value={this.state.specifications}
-                            className='form-control'
-                            placeholder='Specifications of your item.'
-                            required
-                        ></textarea>
+                        <input name='name' id='name' value={this.state.name} onChange={this.handleInputChange} type='text' className='form-control' placeholder='Item name' maxLength='128' required />
                     </div>
 
                     <div className='row my-3'>
                         <div className='col'>
                             <div className='form-group'>
-                                <label htmlFor='price' className='fw-bold'>Price: <span className='text-danger'>*</span></label>
+                                <label htmlFor='price' className='fw-bold'>Price:</label>
                                 <br />
                                 <small className='text-muted'>You can change item price after.</small>
                                 <input
@@ -137,6 +121,22 @@ class CreateItem extends React.Component {
                     </div>
 
                     <div className='form-group my-3'>
+                        <label htmlFor='specifications' className='fw-bold'>Specifications <span className='text-danger'>*</span></label>
+                        <br />
+                        <small className='text-muted'>All specifications of your item.</small>
+                        <textarea
+                            name='specifications'
+                            id='specifications'
+                            rows='5'
+                            onChange={this.handleInputChange}
+                            value={this.state.specifications}
+                            className='form-control'
+                            placeholder='Specifications of your item.'
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div className='form-group my-3'>
                         <label htmlFor='description' className='fw-bold'>Description:</label>
                         <br />
                         <small className='text-muted'>The description will be included on the item's detail page underneath its image. </small>
@@ -160,38 +160,9 @@ class CreateItem extends React.Component {
 
                     <div className='my-3 fw-bold fst-italic text-danger'><FontAwesomeIcon icon={faExclamationTriangle} /> Freeze metadata: <span className='fw-normal text-dark'>Your metadata will permanently lock and store all of this item's content in decentralized file storage.</span></div>
 
-                    {(this.state.loading !== 0) ? <IsLoading isLoading={this.state.loading} /> : <button className='btn btn-primary fw-bold px-5' type='submit'>Create</button>}
+                    {(this.state.loading !== 0) ? <CreateButton isLoading={this.state.loading} /> : <button className='btn btn-primary fw-bold px-5' type='submit'>Create</button>}
                 </form>
             </div>
-        )
-    }
-}
-
-class IsLoading extends React.Component {
-    render() {
-        return (
-            <>
-                {(this.props.isLoading === 1)
-                    ?
-                    <button className='btn btn-secondary fw-bold px-5' type='submit' disabled>
-                        <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                        /> { } Pending...
-                    </button>
-
-                    : (this.props.isLoading === 3)
-                        ? <button className='btn btn-primary fw-bold px-5' type='submit'>
-                            <FontAwesomeIcon icon={faCheckCircle} /> { } Done!
-                        </button>
-                        : <button className='btn btn-danger fw-bold px-5' type='submit'>
-                            <FontAwesomeIcon icon={faExclamationCircle} /> { } Rejected
-                        </button>
-                }
-            </>
         )
     }
 }
