@@ -11,6 +11,18 @@ class MyOrder extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.accountId !== this.props.accountId) {
+            axios
+                .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/${this.props.order}`, { params: { _id: this.props.accountId } })
+                .then(res => {
+                    this.setState({
+                        myOrderList: res.data,
+                    })
+                })
+        }
+    }
+
     componentDidMount() {
         axios
             .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/order/${this.props.order}`, { params: { _id: this.props.accountId } })
@@ -20,7 +32,6 @@ class MyOrder extends React.Component {
                     loaded: true
                 })
             })
-            .catch(err => console.log(err))
     }
 
     render() {
@@ -39,13 +50,13 @@ class MyOrder extends React.Component {
                     </thead>
                     <tbody>
                         {this.state.loaded
-                            ? this.state.myOrderList.map(order => 
-                            <OrderRow
-                                order={order}
-                                web3={this.props.web3}
-                                accountId={this.props.accountId}
-                                key={order._id}
-                            />)
+                            ? this.state.myOrderList.map(order =>
+                                <OrderRow
+                                    order={order}
+                                    web3={this.props.web3}
+                                    accountId={this.props.accountId}
+                                    key={order._id}
+                                />)
                             : null
                         }
                     </tbody>

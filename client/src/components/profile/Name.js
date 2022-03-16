@@ -24,7 +24,6 @@ class Name extends React.Component {
                 this.setState({ accountName: this.state.newName })
                 this.hideEditNameElement()
             })
-            .catch(error => console.log(error))
     }
 
     handleNameChange = event => {

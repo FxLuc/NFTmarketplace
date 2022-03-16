@@ -19,7 +19,16 @@ class MyItem extends React.Component {
                 myItemList: res.data,
                 loaded: true
             }))
-            .catch(_ => window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.accountId !== this.props.accountId) {
+            axios
+                .get(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/my`, { params: { _id: this.props.accountId } })
+                .then(res => this.setState({
+                    myItemList: res.data,
+                }))
+        }
     }
 
     render() {
