@@ -19,8 +19,9 @@ class Footer extends React.Component {
                             />
                             <p className='fw-bold fs-5 mb-0'>FINDEX</p>
                             <p>Freedom marketplace to buy, sell, and discover NFT items.</p>
+                            <p>Goerli testnet: { }
                             <ToastAutoHide message='Copy this contract address' feedback='Copied to clipboard!' title={this.props.contractAddress} content={this.props.contractAddress} />
-
+                            </p>
                         </div>
                         <div className='d-none d-sm-block col-sm text-end'>
                         </div>
