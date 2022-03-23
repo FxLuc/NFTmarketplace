@@ -48,8 +48,8 @@ dev_dependencies:
   flutter_native_splash: ^2.1.1
 
 flutter_native_splash:
-  branding: assets/logo/splash_branding.png
-  background_image: assets/logo/splash_background.png
+  branding: assets/brand/splash_branding.png
+  background_image: assets/brand/splash_background.png
   ios: false
   web: false
 
