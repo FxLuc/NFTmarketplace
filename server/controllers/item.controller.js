@@ -6,6 +6,9 @@ const OrderContractJSON = require('../contracts/Order.json')
 const ItemContractJSON = require('../contracts/Item.json')
 const Web3 = require('web3')
 var web3 = new Web3(new Web3.providers.WebsocketProvider(process.env.INFURA_WS_ENDPOINT))
+// reconnect web socket
+setInterval( () => web3 = new Web3(new Web3.providers.WebsocketProvider(process.env.INFURA_WS_ENDPOINT)), 3600000)
+
 console.log(`Listening Infura Websocket provider: ${process.env.INFURA_WS_ENDPOINT}`)
 var ItemManagerContract
 
