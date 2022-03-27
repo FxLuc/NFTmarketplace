@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants/theme.dart';
-import '../../views_model/register/register_view_model.dart';
 
-class RegisterView extends StatelessWidget {
-  const RegisterView({Key? key}) : super(key: key);
+class RegisterViewFinal extends StatelessWidget {
+  const RegisterViewFinal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class RegisterView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Welcome new user!',
+                      'Congratulations',
                       style: TextStyle(
                         fontSize: CustomSize.sizeXX,
                         fontWeight: FontWeight.bold,
@@ -43,21 +42,21 @@ class RegisterView extends StatelessWidget {
                       // textAlign: TextAlign.center,
                     ),
                     SizedBox(
-                      height: CustomSize.sizeX,
+                      height: CustomSize.sizeXX,
                     ),
                     Text(
-                      'FINDEX would like to gather usage data to better understand how our users interact with the extension. This data will be used in to continually improve the usability and user experience of our pproduct and the Ethereum ecosystem.',
+                      'Your passed the test - keep your seedphrase safe, it\'s your responsibility!',
                       style: TextStyle(
                         fontSize: CustomSize.sizeXVII,
                         color: CustomColor.colorSecondary,
                       ),
-                      textAlign: TextAlign.justify,
+                      // textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: CustomSize.sizeV,
                     ),
                     Text(
-                      'FINDEX will:',
+                      'Tips on storing it safely:',
                       style: TextStyle(
                         fontSize: CustomSize.sizeXVII,
                         color: CustomColor.colorSecondary,
@@ -69,7 +68,7 @@ class RegisterView extends StatelessWidget {
                       height: CustomSize.sizeV,
                     ),
                     Text(
-                      '- Never collect keys, addresses, transaction, balances, hashes, or any personal information.',
+                      '- Save a backup in multiple places.',
                       style: TextStyle(
                         fontSize: CustomSize.sizeXVII,
                         color: CustomColor.colorSecondary,
@@ -80,7 +79,7 @@ class RegisterView extends StatelessWidget {
                       height: CustomSize.sizeV,
                     ),
                     Text(
-                      '- Never collect your full IP address',
+                      '- Never share the phrase with anyone.',
                       style: TextStyle(
                         fontSize: CustomSize.sizeXVII,
                         color: CustomColor.colorSecondary,
@@ -91,7 +90,18 @@ class RegisterView extends StatelessWidget {
                       height: CustomSize.sizeV,
                     ),
                     Text(
-                      '- Never sell data for profit. Ever!',
+                      '- If you need to backup your phrase again, you canfin it in Account > Security',
+                      style: TextStyle(
+                        fontSize: CustomSize.sizeXVII,
+                        color: CustomColor.colorSecondary,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: CustomSize.sizeXX,
+                    ),
+                    Text(
+                      '* FINDEX cannot recover your seedphrase.',
                       style: TextStyle(
                         fontSize: CustomSize.sizeXVII,
                         color: CustomColor.colorSecondary,
@@ -103,7 +113,11 @@ class RegisterView extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        register(context);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => const RegisterViewNext()),
+                        // );
                       },
                       style: TextButton.styleFrom(
                           backgroundColor: CustomColor.colorPrimary,
@@ -113,43 +127,11 @@ class RegisterView extends StatelessWidget {
                           ),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                       child: Text(
-                        'Create',
+                        'All Done',
                         style: TextStyle(
                           color: CustomColor.colorLight,
                           fontSize: CustomSize.sizeXVII,
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 7,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Already have an account?',
-                                style: TextStyle(
-                                    color: CustomColor.colorSecondary),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Login here',
-                                  style: TextStyle(
-                                    color: CustomColor.colorPrimary,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
                     ),
                   ],
