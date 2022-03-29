@@ -1,8 +1,8 @@
-import 'package:android_app/utils/constants/url.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/snack_bar.dart';
 import 'package:ethers/signers/wallet.dart';
-import 'package:ethers/ethers.dart';
+// import 'package:ethers/ethers.dart';
+// import 'package:android_app/utils/constants/url.dart';
 
 void login(BuildContext context, String loginInput, bool isPrivateKey) async {
   try {
@@ -14,9 +14,9 @@ void login(BuildContext context, String loginInput, bool isPrivateKey) async {
     }
     // final testnetProvider =
     //     ethers.providers.jsonRpcProvider(url: ApiEnpoint.httpProvider);
-    // final address = wallet.mnemonic?.phrase;
-    // final privateKey = wallet.privateKey;
-    // print(privateKey);
+    // final mnemonic = wallet.mnemonic?.phrase;
+    final privateKey = wallet.privateKey;
+    print(privateKey);
     // final balance = await testnetProvider
     //     .getBalance("0xbaBD46b079B233255784c6dFA8a86E03422512Ce");
     // print(await ethers.utils.formatEther(balance));
@@ -30,7 +30,7 @@ void login(BuildContext context, String loginInput, bool isPrivateKey) async {
         'OK',
       ),
     );
-    
+
     // Navigator.pushReplacementNamed(context, HomeScreen.routeName);
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(

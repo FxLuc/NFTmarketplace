@@ -4,6 +4,11 @@ class ApiEnpoint {
 
   static String serverEndpoint = 'http://103.170.246.112:50667';
 
+  
+  static String get createAccount {
+    return '$serverEndpoint/account/create';
+  }
+
   static String get itemRawData {
     return '$serverEndpoint/raw/item';
   }
