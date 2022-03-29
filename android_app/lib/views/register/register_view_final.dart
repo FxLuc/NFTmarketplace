@@ -1,8 +1,11 @@
+import 'package:android_app/views_model/login/login_view_model.dart';
 import 'package:flutter/material.dart';
 import '../../utils/constants/theme.dart';
 
 class RegisterViewFinal extends StatelessWidget {
-  const RegisterViewFinal({Key? key}) : super(key: key);
+  const RegisterViewFinal({Key? key, this.secretRecoveyPhrase})
+      : super(key: key);
+  final String? secretRecoveyPhrase;
 
   @override
   Widget build(BuildContext context) {
@@ -113,11 +116,7 @@ class RegisterViewFinal extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => const RegisterViewNext()),
-                        // );
+                        login(context, secretRecoveyPhrase!, false);
                       },
                       style: TextButton.styleFrom(
                           backgroundColor: CustomColor.colorPrimary,

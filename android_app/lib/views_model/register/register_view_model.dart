@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:android_app/models/account.dart';
 import 'package:android_app/utils/constants/url.dart';
-// import 'package:android_app/views/register/register_view_next.dart';
+import 'package:android_app/views/register/register_view_next.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/snack_bar.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +20,10 @@ register(BuildContext context) async {
           'OK',
         ),
       );
+          Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegisterViewNext(secretRecoveyPhrase: accountModel.mnemonic)),
+    );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         snackBarControl(
@@ -28,10 +32,6 @@ register(BuildContext context) async {
         ),
       );
     }
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => RegisterViewNext(secretRecoveyPhrase: secretRecoveyPhrase)),
-    // );
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
       snackBarControl(

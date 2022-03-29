@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../utils/constants/theme.dart';
 
 class RegisterViewNext extends StatelessWidget {
-  const RegisterViewNext({Key? key, required this.secretRecoveyPhrase})
+  const RegisterViewNext({Key? key, this.secretRecoveyPhrase})
       : super(key: key);
-  final String secretRecoveyPhrase;
+  final String? secretRecoveyPhrase;
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +89,10 @@ class RegisterViewNext extends StatelessWidget {
 }
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key, required this.secretRecoveyPhrase})
+  const RegisterForm({Key? key, this.secretRecoveyPhrase})
       : super(key: key);
 
-  final String secretRecoveyPhrase;
+  final String? secretRecoveyPhrase;
 
   @override
   _RegisterFormState createState() => _RegisterFormState();
@@ -115,7 +115,7 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   void initState() {
     super.initState();
-    _secretRecoveyPhrase.text = widget.secretRecoveyPhrase;
+    _secretRecoveyPhrase.text = widget.secretRecoveyPhrase!;
   }
 
   @override
@@ -204,7 +204,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const RegisterViewFinal()),
+                      builder: (context) => RegisterViewFinal(secretRecoveyPhrase: widget.secretRecoveyPhrase)),
                 );
               }
             },
