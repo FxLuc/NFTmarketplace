@@ -110,6 +110,7 @@ class _LoginFormState extends State<LoginForm> {
   String hintText =
       'radar blur cabbage chef fix engine embark joy scheme fiction master release';
   String loginMethodName = 'or import using private key';
+  bool isPrivateKey = false;
 
   void loginByPrivateKey() {
     setState(() {
@@ -117,6 +118,7 @@ class _LoginFormState extends State<LoginForm> {
       hintText =
           '0x1da6847600b0ee25e9ad9a52abbd786dd2502fa4005dd5af9310b7cc7a3b25db';
       loginMethodName = 'or import using Secret Recovery Phrase';
+      isPrivateKey = true;
     });
   }
 
@@ -126,13 +128,12 @@ class _LoginFormState extends State<LoginForm> {
       hintText =
           'radar blur cabbage chef fix engine embark joy scheme fiction master release';
       loginMethodName = 'or import using Private Key';
+      isPrivateKey = false;
     });
   }
 
   void changeLoginMethod() {
-    (labelText == 'Private Key')
-        ? loginBySecrectRecoveryPhrase()
-        : loginByPrivateKey();
+    (!isPrivateKey) ? loginByPrivateKey() : loginBySecrectRecoveryPhrase();
   }
 
   String? checkSecretRecoveryPhraseValid(String? value) {
@@ -140,6 +141,15 @@ class _LoginFormState extends State<LoginForm> {
       return 'Please enter your Secret Recovery Phrase';
     } else if (value.length < 36) {
       return 'Secret Recovery Phrase must have 12-words phrase';
+    }
+    return null;
+  }
+
+  String? checkPrivateKeyValid(String? value) {
+    if (value!.isEmpty || value.length != 64) {
+      return 'Please enter 64 characters of your Private Key';
+    } else if (!RegExp(r'^[0-9a-fA-F]+$').hasMatch(value)) {
+      return 'Private key must be hex characters';
     }
     return null;
   }
@@ -187,7 +197,9 @@ class _LoginFormState extends State<LoginForm> {
             keyboardType: TextInputType.text,
             onSaved: (value) => loginInput = value,
             validator: (value) {
-              return checkSecretRecoveryPhraseValid(value);
+              return (isPrivateKey)
+                  ? checkPrivateKeyValid(value)
+                  : checkSecretRecoveryPhraseValid(value);
             },
           ),
           SizedBox(
@@ -197,7 +209,7 @@ class _LoginFormState extends State<LoginForm> {
             onPressed: () async {
               if (_formKeyLogin.currentState!.validate()) {
                 _formKeyLogin.currentState!.save();
-                login(context, loginInput);
+                login(context, loginInput!, isPrivateKey);
               }
             },
             style: TextButton.styleFrom(

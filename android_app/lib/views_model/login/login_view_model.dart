@@ -1,40 +1,41 @@
+import 'package:android_app/utils/constants/url.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/snack_bar.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:ethers/signers/wallet.dart';
+import 'package:ethers/ethers.dart';
 
-void login(BuildContext context, String? loginInput) async {
+void login(BuildContext context, String loginInput, bool isPrivateKey) async {
   try {
-    final response = await http.post(
-      // edit this path
-      Uri.parse('http://127.0.0.1:3000/signin'),
-      body: {
-        'loginInput': loginInput,
-      },
-    );
-    if (json.decode(response.body)['signin_state']) {
-      // final ResponseBody dataResponseBody =
-      //   ResponseBody.fromJson(json.decode(response.body));
-      // final userName = dataResponseBody.user.name;
-      ScaffoldMessenger.of(context).showSnackBar(
-        snackBarControl(
-          'đã đăng nhập',
-          'OK',
-        ),
-      );
-      // Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+    final Wallet wallet;
+    if (isPrivateKey) {
+      wallet = Wallet.fromPrivateKey(loginInput);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        snackBarControl(
-          'Email hoặc mật khẩu không đúng, vui lòng kiểm tra lại',
-          'OK',
-        ),
-      );
+      wallet = Wallet.fromMnemonic(loginInput);
     }
+    // final testnetProvider =
+    //     ethers.providers.jsonRpcProvider(url: ApiEnpoint.httpProvider);
+    // final address = wallet.mnemonic?.phrase;
+    // final privateKey = wallet.privateKey;
+    // print(privateKey);
+    // final balance = await testnetProvider
+    //     .getBalance("0xbaBD46b079B233255784c6dFA8a86E03422512Ce");
+    // print(await ethers.utils.formatEther(balance));
+
+    // final walletWithProvider = wallet.connect(testnetProvider);
+    // final block = await testnetProvider.getBlockNumber();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      snackBarControl(
+        'Login success!',
+        'OK',
+      ),
+    );
+    
+    // Navigator.pushReplacementNamed(context, HomeScreen.routeName);
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
       snackBarControl(
-        'Đăng nhập không thành công, vui lòng kiểm tra kết nối mạng',
+        'No internet, please check your connection',
         'OK',
       ),
     );
