@@ -4,6 +4,7 @@ module.exports = app => {
 
     app.get('/account', accountController.getAccount)
     app.post('/account', accountController.signin)
+    app.get('/account/create', accountController.create)
     app.post('/account/update/avatar', accountController.updateAvatar)
     app.post('/account/update/name', accountController.updateName)
 

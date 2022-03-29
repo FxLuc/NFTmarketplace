@@ -1,7 +1,7 @@
 const { Account } = require('../models')
 require('dotenv').config({path: '../.env'})
-
-const multer = require('multer')
+const { ethers, provider } = require('./infura.controller')
+const multer = require('multer');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -111,9 +111,23 @@ const updateProfile = (req, res) => {
     })
 }
 
+
+const create = (req, res) => {
+    const wallet = new ethers.Wallet.createRandom()
+    console.log(wallet.address)
+    console.log(wallet.mnemonic.phrase)
+    console.log(wallet.privateKey)
+    res.status(201).json({
+        'address': wallet.address,
+        'mnemonic': wallet.mnemonic.phrase,
+        'privateKey': wallet.privateKey
+    })
+}
+
 module.exports = {
     getAccount,
     signin,
+    create,
     updateProfile,
     updateAvatar,
     updateName
