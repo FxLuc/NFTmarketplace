@@ -42,6 +42,7 @@ const getItems = (req, res) => {
         .select('name picture price owner')
         .limit(12)
         .then(items => res.status(200).json(items))
+        .catch(error => res.status(404).json(error))
 }
 
 const getMyItems = (req, res) => {
@@ -52,6 +53,8 @@ const getMyItems = (req, res) => {
         .select('name picture price owner')
         .limit(12)
         .then(items => res.status(200).json(items))
+        .catch(error => res.status(404).json(error))
+
 }
 
 const getPurchaseOrder = (req, res) => {
@@ -61,6 +64,7 @@ const getPurchaseOrder = (req, res) => {
         .limit(12)
         .populate('itemContract', '_id name picture price owner')
         .then(items => res.status(200).json(items))
+        .catch(error => res.status(404).json(error))
 }
 
 const getSalesOrder = (req, res) => {
@@ -88,6 +92,7 @@ const searchItem = (req, res) => {
         .then(items => {
             res.status(200).json(items)
         })
+        .catch(error => res.status(404).json(error))
 }
 
 const createItem = (req, res) => {
@@ -138,6 +143,7 @@ const updateOrder = async (req, res) => {
             deadline: orderDealine
         })
         .exec(err => err ? res.status(500).json(err) : res.status(201).json({ state: orderState, deadline: orderDealine }))
+        .catch(error => res.status(404).json(error))
 }
 
 const changePrice = async (req, res) => {

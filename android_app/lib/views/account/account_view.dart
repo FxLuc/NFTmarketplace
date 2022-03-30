@@ -2,7 +2,6 @@ import 'package:android_app/models/account.dart';
 import 'package:android_app/utils/constants/theme.dart';
 import 'package:android_app/views/login/login_view.dart';
 import 'package:ethers/ethers.dart';
-import 'package:ethers/providers/json_rpc_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';

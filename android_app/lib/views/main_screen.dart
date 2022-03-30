@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/constants/theme.dart';
 import 'home/home_view.dart';
 import 'login/login_view.dart';
+import 'search/search_view.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class MainScreenState extends State<MainScreen> {
 
   List<Widget> views = <Widget>[
     const HomeView(),
-    const LoginView(),
+    const SearchView(),
     const LoginView(),
     const LoginView(),
     const AccountView(),
