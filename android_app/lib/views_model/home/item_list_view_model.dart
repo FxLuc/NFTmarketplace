@@ -9,7 +9,7 @@ Future<List<ItemPost>> getItemListNewest() async {
     final response = await http.get(Uri.parse(ApiEnpoint.itemNewest));
     return compute(parseJson, response.body);
   } catch (e) {
-    throw Exception('No internet');
+    throw Exception(e);
   }
 }
 

@@ -13,7 +13,7 @@ Future<List<ItemPost>> searchItemList(keywords) async {
         {"keywords": keywords},
       ),
     );
-    print(response.statusCode);
+    // final response = await http.get(Uri.parse(ApiEnpoint.itemNewest));
     return compute(parseJson, response.body);
   } catch (error) {
     throw Exception(error);
@@ -21,6 +21,6 @@ Future<List<ItemPost>> searchItemList(keywords) async {
 }
 
 List<ItemPost> parseJson(String responseBody) {
-  var itemList = json.decode(responseBody);
+  var itemList = json.decode(responseBody) as List<dynamic>;
   return itemList.map((item) => ItemPost.fromJson(item)).toList();
 }

@@ -21,7 +21,8 @@ class _SearchViewState extends State<SearchView> {
 
   void onSearchHandler(String value) {
     setState(() {
-      searchValue = value;
+      searchValue = _searchController.text;
+      itemList = searchItemList(value);
     });
   }
 
@@ -33,11 +34,12 @@ class _SearchViewState extends State<SearchView> {
     final _searchValueFromHome = mainScreenState!.searchValue;
     onSearchHandler(_searchValueFromHome ?? "");
     _searchController.text = _searchValueFromHome ?? "";
+    searchValue = _searchValueFromHome ?? "";
+    itemList = searchItemList(_searchController.text);
   }
 
   @override
   Widget build(BuildContext context) {
-    itemList = searchItemList(_searchController.text);
     return Scaffold(
       appBar: searchBar(),
       body: Snap(
@@ -75,8 +77,6 @@ class _SearchViewState extends State<SearchView> {
   }
 
   ScrollAppBar searchBar() {
-    final MainScreenState? _homeViewState =
-        context.findAncestorStateOfType<MainScreenState>();
     return ScrollAppBar(
       controller: controller,
       automaticallyImplyLeading: false,
@@ -88,8 +88,7 @@ class _SearchViewState extends State<SearchView> {
           onSubmitted: (value) {
             value.isNotEmpty
                 ? {
-                    _homeViewState!.onSearchHandler(value),
-                    _homeViewState.onTapHandler(1),
+                    onSearchHandler(value),
                   }
                 : {};
           },

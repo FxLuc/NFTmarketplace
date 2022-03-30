@@ -1,7 +1,7 @@
 class ItemPost {
   String? id;
   String? name;
-  int? price;
+  dynamic price;
   String? owner;
   String? picture;
 
