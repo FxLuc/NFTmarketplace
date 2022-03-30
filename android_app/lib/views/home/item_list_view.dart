@@ -2,6 +2,7 @@ import 'package:android_app/utils/constants/theme.dart';
 import 'package:flutter/material.dart';
 import '../../models/item_post.dart';
 import '../../views_model/home/item_list_view_model.dart';
+import '../../widgets/circular_progress_indicator.dart';
 
 class ItemListView extends StatefulWidget {
   const ItemListView({Key? key}) : super(key: key);
@@ -51,7 +52,7 @@ class _ItemListViewState extends State<ItemListView> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                '${snapshot.data![index].name}', ///////////// lỗi
+                                '${snapshot.data![index].name}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -138,7 +139,7 @@ class _ItemListViewState extends State<ItemListView> {
                   ),
                 );
               } else {
-                return const CircularProgressIndicator();
+                return loadingCircular();
               }
             },
           ),
