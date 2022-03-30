@@ -17,13 +17,13 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FINDEX',
       theme: CustomTheme.lightTheme,
       home: const LoginView(),
+      // Secrett recovery phrase: onion impose elder minor brain desert phone actress busy grow crime crack
     );
   }
 }
