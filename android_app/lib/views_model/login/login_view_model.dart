@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:android_app/models/account.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../utils/constants/url.dart';
 import '../../views/main_screen.dart';
 import '../../widgets/snack_bar.dart';
 import 'package:ethers/signers/wallet.dart';
 import 'login_wallet.dart';
+import 'package:http/http.dart' as http;
 // import 'package:ethers/ethers.dart';
 // import 'package:android_app/utils/constants/url.dart';
 
@@ -26,20 +31,22 @@ void login(BuildContext context, String loginInput, bool isPrivateKey) async {
 
     // final walletWithProvider = wallet.connect(testnetProvider);
     // final block = await testnetProvider.getBlockNumber();
-    context.read<LoginWallet>().login(wallet);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MainScreen()),
-    );
-
     ScaffoldMessenger.of(context).showSnackBar(
       snackBarControl(
         'Login success!',
         'OK',
       ),
     );
-
-    // Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+    final response = await http.post(
+      Uri.parse(ApiEnpoint.getAccount),
+      body: {'_id': wallet.address},
+    );
+    final accountModel = AccountModel.fromJson(json.decode(response.body));
+    context.read<LoginWallet>().login(wallet, accountModel);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MainScreen()),
+    );
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
       snackBarControl(

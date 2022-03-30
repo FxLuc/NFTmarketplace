@@ -10,7 +10,7 @@ register(BuildContext context) async {
   try {
     final response = await http.get(Uri.parse(ApiEnpoint.createAccount));
     if (response.statusCode == 201) {
-      final accountModel = AccountModel.fromJson(json.decode(response.body));
+      final accountModel = WalletModel.fromJson(json.decode(response.body));
       // print(accountModel.address);
       // print(accountModel.mnemonic);
       // print(accountModel.privateKey);
