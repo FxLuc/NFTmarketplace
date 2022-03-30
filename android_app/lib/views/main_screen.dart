@@ -83,7 +83,7 @@ class MainScreenState extends State<MainScreen> {
             label: 'Order',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.portrait),
             label: 'Items',
           ),
           BottomNavigationBarItem(
