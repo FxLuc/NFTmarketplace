@@ -1,3 +1,4 @@
+import 'package:android_app/views/home/home_view.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/snack_bar.dart';
 import 'package:ethers/signers/wallet.dart';
@@ -15,14 +16,20 @@ void login(BuildContext context, String loginInput, bool isPrivateKey) async {
     // final testnetProvider =
     //     ethers.providers.jsonRpcProvider(url: ApiEnpoint.httpProvider);
     // final mnemonic = wallet.mnemonic?.phrase;
-    final privateKey = wallet.privateKey;
-    print(privateKey);
+    // final privateKey = wallet.privateKey;
+    // print(privateKey);
     // final balance = await testnetProvider
     //     .getBalance("0xbaBD46b079B233255784c6dFA8a86E03422512Ce");
     // print(await ethers.utils.formatEther(balance));
 
     // final walletWithProvider = wallet.connect(testnetProvider);
     // final block = await testnetProvider.getBlockNumber();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              HomeView(wallet: wallet)),
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       snackBarControl(

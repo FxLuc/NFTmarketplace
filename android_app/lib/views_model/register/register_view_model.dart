@@ -11,19 +11,21 @@ register(BuildContext context) async {
     final response = await http.get(Uri.parse(ApiEnpoint.createAccount));
     if (response.statusCode == 201) {
       final accountModel = AccountModel.fromJson(json.decode(response.body));
-      print(accountModel.address);
-      print(accountModel.mnemonic);
-      print(accountModel.privateKey);
+      // print(accountModel.address);
+      // print(accountModel.mnemonic);
+      // print(accountModel.privateKey);
       ScaffoldMessenger.of(context).showSnackBar(
         snackBarControl(
           'Successfully created a new account!',
           'OK',
         ),
       );
-          Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RegisterViewNext(secretRecoveyPhrase: accountModel.mnemonic)),
-    );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                RegisterViewNext(secretRecoveyPhrase: accountModel.mnemonic)),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         snackBarControl(

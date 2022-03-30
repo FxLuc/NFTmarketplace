@@ -12,7 +12,7 @@
 # eth.getBalance(eth.accounts[0])
 # miner.setEtherbase(eth.accounts[0])
 # miner.start(1)
-
+# onion impose elder minor brain desert phone actress busy grow crime crack
 .vscode/
 *.code-workspace
 */artifacts
@@ -21,4 +21,5 @@
 */node_modules
 /server/.env
 /client/.env
+/server/trans.js
 *.drawio
