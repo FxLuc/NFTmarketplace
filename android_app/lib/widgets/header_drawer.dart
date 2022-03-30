@@ -72,7 +72,7 @@ class _HeaderDrawerState extends State<HeaderDrawer> {
                       ),
                     ),
                     const Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: EdgeInsets.only(top: 8),
                       child: Text(
                         'account',
                         style: TextStyle(

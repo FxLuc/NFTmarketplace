@@ -1,7 +1,9 @@
-import 'package:android_app/views/home/home_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../views/main_screen.dart';
 import '../../widgets/snack_bar.dart';
 import 'package:ethers/signers/wallet.dart';
+import 'login_wallet.dart';
 // import 'package:ethers/ethers.dart';
 // import 'package:android_app/utils/constants/url.dart';
 
@@ -24,11 +26,10 @@ void login(BuildContext context, String loginInput, bool isPrivateKey) async {
 
     // final walletWithProvider = wallet.connect(testnetProvider);
     // final block = await testnetProvider.getBlockNumber();
+    context.read<LoginWallet>().login(wallet);
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) =>
-              HomeView(wallet: wallet)),
+      MaterialPageRoute(builder: (context) => const MainScreen()),
     );
 
     ScaffoldMessenger.of(context).showSnackBar(

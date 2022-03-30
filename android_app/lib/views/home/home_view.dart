@@ -1,11 +1,10 @@
-import 'package:ethers/signers/wallet.dart';
 import 'package:flutter/material.dart';
-
-import '../../widgets/header_drawer.dart';
+import 'package:provider/provider.dart';
+import '../../views_model/login/login_wallet.dart';
 import 'item_list_view.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key, required Wallet wallet}) : super(key: key);
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -16,8 +15,9 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'FINDEX',
+        title: Text(
+          // 'FINDEX',
+          '${context.watch<LoginWallet>().loginWallet.address}',
         ),
       ),
       body: Container(
