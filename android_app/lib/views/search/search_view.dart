@@ -5,7 +5,7 @@ import 'package:scroll_app_bar/scroll_app_bar.dart';
 import '../../models/item_post.dart';
 import '../../widgets/circular_progress_indicator.dart';
 import '../main_screen.dart';
-import '../home/item_card.dart';
+import '../../widgets/item_card.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({Key? key}) : super(key: key);

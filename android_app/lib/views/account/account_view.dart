@@ -22,9 +22,15 @@ class _AccountViewState extends State<AccountView> {
   @override
   Widget build(BuildContext context) {
     () async {
-      setState(() => accountBalance = getBalance(
-          context.watch<LoginWallet>().ethProvider,
-          context.watch<LoginWallet>().loginAccount.id));
+      Future<BigInt> accountBalanceResult;
+      try {
+        accountBalanceResult = getBalance(
+            context.watch<LoginWallet>().ethProvider,
+            context.watch<LoginWallet>().loginAccount.id);
+        accountBalance = accountBalanceResult;
+      } catch (err) {
+        throw Exception(err);
+      }
     }();
     return Scaffold(
       body: Stack(

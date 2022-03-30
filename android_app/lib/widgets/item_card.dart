@@ -2,7 +2,7 @@ import 'package:android_app/utils/constants/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../utils/ethereum.dart';
+import '../utils/ethereum.dart';
 
 Card itemCard(context, index, snapshot) {
   return Card(

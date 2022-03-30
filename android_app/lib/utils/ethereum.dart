@@ -11,6 +11,6 @@ String covertToEther(BigInt wei) {
   return ethers.utils.formatEther(wei);
 }
 
-Future<BigInt> getBalance(JsonRpcProvider ethProvider, String? address) async {
+Future<BigInt> getBalance(JsonRpcProvider ethProvider, String? address) {
   return ethProvider.getBalance(address!);
 }
