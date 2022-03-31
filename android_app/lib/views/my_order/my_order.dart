@@ -1,12 +1,10 @@
 import 'package:android_app/utils/constants/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/item_post.dart';
 import '../../models/order.dart';
 import '../../views_model/login/login_wallet.dart';
 import '../../views_model/my_order/my_order_view_model.dart';
 import '../../widgets/circular_progress_indicator.dart';
-import '../../widgets/item_card.dart';
 import 'order_card.dart';
 
 class MyOrderView extends StatefulWidget {

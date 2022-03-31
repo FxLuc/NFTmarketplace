@@ -4,7 +4,6 @@ import 'package:android_app/views/my_order/my_order.dart';
 import 'package:flutter/material.dart';
 import '../utils/constants/theme.dart';
 import 'home/home_view.dart';
-import 'login/login_view.dart';
 import 'search/search_view.dart';
 
 class MainScreen extends StatefulWidget {

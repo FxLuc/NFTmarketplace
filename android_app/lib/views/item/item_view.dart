@@ -1,4 +1,5 @@
 import 'package:android_app/utils/constants/theme.dart';
+import 'package:android_app/views/payment/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../models/item_detail.dart';
@@ -144,7 +145,16 @@ class _ItemViewState extends State<ItemView> {
                                       height: CustomSize.sizeXX,
                                     ),
                                     ElevatedButton.icon(
-                                      onPressed: () => {},
+                                      onPressed: () => {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => PaymentView(
+                                              item: snapshot.data!,
+                                            ),
+                                          ),
+                                        )
+                                      },
                                       style: TextButton.styleFrom(
                                         backgroundColor:
                                             CustomColor.colorPrimary,

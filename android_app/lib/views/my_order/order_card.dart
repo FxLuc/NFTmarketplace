@@ -1,4 +1,3 @@
-import 'package:android_app/utils/clipboard.dart';
 import 'package:android_app/utils/constants/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
