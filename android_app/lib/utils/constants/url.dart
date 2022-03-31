@@ -8,6 +8,8 @@ class ApiEnpoint {
 
   static String getAccount = '$serverEndpoint/account';
 
+  static String transaction = '$serverEndpoint/account/transaction';
+
   static String itemRawData = '$serverEndpoint/raw/item';
 
   static String itemNewest = '$serverEndpoint/item/newest';

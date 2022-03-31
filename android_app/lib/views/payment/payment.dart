@@ -117,7 +117,11 @@ class PaymentView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    ConfirmView(item: item, account: context.read<LoginWallet>().loginAccount,),
+                    ConfirmView(
+                      item: item,
+                      account: context.read<LoginWallet>().loginAccount,
+                      wallet: context.read<LoginWallet>().loginWallet,
+                    ),
                   ],
                 ),
               ),
