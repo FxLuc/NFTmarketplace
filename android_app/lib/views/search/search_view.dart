@@ -21,7 +21,7 @@ class _SearchViewState extends State<SearchView> {
 
   void onSearchHandler(String value) {
     setState(() {
-      searchValue = _searchController.text;
+      searchValue = value;
       itemList = searchItemList(value);
     });
   }
@@ -52,7 +52,7 @@ class _SearchViewState extends State<SearchView> {
                 future: itemList,
                 builder: (BuildContext context,
                     AsyncSnapshot<List<ItemPost>> snapshot) {
-                  if (searchValue!.isEmpty || (snapshot.data == null)) {
+                  if (searchValue!.isEmpty || snapshot.hasError) {
                     return Center(
                       child: SingleChildScrollView(
                         padding: EdgeInsets.only(

@@ -50,7 +50,7 @@ void login(BuildContext context, String loginInput, bool isPrivateKey) async {
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
       snackBarControl(
-        'No internet, please check your connection',
+        'Login failed, please check your connection',
         'OK',
       ),
     );

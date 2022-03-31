@@ -20,10 +20,11 @@ Card itemCard(context, index, snapshot) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ItemView(address: snapshot.data![index].id,),
+              builder: (context) => ItemView(
+                address: snapshot.data![index].id,
+              ),
             ),
           ),
-
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -108,29 +109,30 @@ Card itemCard(context, index, snapshot) {
                     ),
                   ),
                   Expanded(
-                      flex: 1,
-                      child: RichText(
-                        textAlign: TextAlign.right,
-                        text: TextSpan(
-                          children: [
-                            WidgetSpan(
-                              child: FaIcon(
-                                FontAwesomeIcons.ethereum,
-                                color: CustomColor.colorPrimary,
-                                size: CustomSize.sizeXVII,
-                              ),
+                    flex: 1,
+                    child: RichText(
+                      textAlign: TextAlign.right,
+                      text: TextSpan(
+                        children: [
+                          WidgetSpan(
+                            child: FaIcon(
+                              FontAwesomeIcons.ethereum,
+                              color: CustomColor.colorPrimary,
+                              size: CustomSize.sizeXVII,
                             ),
-                            TextSpan(
-                              text:
-                                  ' ${covertToEther(BigInt.from(snapshot.data![index].price))} ETH',
-                              style: TextStyle(
-                                fontSize: CustomSize.sizeXVII,
-                                color: CustomColor.colorDark,
-                              ),
+                          ),
+                          TextSpan(
+                            text:
+                                ' ${covertToEther(BigInt.from(snapshot.data![index].price))} ETH',
+                            style: TextStyle(
+                              fontSize: CustomSize.sizeXVII,
+                              color: CustomColor.colorDark,
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
