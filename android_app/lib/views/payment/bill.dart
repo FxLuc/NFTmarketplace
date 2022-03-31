@@ -2,6 +2,7 @@ import 'package:android_app/models/account.dart';
 import 'package:android_app/models/item_detail.dart';
 import 'package:ethers/signers/wallet.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../utils/constants/theme.dart';
 import '../../utils/ethereum.dart';
 import '../../views_model/payment/payment_view_model.dart';
@@ -24,7 +25,6 @@ class _ConfirmViewState extends State<ConfirmView> {
   AccountModel? account;
   Wallet? wallet;
   bool isConfirming = false;
-  String? tx;
 
   confirming() {
     setState(() {
@@ -32,10 +32,9 @@ class _ConfirmViewState extends State<ConfirmView> {
     });
   }
 
-  confirmDone(_tx) {
+  confirmDone() {
     setState(() {
       isConfirming = false;
-      tx = _tx;
     });
   }
 
@@ -120,14 +119,19 @@ class _ConfirmViewState extends State<ConfirmView> {
               : ElevatedButton(
                   onPressed: () async {
                     confirming();
-                    final tx = await sendTransaction(
+                    final String transactionTX = await sendTransaction(
                       context,
                       wallet!.privateKey,
                       item!.price,
                       item!.id,
+                      // "0xcD8D1ab6b7e306a74B48779D10c99908F627905E",
                     );
-                    confirmDone(tx);
-                    print(tx);
+                    final _transactionTX =
+                        transactionTX.substring(1, transactionTX.length - 1);
+                    final _url =
+                        'https://goerli.etherscan.io/tx/$_transactionTX';
+                    launch(_url);
+
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(
