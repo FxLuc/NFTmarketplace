@@ -1,16 +1,11 @@
 import 'package:android_app/utils/constants/theme.dart';
-import 'package:android_app/views_model/home/item_list_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:scroll_app_bar/scroll_app_bar.dart';
 import '../../models/item_detail.dart';
-import '../../models/item_post.dart';
 import '../../utils/clipboard.dart';
 import '../../utils/ethereum.dart';
 import '../../views_model/item/item_view_model.dart';
 import '../../widgets/circular_progress_indicator.dart';
-import '../main_screen.dart';
-import '../../widgets/item_card.dart';
 
 class ItemView extends StatefulWidget {
   const ItemView({Key? key, required this.address}) : super(key: key);

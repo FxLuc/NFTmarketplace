@@ -1,4 +1,5 @@
 import 'package:android_app/views/account/account_view.dart';
+import 'package:android_app/views/my_items/my_items_view.dart';
 import 'package:flutter/material.dart';
 import '../utils/constants/theme.dart';
 import 'home/home_view.dart';
@@ -47,7 +48,7 @@ class MainScreenState extends State<MainScreen> {
     const HomeView(),
     const SearchView(),
     const LoginView(),
-    const LoginView(),
+    const MyItemsView(),
     const AccountView(),
   ];
 
