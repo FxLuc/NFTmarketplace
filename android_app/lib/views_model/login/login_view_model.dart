@@ -31,18 +31,18 @@ void login(BuildContext context, String loginInput, bool isPrivateKey) async {
 
     // final walletWithProvider = wallet.connect(testnetProvider);
     // final block = await testnetProvider.getBlockNumber();
-    ScaffoldMessenger.of(context).showSnackBar(
-      snackBarControl(
-        'Login success!',
-        'OK',
-      ),
-    );
     final response = await http.post(
       Uri.parse(ApiEnpoint.getAccount),
       body: {'_id': wallet.address},
     );
     final accountModel = AccountModel.fromJson(json.decode(response.body));
     context.read<LoginWallet>().login(wallet, accountModel);
+    ScaffoldMessenger.of(context).showSnackBar(
+      snackBarControl(
+        'Login success!',
+        'OK',
+      ),
+    );
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainScreen()),

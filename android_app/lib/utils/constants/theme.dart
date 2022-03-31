@@ -36,6 +36,12 @@ class CustomSize {
   static double sizeCL = 150.0;
 
   static double sizeCC = 200.0;
+
+  static double sizeCCL = 250.0;
+
+  static double sizeCD = 400.0;
+
+  static double sizeD = 500.0;
 }
 
 class CustomColor {

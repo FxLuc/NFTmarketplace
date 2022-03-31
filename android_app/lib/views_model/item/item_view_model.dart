@@ -1,25 +1,28 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:android_app/models/item_detail.dart';
 import 'package:http/http.dart' as http;
 import '../../models/item_post.dart';
 
-Future<List<ItemPost>> searchItemList(keywords) async {
+Future<ItemDetail> getItemDetail(address) async {
   try {
     final response = await http.get(
       Uri.http(
         "103.170.246.112:50667",
-        '/item/search',
-        {"keywords": keywords},
+        '/item',
+        {"_id": address},
       ),
     );
+    print(address);
+    print(response.body);
+    final itemDetail = ItemDetail.fromJson(json.decode(response.body));
     // final response = await http.get(Uri.parse(ApiEnpoint.itemNewest));
-    return compute(parseJson, response.body);
+    return itemDetail;
   } catch (error) {
     throw Exception(error);
   }
 }
 
-List<ItemPost> parseJson(String responseBody) {
-  var itemList = json.decode(responseBody) as List<dynamic>;
+List<ItemDetail> parseJson(String responseBody) {
+  var itemList = json.decode(responseBody);
   return itemList.map((item) => ItemPost.fromJson(item)).toList();
 }
