@@ -52,7 +52,38 @@ class _SearchViewState extends State<SearchView> {
                 future: itemList,
                 builder: (BuildContext context,
                     AsyncSnapshot<List<ItemPost>> snapshot) {
-                  if (snapshot.hasData) {
+                  if (searchValue!.isEmpty || (snapshot.data == null)) {
+                    return Center(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.only(
+                          left: CustomSize.sizeX,
+                          right: CustomSize.sizeX,
+                          top: CustomSize.sizeX,
+                          bottom: CustomSize.sizeL,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                top: CustomSize.sizeC,
+                                bottom: CustomSize.sizeXV,
+                              ),
+                              child: Text(
+                                'NO ITEMS FOUND',
+                                style: TextStyle(
+                                  fontSize: CustomSize.sizeXXX,
+                                  color: CustomColor.colorSecondary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
                     // return Text('${snapshot.data![0].id}');
                     return Expanded(
                       child: ListView.builder(
