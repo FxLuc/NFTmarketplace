@@ -142,8 +142,10 @@ const updateOrder = async (req, res) => {
             state: orderState,
             deadline: orderDealine
         })
-        .exec(err => err ? res.status(500).json(err) : res.status(201).json({ state: orderState, deadline: orderDealine }))
-        .catch(error => res.status(404).json(error))
+        .exec((err, data) => {
+            if (err) res.status(500).json(err)
+            else res.status(201).json(data)
+        })
 }
 
 const changePrice = async (req, res) => {
