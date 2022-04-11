@@ -4,10 +4,10 @@ const { OrderContractJSON, ItemContractJSON, web3 } = require('./infura.controll
 const multer = require('multer')
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_req, _file, cb) => {
         cb(null, './public/pictures/items/')
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         cb(null, uniqueSuffix + file.originalname)
     }
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    fileFilter: (req, file, cb) => {
+    fileFilter: (_req, file, cb) => {
         if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
             cb(null, true)
         } else {
@@ -35,7 +35,7 @@ const getRawItem = (req, res) => {
         .catch(error => res.status(404).json(error))
 }
 
-const getItems = (req, res) => {
+const getItems = (_req, res) => {
     Item
         .find({ state: 0 })
         .sort('-createdAt')

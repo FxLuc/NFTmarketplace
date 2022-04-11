@@ -1,13 +1,13 @@
+require('dotenv').config({ path: '../.env' })
 const { Account } = require('../models')
-require('dotenv').config({path: '../.env'})
-const { ethers, provider } = require('./infura.controller')
+const ethers  = require("ethers")
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_req, _file, cb) => {
         cb(null, './public/pictures/avatars/')
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         cb(null, uniqueSuffix + file.originalname)
     }
@@ -15,10 +15,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-            cb(null, true)
-        } else {
+    fileFilter: (_req, file, cb) => {
+        if (
+            file.mimetype == "image/png"
+            || file.mimetype == "image/jpg"
+            || file.mimetype == "image/jpeg"
+        ) cb(null, true)
+        else {
             cb(null, false)
             return cb(new Error('Only .png, .jpg and .jpeg format allowed!'))
         }
@@ -29,7 +32,9 @@ const upload = multer({
 }).single('file')
 
 const getAccount = (req, res) => {
-    Account.findById(req.body.id).then(account => res.status(200).json(account))
+    Account
+        .findById(req.body.id)
+        .then(account => res.status(200).json(account))
 }
 
 
@@ -41,7 +46,10 @@ const signin = (req, res) => {
             if (account) res.status(200).json(account)
             else {
                 const newAccount = Account({ _id: accountAddress })
-                newAccount.save(_ => Account.findById(accountAddress).then(thisNewAccount => res.status(201).json(thisNewAccount)))
+                newAccount.save(_ => Account
+                    .findById(accountAddress)
+                    .then(thisNewAccount => res.status(201).json(thisNewAccount))
+                )
             }
         })
 }
@@ -112,11 +120,8 @@ const updateProfile = (req, res) => {
 }
 
 
-const create = (req, res) => {
+const create = (_req, res) => {
     const wallet = new ethers.Wallet.createRandom()
-    console.log(wallet.address)
-    console.log(wallet.mnemonic.phrase)
-    console.log(wallet.privateKey)
     res.status(201).json({
         'address': wallet.address,
         'mnemonic': wallet.mnemonic.phrase,
