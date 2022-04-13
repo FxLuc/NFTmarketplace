@@ -1,6 +1,6 @@
 module.exports = app => {
     const { itemController, accountController, orderController } = require('../controllers')
-    app.get('/', (req, res) => res.status(200).json('API Server is working...'))
+    app.get('/', (_req, res) => res.status(200).json('API Server is working...'))
 
     app.get('/account', accountController.getAccount)
     app.post('/account', accountController.signin)
