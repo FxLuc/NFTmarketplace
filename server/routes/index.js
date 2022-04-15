@@ -1,6 +1,6 @@
 module.exports = app => {
-    const { itemController, accountController } = require('../controllers')
-    app.get('/', (req, res) => res.status(200).json('API Server is working...'))
+    const { itemController, accountController, orderController } = require('../controllers')
+    app.get('/', (_req, res) => res.status(200).json('API Server is working...'))
 
     app.get('/account', accountController.getAccount)
     app.post('/account', accountController.signin)
@@ -17,10 +17,10 @@ module.exports = app => {
 
     app.get('/item/my', itemController.getMyItems)
     
-    app.get('/order/purchase', itemController.getPurchaseOrder)
-    app.get('/order/sales', itemController.getSalesOrder)
-    app.put('/order/update', itemController.updateOrder)
+    app.get('/order/purchase', orderController.getPurchaseOrder)
+    app.get('/order/sales', orderController.getSalesOrder)
+    app.put('/order/update', orderController.updateOrder)
 
-    app.post('/item/delivery', itemController.delivery)
-    app.put('/item/deliveryto', itemController.setDeliveryTo)
+    app.post('/item/delivery', orderController.delivery)
+    app.put('/item/deliveryto', orderController.setDeliveryTo)
 }

@@ -15,13 +15,11 @@ function NavigationBar(props) {
             <Container>
                 <Navbar.Brand onClick={() => navigate('/')} className='fw-bold fs-4'>
                     <img
-                        src="/logo_F_primary.png"
+                        src="/brand_V.png"
                         alt="findex_logo"
-                        width="35"
-                        height="35"
+                        height="40"
                         className="d-inline-block align-top"
-                    />{' '}
-                    FINDEX
+                    />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
@@ -29,20 +27,21 @@ function NavigationBar(props) {
                     <Nav className="col-12 col-lg-6 me-4">
                         <form
                             className="input-group"
-                            onSubmit={ e => {
-                                    e.preventDefault()
-                                    const value = document.getElementById('search').value
-                                    if (value) {
-                                        props.handleKeywordsChange(value)
-                                        navigate('/search')
-                                    }
+                            onSubmit={e => {
+                                e.preventDefault()
+                                const value = document.getElementById('search').value
+                                if (value) {
+                                    props.handleKeywordsChange(value)
+                                    navigate('/search')
                                 }
-                            }
+                            }}
                         >
                             <label className="input-group-text bg-white" htmlFor='search'><FontAwesomeIcon icon={faSearch} /></label>
                             <input type="search" className="form-control" name='search' id='search' placeholder="Find index, item name, and address" />
                         </form>
                     </Nav>
+                    <Nav className="col"></Nav>
+
                     <Nav>
                         <Nav.Link className='fw-bold me-4' onClick={() => navigate('/create')}>Create</Nav.Link>
                         <Nav.Link onClick={() => navigate('/checkRawData')} className='fw-bold me-4'>Check</Nav.Link>

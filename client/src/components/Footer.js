@@ -11,7 +11,7 @@ class Footer extends React.Component {
                     <div className='row py-1'>
                         <div className='col-12 col-md text-center text-md-start'>
                             <img
-                                src="/logo_F_white.png"
+                                src="/logo_F_blue_bgwhite.jpg"
                                 alt="findex_logo"
                                 width="42"
                                 height="42"
