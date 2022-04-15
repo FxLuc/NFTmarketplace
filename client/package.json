@@ -1,6 +1,6 @@
 {
-  "name": "client",
-  "version": "0.1.0",
+  "name": "findex_client",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -19,7 +19,7 @@
     "react-qr-code": "^2.0.3",
     "react-router-dom": "^6.2.1",
     "react-scripts": "3.2.0",
-    "web3": "1.2.2"
+    "web3": "1.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
