@@ -27,6 +27,7 @@ class App extends React.Component {
     this.state = {
       loaded: false,
       keywords: '',
+      hasagi: false,
       account: { _id: '0x0000000000000000000000000000000000000000' },
     }
   }
