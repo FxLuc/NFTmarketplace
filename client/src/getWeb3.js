@@ -28,7 +28,7 @@ const getWeb3 = () =>
       // Fallback to localhost use dev console port by default...
       else {
         const web3 = new Web3(new Web3.providers.HttpProvider(process.env.REACT_APP_INFURA_HTTP_ENDPOINT))
-        console.log("No web3 instance injected, using web3 at:\n" + process.env.REACT_APP_INFURA_HTTP_ENDPOINT)
+        console.log("No web3 instance injected, using web3 at Infura")
         resolve(web3)
       }
     })()

@@ -10,8 +10,9 @@ function addressOverflow(address) {
 
 function NavigationBar(props) {
     const navigate = useNavigate()
+    const [expanded, setExpanded] = React.useState(false);
     return (
-        <Navbar collapseOnSelect expand="lg" bg="white" fixed="top" className='shadow-sm'>
+        <Navbar expand="lg" bg="white" fixed="top" className='shadow-sm' expanded={expanded} >
             <Container>
                 <Navbar.Brand onClick={() => navigate('/')} className='fw-bold fs-4'>
                     <img
@@ -21,13 +22,14 @@ function NavigationBar(props) {
                         className="d-inline-block align-top"
                     />
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" onClick={() => setExpanded(!expanded)} />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="col"></Nav>
                     <Nav className="col-12 col-lg-6 me-4">
                         <form
                             className="input-group"
                             onSubmit={e => {
+                                setExpanded(true)
                                 e.preventDefault()
                                 const value = document.getElementById('search').value
                                 if (value) {
@@ -43,14 +45,53 @@ function NavigationBar(props) {
                     <Nav className="col"></Nav>
 
                     <Nav>
-                        <Nav.Link className='fw-bold me-4' onClick={() => navigate('/create')}>Create</Nav.Link>
-                        <Nav.Link onClick={() => navigate('/checkRawData')} className='fw-bold me-4'>Check</Nav.Link>
-                        <NavDropdown className='fw-bold' title={addressOverflow(props.account._id)} id="collasible-nav-dropdown">
-                            <NavDropdown.Item onClick={() => navigate('/profile')}>Profile</NavDropdown.Item>
-                            <NavDropdown.Item onClick={() => navigate('/setting')}>Setting</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item onClick={() => navigate('/signout')}>Sign out</NavDropdown.Item>
-                        </NavDropdown>
+                        <Nav.Link
+                            className='fw-bold me-4'
+                            onClick={() => {
+                                navigate('/create')
+                                setExpanded(false)
+                            }}>
+                            Create
+                        </Nav.Link>
+                        <Nav.Link
+                            onClick={() => {
+                                setExpanded(false)
+                                navigate('/checkRawData')
+                            }}
+                            className='fw-bold me-4'>
+                            Check
+                        </Nav.Link>
+                        {(props.isLogin === true)
+                            ? <NavDropdown
+                                className='fw-bold'
+                                title={addressOverflow(props.account._id)}
+                                id="collasible-nav-dropdown">
+                                <NavDropdown.Item
+                                    onClick={() => {
+                                        setExpanded(false)
+                                        navigate('/profile')
+                                    }}> Profile </NavDropdown.Item>
+                                <NavDropdown.Item
+                                    onClick={() => {
+                                        setExpanded(false)
+                                        navigate('/setting')
+                                    }}> Setting
+                                </NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item
+                                    onClick={() => {
+                                        setExpanded(false)
+                                        props.logout()
+                                    }}> Logout </NavDropdown.Item>
+                            </NavDropdown>
+                            : <Nav.Link
+                                className='fw-bold me-4'
+                                onClick={() => {
+                                    setExpanded(false)
+                                    navigate('/profile')
+                                }}> Login
+                            </Nav.Link>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Container>
