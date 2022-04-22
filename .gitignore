@@ -21,6 +21,4 @@
 */node_modules
 /server/.env
 /client/.env
-**/android_app
 /server/trans.js
-*.drawio
