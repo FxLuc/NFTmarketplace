@@ -27,10 +27,12 @@ class BuyButton extends React.Component {
 
     triggerBuy = async () => {
         this.setState({ loading: 1 })
-        this.props.web3.eth
-            .sendTransaction({ from: this.props.account._id, to: this.props.item._id, value: this.state.realPrice })
+        this.props.web3.eth.sendTransaction({ from: this.props.account._id, to: this.props.item._id, value: this.state.realPrice })
             .then(_ => this.setState({ loading: 2 }))
-            .catch(_ => this.setState({ loading: 3 }))
+            .catch(error =>  {
+                this.setState({ loading: 3 })
+                console.error(error)
+            })
     }
 
     handleChangePrice = async event => {
@@ -47,7 +49,9 @@ class BuyButton extends React.Component {
             }
         }
         const ItemContract = await new this.props.web3.eth.Contract(ItemContractJSON.abi, this.props.item._id)
-        ItemContract.methods.changePrice(value).send({ from: this.props.account._id })
+        ItemContract.methods
+            .changePrice(value)
+            .send({ from: this.props.account._id })
             .then(_ => {
                 axios
                     .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/changeprice`, {
@@ -56,9 +60,12 @@ class BuyButton extends React.Component {
                     .then(res => {
                         this.setState({ loading: 2, realPrice: res.data, price: res.data })
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => console.error(error))
             })
-            .catch(_ => this.setState({ loading: 3 }))
+            .catch(error => {
+                console.error(error)
+                this.setState({ loading: 3 })
+            })
     }
 
     render() {
@@ -77,10 +84,10 @@ class BuyButton extends React.Component {
                             : (this.props.account._id !== this.props.item.owner)
                                 ? (this.props.item.state === 0)
                                     ? <button className='btn btn-primary px-5 fw-bold' onClick={this.triggerBuy}>
-                                    <FontAwesomeIcon icon={faWallet} /> { } Buy now
+                                        <FontAwesomeIcon icon={faWallet} /> { } Buy now
                                     </button>
                                     : <button className='btn btn-primary px-5 fw-bold' disabled>
-                                    Sold out
+                                        Sold out
                                     </button>
                                 : <form className='form-group' onSubmit={this.handleChangePrice}>
                                     <div className='row my-3'>

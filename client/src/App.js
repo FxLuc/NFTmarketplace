@@ -34,7 +34,7 @@ class App extends React.Component {
 
   componentDidMount = async () => {
     // Get network provider and web3 instance.
-    const web3 = await new Web3(new Web3.providers.HttpProvider(process.env.REACT_APP_INFURA_HTTP_ENDPOINT))
+    const web3 = new Web3(process.env.REACT_APP_INFURA_HTTP_ENDPOINT)
 
     // connect to Item Manager smart contract
     const ItemManagerContract = await new web3.eth.Contract(
@@ -52,20 +52,19 @@ class App extends React.Component {
       // connect with metamask provider
       const provider = await detectEthereumProvider()
 
-      // Use web3 to get the user's accounts.
-      if (provider.isConnected()) {
-        (async () => {
-          axios
-            .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account`, {
-              _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase()
-            })
-            .then(res => {
-              this.setState({ account: res.data, isLogin: 'true' })
-              localStorage.setItem('isLogin', 'true');
-            })
-            .catch(console.log())
-        })()
-      }
+      // Use new web3 to connect with metamask provider
+      const web3 = new Web3(window.ethereum)
+
+      axios
+        .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account`, {
+          _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase()
+        })
+        .then(res => {
+
+          this.setState({ account: res.data, isLogin: 'true', web3: web3})
+          localStorage.setItem('isLogin', 'true');
+        })
+        .catch(error => console.error(error))
 
       //  handle when account changed
       provider.on('accountsChanged', async () => {
@@ -74,7 +73,7 @@ class App extends React.Component {
             _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase()
           })
           .then(res => this.setState({ account: res.data }))
-          .catch(console.log())
+          .catch(error => console.error(error))
       })
     }
     catch (error) {
