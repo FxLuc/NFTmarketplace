@@ -12,13 +12,14 @@ import Home from "./components/home/Home"
 import Search from "./components/search/Search"
 import Profile from "./components/profile/Profile"
 import Login from './components/Login'
+import LoginError from './components/LoginError'
 
 import NavigationBar from './components/NavigationBar'
 import Footer from './components/Footer'
 import Error from './components/Error'
 
+import Web3 from "web3"
 import detectEthereumProvider from '@metamask/detect-provider'
-import getWeb3 from './getWeb3'
 import ItemManagerContractJSON from './contracts/ItemManager.json'
 
 class App extends React.Component {
@@ -26,64 +27,65 @@ class App extends React.Component {
     super(props)
     this.state = {
       keywords: '',
-      isLogin: false,
+      isLogin: 'false',
       account: { _id: '0x0000000000000000000000000000000000000000' },
     }
   }
 
   componentDidMount = async () => {
     // Get network provider and web3 instance.
-    const web3 = await getWeb3()
+    const web3 = new Web3(process.env.REACT_APP_INFURA_HTTP_ENDPOINT)
 
+    // connect to Item Manager smart contract
     const ItemManagerContract = await new web3.eth.Contract(
       ItemManagerContractJSON.abi,
       process.env.REACT_APP_ITEM_MANAGER_ADDRESS
     )
-    const isLogin = localStorage.getItem('isLogin');
+    // check logged in status form local storage
+    const isLogin = await localStorage.getItem('isLogin');
     this.setState({ web3: web3, ItemManagerContract: ItemManagerContract, isLogin: isLogin })
-    
-    if (isLogin === 'true') {
-      this.login()
-      console.log('TRUEEEE')
-    }
+    if (isLogin === 'true') this.login()
   }
 
   login = async () => {
     try {
+      // connect with metamask provider
       const provider = await detectEthereumProvider()
-      // Use web3 to get the user's accounts.
+
+      // Use new web3 to connect with metamask provider
+      const web3 = new Web3(window.ethereum)
+
       axios
         .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account`, {
           _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase()
         })
         .then(res => {
-          this.setState({ account: res.data, isLogin: true })
-          localStorage.setItem('isLogin', true);
-        })
-        .catch(_err => {
-          this.logout()
-        })
 
+          this.setState({ account: res.data, isLogin: 'true', web3: web3})
+          localStorage.setItem('isLogin', 'true');
+        })
+        .catch(error => console.error(error))
+
+      //  handle when account changed
       provider.on('accountsChanged', async () => {
         axios
           .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/account`, {
             _id: (await provider.request({ method: 'eth_requestAccounts' }))[0].toLowerCase()
           })
-          .then(res => this.setState({ account: res.data, isLogin: true }))
-          .catch(_err => {
-            this.logout()
-          })
+          .then(res => this.setState({ account: res.data }))
+          .catch(error => console.error(error))
       })
     }
     catch (error) {
       console.error(error)
-
+      // return is error for login component
+      return true
     }
   }
 
   logout = () => {
-    localStorage.setItem('isLogin', false);
-    this.setState({ account: { _id: '0x0000000000000000000000000000000000000000' }, isLogin: false })
+    localStorage.setItem('isLogin', 'false');
+    this.setState({ account: { _id: '0x0000000000000000000000000000000000000000' }, isLogin: 'false' })
   }
 
   handleKeywordsChange = (keywords) => {
@@ -93,7 +95,7 @@ class App extends React.Component {
   render() {
     return (
       <>
-        <NavigationBar account={this.state.account} handleKeywordsChange={this.handleKeywordsChange} logout={this.logout} isLogin={this.state.isLogin}/>
+        <NavigationBar account={this.state.account} handleKeywordsChange={this.handleKeywordsChange} logout={this.logout} isLogin={this.state.isLogin} />
         <div className="container mt-5 py-5 " style={{ minHeight: '75vh' }}>
           <Routes>
             <Route
@@ -133,6 +135,12 @@ class App extends React.Component {
               path="/login"
               element={
                 <Login login={this.login} />
+              }
+            />
+            <Route
+              path="/login_error"
+              element={
+                <LoginError login={this.login} />
               }
             />
             <Route

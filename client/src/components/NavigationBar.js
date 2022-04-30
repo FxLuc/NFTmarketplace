@@ -61,7 +61,7 @@ function NavigationBar(props) {
                             className='fw-bold me-4'>
                             Check
                         </Nav.Link>
-                        {(props.isLogin === true)
+                        {(props.isLogin === 'true' && props.account._id !== '0x0000000000000000000000000000000000000000')
                             ? <NavDropdown
                                 className='fw-bold'
                                 title={addressOverflow(props.account._id)}
