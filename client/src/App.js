@@ -75,11 +75,13 @@ class App extends React.Component {
           .then(res => this.setState({ account: res.data }))
           .catch(error => console.error(error))
       })
+
+      return true
     }
     catch (error) {
       console.error(error)
       // return is error for login component
-      return true
+      return false
     }
   }
 
