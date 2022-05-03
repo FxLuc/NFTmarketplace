@@ -19,8 +19,8 @@ var ItemManagerContract
     )
     console.log(`Item manager Smart contract address: ${process.env.ITEM_MANAGER_ADDRESS}`)
 
-    // call every 20 minutes to keep web socket alive
-    setInterval(() => ItemManagerContract.methods.currentItemIndex().call(), 1200000)
+    // call every 10 minutes to keep web socket alive
+    setInterval(() => ItemManagerContract.methods.currentItemIndex().call().then(res => console.log(res)), 600000)
 
     ItemManagerContract.events.ItemStateChanged().on('data', async event => {
         const lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
