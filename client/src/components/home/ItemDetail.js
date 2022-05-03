@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import ToastAutoHide from '../ToastAutoHide'
 import BuyButton from './BuyButton'
+import ModalItemPicture from './ModalItemPicture';
 
 function ItemDetail(props) {
   const { itemAddress } = useParams()
@@ -16,7 +17,8 @@ class Detail extends React.Component {
     super(props)
     this.state = {
       item: null,
-      loading: 0
+      loading: 0,
+      modalItemPictureShow: false
     }
   }
 
@@ -41,14 +43,21 @@ class Detail extends React.Component {
             <div className='col-12 col-md-6 col-lg-4 ps-0 pe-0 pe-md-3 mb-3'>
               <img
                 src={this.state.item.picture}
+                alt={this.state.item.name}
                 className="bg-light rounded-3 h-100"
                 style={{ objectFit: 'contain', maxHeight: '350px', width: '100%' }}
-                alt={this.state.item.name}
+                onClick={() => this.setState({ modalItemPictureShow: true })}
               />
             </div>
-            <div 
-            className='col-12 col-md-6 col-lg-8 bg-light rounded-3 py-3 mb-3 p-4 h-100 text-center text-md-start border border-2'
-            style={{ minHeight: '350px' }}
+            <ModalItemPicture
+              show={this.state.modalItemPictureShow}
+              onHide={() => this.setState({ modalItemPictureShow: false })}
+              src={this.state.item.picture}
+              alt={this.state.item.name}
+            />
+            <div
+              className='col-12 col-md-6 col-lg-8 bg-light rounded-3 py-3 mb-3 p-4 h-100 text-center text-md-start border border-2'
+              style={{ minHeight: '350px' }}
             >
               Owned by: { }
               <span className='text-secondary'>
@@ -114,7 +123,7 @@ class Detail extends React.Component {
             <div className='col-12 bg-light rounded-3 py-3 mb-3'>
               <h5 className='text-center'>Specifications</h5>
               <div className=' px-4 text-wrap' style={{ textAlign: 'justify' }}>
-              {this.state.item.specifications.split('\n').map(str => <p key={str}>{str}</p>)}
+                {this.state.item.specifications.split('\n').map(str => <p key={str}>{str}</p>)}
               </div>
             </div>
           </div>
