@@ -20,7 +20,11 @@ var ItemManagerContract
     console.log(`Item manager Smart contract address: ${process.env.ITEM_MANAGER_ADDRESS}`)
 
     // call every 10 minutes to keep web socket alive
-    setInterval(() => ItemManagerContract.methods.currentItemIndex().call().then(res => console.log(res)), 600000)
+    setInterval(() =>
+        ItemManagerContract.methods.currentItemIndex().call()
+        .then(res => console.log('Server call every 10 minutes to keep web socket alive\nCurrent item index: ' + res)),
+        600000 // 10 min x 60 sec x 1000ms
+    )
 
     ItemManagerContract.events.ItemStateChanged().on('data', async event => {
         const lastItemIndex = await ItemManagerContract.methods.currentItemIndex().call()
@@ -78,9 +82,9 @@ async function createdItem(itemIndexFromEvent, callbackTimes = 0) {
             })
         ).catch(error => {
             console.log(error)
-            // waiting for 12 hour callback
+            // waiting for 1 hour callback
             callbackTimes++
-            if (callbackTimes != 8640) createdItem(itemIndexFromEvent, callbackTimes)
+            if (callbackTimes < 720) createdItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }
 
@@ -116,9 +120,9 @@ async function soldItem(itemIndexFromEvent, callbackTimes = 0) {
         })
         .catch(error => {
             console.log(error)
-            // waiting for 12 hour callback
+            // waiting for 1 hour callback
             callbackTimes++
-            if (callbackTimes != 8640) soldItem(itemIndexFromEvent, callbackTimes)
+            if (callbackTimes < 720) soldItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }
 
@@ -141,9 +145,9 @@ async function deliveredItem(itemIndexFromEvent, callbackTimes = 0) {
         })
         .catch(error => {
             console.log(error)
-            // waiting for 12 hour callback
+            // waiting for 1 hour callback
             callbackTimes++
-            if (callbackTimes != 8640) deliveredItem(itemIndexFromEvent, callbackTimes)
+            if (callbackTimes < 720) deliveredItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }
 
@@ -160,9 +164,9 @@ async function canceledItem(itemIndexFromEvent, callbackTimes = 0) {
         })
         .catch(error => {
             console.log(error)
-            // waiting for 12 hour callback
+            // waiting for 1 hour callback
             callbackTimes++
-            if (callbackTimes != 8640) canceledItem(itemIndexFromEvent, callbackTimes)
+            if (callbackTimes < 720) canceledItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }
 
