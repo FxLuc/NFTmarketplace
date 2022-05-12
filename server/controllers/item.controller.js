@@ -65,12 +65,28 @@ const getItem = (req, res) => {
 }
 
 const searchItem = (req, res) => {
+    if (req.query.keywords.substring(0, 2) == "0x") searchItemByAddress(req, res)
+    else searchItemByName(req, res)
+}
+
+function searchItemByName(req, res) {
     Item
         .find(({ name: { $regex: req.query.keywords, $options: 'i' } }))
         .sort('-createdAt')
         .limit(12)
         .then(items => {
             res.status(200).json(items)
+        })
+        .catch(error => res.status(404).json(error))
+}
+
+function searchItemByAddress(req, res) {
+    Item
+        .findById(req.query.keywords)
+        .sort('-createdAt')
+        .limit(12)
+        .then(items => {
+            res.status(200).json([items])
         })
         .catch(error => res.status(404).json(error))
 }
