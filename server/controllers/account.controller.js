@@ -4,30 +4,30 @@ const ethers  = require("ethers")
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => {
-        cb(null, './public/pictures/avatars/')
+    destination: (_req, _file, callBack) => {
+        callBack(null, './public/pictures/avatars/')
     },
-    filename: (_req, file, cb) => {
+    filename: (_req, _file, callBack) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, uniqueSuffix + file.originalname)
+        callBack(null, uniqueSuffix)
     }
 })
 
 const upload = multer({
     storage: storage,
-    fileFilter: (_req, file, cb) => {
+    fileFilter: (_req, file, callBack) => {
         if (
             file.mimetype == "image/png"
             || file.mimetype == "image/jpg"
             || file.mimetype == "image/jpeg"
-        ) cb(null, true)
+        ) callBack(null, true)
         else {
-            cb(null, false)
-            return cb(new Error('Only .png, .jpg and .jpeg format allowed!'))
+            callBack(null, false)
+            return callBack(new Error('Only .png, .jpg and .jpeg format allowed!'))
         }
     },
     limits: {
-        fileSize: 4 * 1024 * 1024,
+        fileSize: (8 * 1024 * 1024) * 2, // 2MB
     }
 }).single('file')
 
@@ -55,14 +55,8 @@ const signin = (req, res) => {
 }
 
 const updateAvatar = (req, res) => {
-    upload(req, res, (err) => {
-        if (err instanceof multer.MulterError) {
-            console.log('A Multer error occurred when uploading.')
-            res.status(500).json({ error: 'A Multer error occurred when uploading.' })
-        } else if (err) {
-            console.log('An unknown error occurred when uploading: ' + err)
-            res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
-        }
+    upload(req, res, _err => {
+        try {
         const accountAddress = req.body._id.toLowerCase()
         req.body.picture = `http://${process.env.ADDRESS}/pictures/avatars/${req.file.filename}`
         Account
@@ -72,9 +66,13 @@ const updateAvatar = (req, res) => {
             .exec(error => {
                 if (error) {
                     console.log(error)
-                    res.status(400).json(error)
+                    res.status(500).json(error)
                 } else res.status(200).json(req.body.picture)
             })
+        } catch {
+            console.log('An unknown error occurred when uploading.')
+            res.status(415).json({ error: 'An unknown error occurred when uploading.'})
+        }
     })
 }
 

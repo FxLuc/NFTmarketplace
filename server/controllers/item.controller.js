@@ -1,30 +1,34 @@
 require('dotenv').config({ path: '../.env' })
-const { Item, Order } = require('../models')
-const { OrderContractJSON, ItemContractJSON, web3 } = require('./infura.controller')
+const { Item } = require('../models')
+const { ItemContractJSON, web3 } = require('./infura.controller')
 const multer = require('multer')
 
+// The function should call `callBack` with a boolean to indicate if the file should be accepted
 const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => {
-        cb(null, './public/pictures/items/')
+    destination: (_req, _file, callBack) => {
+        callBack(null, './public/pictures/items/')
     },
-    filename: (_req, file, cb) => {
+    filename: (_req, file, callBack) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, uniqueSuffix + file.originalname)
+        callBack(null, uniqueSuffix)
     }
 })
 
 const upload = multer({
     storage: storage,
-    fileFilter: (_req, file, cb) => {
-        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-            cb(null, true)
+    fileFilter: (_req, file, callBack) => {
+        if (file.mimetype == "image/png"
+            || file.mimetype == "image/jpg"
+            || file.mimetype == "image/jpeg"
+        ) {
+            callBack(null, true)
         } else {
-            cb(null, false)
-            return cb(new Error('Only .png, .jpg and .jpeg format allowed!'))
+            console.error('Only .png, .jpg and .jpeg format allowed!')
+            callBack(null, false)
         }
     },
     limits: {
-        fileSize: 4 * 1024 * 1024,
+        fileSize: (8 * 1024 * 1024) * 10, // 10MB
     }
 }).single('file')
 
@@ -65,6 +69,11 @@ const getItem = (req, res) => {
 }
 
 const searchItem = (req, res) => {
+    if (req.query.keywords.substring(0, 2) == "0x") searchItemByAddress(req, res)
+    else searchItemByName(req, res)
+}
+
+function searchItemByName(req, res) {
     Item
         .find(({ name: { $regex: req.query.keywords, $options: 'i' } }))
         .sort('-createdAt')
@@ -75,41 +84,50 @@ const searchItem = (req, res) => {
         .catch(error => res.status(404).json(error))
 }
 
+function searchItemByAddress(req, res) {
+    Item
+        .findById(req.query.keywords)
+        .sort('-createdAt')
+        .limit(12)
+        .then(items => {
+            res.status(200).json([items])
+        })
+        .catch(error => res.status(404).json(error))
+}
+
 const createItem = (req, res) => {
-    upload(req, res, (err) => {
-        if (err instanceof multer.MulterError) {
-            console.log('A Multer error occurred when uploading.')
-            res.status(500).json({ error: 'A Multer error occurred when uploading.' })
-        } else if (err) {
-            console.log('An unknown error occurred when uploading: ' + err)
-            res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
+    upload(req, res, _err => {
+        try {
+            req.body.picture = `http://${process.env.ADDRESS}/pictures/items/${req.file.filename}`
+            req.body._id = req.file.filename.substring(0, 41)
+            const newItem = new Item(req.body)
+            newItem
+                .save()
+                .then(item => {
+                    // return soliditySha3 data
+                    Item
+                        .findById(item._id)
+                        .select('-_id name description specifications externalLink picture')
+                        .then(itemRawData => web3.utils.soliditySha3(itemRawData))
+                        .then(rawDataHash => {
+                            Item
+                                .findByIdAndUpdate(item._id, {
+                                    rawDataHash: rawDataHash
+                                }).exec(error => error ? res.status(500).json(error) : res.status(201).json(rawDataHash))
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            res.status(500).json({ error: error })
+                        })
+                })
+                .catch(error => {
+                    console.log(error)
+                    res.status(500).json({ error: error })
+                })
+        } catch {
+            console.log('An unknown error occurred when uploading.')
+            res.status(415).json({ error: 'An unknown error occurred when uploading.'})
         }
-        req.body.picture = `http://${process.env.ADDRESS}/pictures/items/${req.file.filename}`
-        req.body._id = req.file.filename.substring(0, 41)
-        const newItem = new Item(req.body)
-        newItem
-            .save()
-            .then(item => {
-                // return soliditySha3 data
-                Item
-                    .findById(item._id)
-                    .select('-_id name description specifications externalLink picture')
-                    .then(itemRawData => web3.utils.soliditySha3(itemRawData))
-                    .then(rawDataHash => {
-                        Item
-                            .findByIdAndUpdate(item._id, {
-                                rawDataHash: rawDataHash
-                            }).exec(error => error ? res.status(500).json(error) : res.status(201).json(rawDataHash))
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        res.status(500).json({ error: error })
-                    })
-            })
-            .catch(error => {
-                console.log(error)
-                res.status(500).json({ error: error })
-            })
     })
 }
 

@@ -29,14 +29,14 @@ class Search extends Component {
   }
 
   render() {
-    return (
-      <>
-        <h4>{(this.state.itemList.length === 0) ? 'Not founds' : 'Results'}</h4>
-        <div className='py-3 row'>
-          {this.state.itemList.map(item => <ItemCard item={item} key={item._id} />)}
-        </div>
-      </>
-    )
+    return (this.state.itemList.length === 0)
+      ? <h4>Not founds</h4>
+      : <>
+          <h4>Results</h4>
+          <div className='py-3 row'>
+            {this.state.itemList.map(item => <ItemCard item={item} key={item._id} />)}
+          </div>
+        </>
   }
 }
 

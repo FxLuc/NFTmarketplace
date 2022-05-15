@@ -28,8 +28,11 @@ class BuyButton extends React.Component {
     triggerBuy = async () => {
         this.setState({ loading: 1 })
         this.props.web3.eth.sendTransaction({ from: this.props.account._id, to: this.props.item._id, value: this.state.realPrice })
-            .then(_ => this.setState({ loading: 2 }))
-            .catch(error =>  {
+            .then(tx => {
+                this.setState({ loading: 2 })
+                console.log(tx)
+            })
+            .catch(error => {
                 this.setState({ loading: 3 })
                 console.error(error)
             })
@@ -52,7 +55,7 @@ class BuyButton extends React.Component {
         ItemContract.methods
             .changePrice(value)
             .send({ from: this.props.account._id })
-            .then(_ => {
+            .then(tx => {
                 axios
                     .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/changeprice`, {
                         _id: this.props.item._id
@@ -61,6 +64,8 @@ class BuyButton extends React.Component {
                         this.setState({ loading: 2, realPrice: res.data, price: res.data })
                     })
                     .catch(error => console.error(error))
+
+                console.log(tx)
             })
             .catch(error => {
                 console.error(error)
