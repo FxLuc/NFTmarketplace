@@ -84,6 +84,7 @@ async function createdItem(itemIndexFromEvent, callbackTimes = 0) {
             console.log(error)
             // waiting for 1 hour callback
             callbackTimes++
+            console.log('Callback createdItem ' + itemIndexFromEvent + ": " + callbackTimes + " times.")
             if (callbackTimes < 720) createdItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }
@@ -122,6 +123,7 @@ async function soldItem(itemIndexFromEvent, callbackTimes = 0) {
             console.log(error)
             // waiting for 1 hour callback
             callbackTimes++
+            console.log('Callback soldItem ' + itemIndexFromEvent + ": " + callbackTimes + " times.")
             if (callbackTimes < 720) soldItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }
@@ -147,6 +149,7 @@ async function deliveredItem(itemIndexFromEvent, callbackTimes = 0) {
             console.log(error)
             // waiting for 1 hour callback
             callbackTimes++
+            console.log('Callback deliveredItem ' + itemIndexFromEvent + ": " + callbackTimes + " times.")
             if (callbackTimes < 720) deliveredItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }
@@ -166,6 +169,7 @@ async function canceledItem(itemIndexFromEvent, callbackTimes = 0) {
             console.log(error)
             // waiting for 1 hour callback
             callbackTimes++
+            console.log('Callback canceledItem ' + itemIndexFromEvent + ": " + callbackTimes + " times.")
             if (callbackTimes < 720) canceledItem(itemIndexFromEvent, callbackTimes) // 60secx60min/5sec
         })
 }

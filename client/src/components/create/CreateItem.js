@@ -28,7 +28,18 @@ class CreateItem extends React.Component {
         this.setState({ [name]: value })
     }
 
-    getFileInfo = event => this.setState({ picture: event.target.files[0] })
+    getFileInfo = event => {
+        if (event.target.files[0]
+            && (event.target.files[0].type === 'image/jpeg'
+                || event.target.files[0].type === 'image/jpg'
+                || event.target.files[0].type === 'image/png')
+        ) this.setState({ picture: event.target.files[0] })
+        else {
+            this.setState({ picture: undefined })
+            document.getElementById('picture').value = null
+            window.scroll(0, document.getElementById('picture'))
+        }
+    }
 
     handleSubmit = async (event) => {
         event.preventDefault()
@@ -60,7 +71,7 @@ class CreateItem extends React.Component {
             .then(async res => {
                 // connect to Item Manager smart contract
                 const ItemManagerContract = await new this.props.web3.eth.Contract(ItemManagerContractJSON.abi, process.env.REACT_APP_ITEM_MANAGER_ADDRESS)
-                
+
                 // add item to blockchain
                 ItemManagerContract.methods
                     .createItem(name, specifications, res.data, value)
@@ -86,23 +97,24 @@ class CreateItem extends React.Component {
                         Create new item
                     </h1>
 
-                    <div className='text-muted'>
-                        <span className='text-danger'>*</span> Required fields
-                    </div>
-
                     <div className='form-group my-3'>
+                        <div className='text-muted mb-2'>
+                            <span className='text-danger'>*</span> Required fields
+                        </div>
                         <label htmlFor='picture' className='fw-bold'>
                             Picture <span className='text-danger'>*</span>
                         </label>
                         <br />
-                        <small className='text-muted'>File types supported: JPG, PNG, GIF, SVG. Max size: 100 MB</small>
+                        <small className='text-muted'>
+                            File types supported: PNG, JPG, JPEG. Max size: 10MB
+                        </small>
                         <input
                             type='file'
                             name='picture'
                             id='picture'
                             className='form-control'
                             onChange={this.getFileInfo}
-                            accept="image/*"
+                            accept='image/png, image/jpg, image/jpeg'
                             required
                         />
                     </div>
