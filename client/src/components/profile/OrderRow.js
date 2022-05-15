@@ -42,30 +42,60 @@ class OrderRow extends React.Component {
     }
 
     triggerNext = async () => {
-        const OrderContract = await new this.props.web3.eth.Contract(OrderContractJSON.abi, this.props.order._id)
+        const OrderContract = await new this.props.web3.eth.Contract(
+            OrderContractJSON.abi,
+            this.props.order._id
+        )
         if (this.state.orderState === 0) {
             this.setState({ loading: 1 })
-            OrderContract.methods.triggerConfirm().send({ from: this.props.accountId })
-                .then(_ => this.updateOrder())
-                .catch(_ => this.setState({ loading: 2 }))
+            OrderContract.methods
+                .triggerConfirm()
+                .send({ from: this.props.accountId })
+                .then(tx => {
+                    console.log(tx)
+                    this.updateOrder()
+                })
+                .catch(error => {
+                    console.error(error)
+                    this.setState({ loading: 2 })
+                })
         }
         else if (this.state.orderState === 1) {
             this.setState({ loading: 1 })
-            OrderContract.methods.triggerShipping().send({ from: this.props.accountId })
-                .then(_ => this.updateOrder())
-                .catch(_ => this.setState({ loading: 2 }))
+            OrderContract.methods
+                .triggerShipping()
+                .send({ from: this.props.accountId })
+                .then(tx => {
+                    console.log(tx)
+                    this.updateOrder()
+                })
+                .catch(error => {
+                    console.error(error)
+                    this.setState({ loading: 2 })
+                })
         }
         else if (this.state.orderState === 2) {
             this.setState({ loading: 1 })
-            OrderContract.methods.triggerReceived().send({ from: this.props.accountId })
-                .then(_ => this.updateOrder())
-                .catch(_ => this.setState({ loading: 2 }))
+            OrderContract.methods
+                .triggerReceived()
+                .send({ from: this.props.accountId })
+                .then(tx => {
+                    console.log(tx)
+                    this.updateOrder()
+                })
+                .catch(error => {
+                    console.error(error)
+                    this.setState({ loading: 2 })
+                })
         }
     }
 
     triggerCancel = async () => {
         this.setState({ loading: 1 })
-        const OrderContract = await new this.props.web3.eth.Contract(OrderContractJSON.abi, this.props.order._id)
+        const OrderContract = await new this.props.web3.eth.Contract(
+            OrderContractJSON.abi, 
+            this.props.order._id
+        )
         OrderContract.methods.triggerCancel().send({ from: this.props.accountId })
             .then(_ => this.updateOrder())
             .catch(_ => this.setState({ loading: 2 }))
