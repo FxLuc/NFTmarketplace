@@ -20,7 +20,6 @@ import Error from './components/Error'
 
 import Web3 from "web3"
 import detectEthereumProvider from '@metamask/detect-provider'
-import ItemManagerContractJSON from './contracts/ItemManager.json'
 
 class App extends React.Component {
   constructor(props) {
@@ -36,14 +35,9 @@ class App extends React.Component {
     // Get network provider and web3 instance.
     const web3 = new Web3(process.env.REACT_APP_INFURA_HTTP_ENDPOINT)
 
-    // connect to Item Manager smart contract
-    const ItemManagerContract = await new web3.eth.Contract(
-      ItemManagerContractJSON.abi,
-      process.env.REACT_APP_ITEM_MANAGER_ADDRESS
-    )
     // check logged in status form local storage
     const isLogin = await localStorage.getItem('isLogin');
-    this.setState({ web3: web3, ItemManagerContract: ItemManagerContract, isLogin: isLogin })
+    this.setState({ web3: web3, isLogin: isLogin })
     if (isLogin === 'true') this.login()
   }
 
@@ -61,7 +55,7 @@ class App extends React.Component {
         })
         .then(res => {
 
-          this.setState({ account: res.data, isLogin: 'true', web3: web3})
+          this.setState({ account: res.data, isLogin: 'true', web3: web3 })
           localStorage.setItem('isLogin', 'true');
         })
         .catch(error => console.error(error))
@@ -113,13 +107,10 @@ class App extends React.Component {
             <Route
               path="/create"
               element={
-                (this.state.account._id !== '0x0000000000000000000000000000000000000000')
-                  ? <CreateItem
-                    account={this.state.account}
-                    ItemManagerContract={this.state.ItemManagerContract}
-                    web3={this.state.web3}
-                  />
-                  : <Login login={this.login} />
+                <CreateItem
+                  account={this.state.account}
+                  web3={this.state.web3}
+                />
               }
             />
             <Route
@@ -170,7 +161,10 @@ class App extends React.Component {
           </Routes>
         </div>
 
-        <Footer contractAddress={this.state.ItemManagerContract ? this.state.ItemManagerContract._address : null} />
+        <Footer contractAddress={
+          process.env.REACT_APP_ITEM_MANAGER_ADDRESS
+          || "process.env.REACT_APP_ITEM_MANAGER_ADDRESS not found!"
+        } />
       </>
     )
   }
