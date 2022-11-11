@@ -2,8 +2,6 @@
 
 NFT Marketplace that you can mint, buy and sell NFTs.
 
-Visit the website demo here: : http://103.170.246.112:50666/
-
 ## Requirements
 
 Ethereum, Solidity, Metamask, NodeJS, ReactJS, Truffle,...
