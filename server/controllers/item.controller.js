@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
     destination: (_req, _file, callBack) => {
         callBack(null, './public/pictures/items/')
     },
-    filename: (_req, file, callBack) => {
+    filename: (_req, _file, callBack) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         callBack(null, uniqueSuffix)
     }

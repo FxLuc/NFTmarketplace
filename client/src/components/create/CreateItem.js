@@ -65,9 +65,13 @@ class CreateItem extends React.Component {
         formData.append('description', description)
 
         axios
-            .post(`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/create`, formData, {
-                headers: { 'content-type': 'multipart/form-data' }
-            })
+            .post(
+                `${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/item/create`,
+                formData,
+                {
+                    headers: { 'content-type': 'multipart/form-data' }
+                }
+            )
             .then(async res => {
                 // connect to Item Manager smart contract
                 const ItemManagerContract = await new this.props.web3.eth.Contract(ItemManagerContractJSON.abi, process.env.REACT_APP_ITEM_MANAGER_ADDRESS)

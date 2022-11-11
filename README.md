@@ -2,7 +2,7 @@
 
 NFT Marketplace that you can mint, buy and sell NFTs.
 
-Visit the website demo here: : http://103.170.246.112:50666/
+Visit the website demo here: : http://1668132326.onet.com.vn:50666/
 
 ## Requirements
 
