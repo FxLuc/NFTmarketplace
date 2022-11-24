@@ -1,15 +1,16 @@
 require('dotenv').config({ path: '../.env' })
+const path = require('path'); // path for cut the file extension
+const multer = require('multer')
 const { Item } = require('../models')
 const { ItemContractJSON, web3 } = require('./infura.controller')
-const multer = require('multer')
 
 // The function should call `callBack` with a boolean to indicate if the file should be accepted
 const storage = multer.diskStorage({
     destination: (_req, _file, callBack) => {
         callBack(null, './public/pictures/items/')
     },
-    filename: (_req, _file, callBack) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    filename: (_req, file, callBack) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname)
         callBack(null, uniqueSuffix)
     }
 })
@@ -98,7 +99,7 @@ function searchItemByAddress(req, res) {
 const createItem = (req, res) => {
     upload(req, res, _err => {
         try {
-            req.body.picture = `http://${process.env.ADDRESS}/pictures/items/${req.file.filename}`
+            req.body.picture = `${req.file.filename}`
             req.body._id = req.file.filename.substring(0, 41)
             const newItem = new Item(req.body)
             newItem

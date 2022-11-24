@@ -13,7 +13,7 @@ function ItemCard(props) {
         return (
         <div className='col-12 col-sm-6 col-lg-4 col-xl-3 mb-4' onClick={() => navigate(`/item/${props.item._id}`)}>
             <div className='card shadow-sm'>
-                <img src={props.item.picture} className="w-100" style={{ objectFit: 'cover', height: '250px' }} alt={props.item.name} />
+                <img src={`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/pictures/items/${props.item.picture}`} className="w-100" style={{ objectFit: 'cover', height: '250px' }} alt={props.item.name} />
                 <div className="card-body">
                     <h5 className="card-title text-truncate">{props.item.name}</h5>
                     <h6 className="card-subtitle text-muted mb-2">Owner: {addressOverflow(props.item.owner)}</h6>

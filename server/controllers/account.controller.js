@@ -1,14 +1,15 @@
 require('dotenv').config({ path: '../.env' })
-const { Account } = require('../models')
+const path = require('path'); // path for cut the file extension
 const ethers  = require("ethers")
 const multer = require('multer');
+const { Account } = require('../models')
 
 const storage = multer.diskStorage({
     destination: (_req, _file, callBack) => {
         callBack(null, './public/pictures/avatars/')
     },
-    filename: (_req, _file, callBack) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    filename: (_req, file, callBack) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname)
         callBack(null, uniqueSuffix)
     }
 })
@@ -58,7 +59,7 @@ const updateAvatar = (req, res) => {
     upload(req, res, _err => {
         try {
         const accountAddress = req.body._id.toLowerCase()
-        req.body.picture = `http://${process.env.ADDRESS}/pictures/avatars/${req.file.filename}`
+        req.body.picture = `${req.file.filename}`
         Account
             .findByIdAndUpdate(accountAddress, {
                 avatar: req.body.picture
@@ -100,9 +101,7 @@ const updateProfile = (req, res) => {
             res.status(500).json({ error: 'An unknown error occurred when uploading: ' + err })
         }
         const accountAddress = req.body._id.toLowerCase()
-        const url = req.protocol + '://' + req.get('host')
-        req.body.picture = url + '/pictures/avatars/' + req.file.filename
-        console.log(req.body.picture)
+        req.body.picture = req.file.filename
         Account
             .findByIdAndUpdate(accountAddress, {
                 name: req.body.name,

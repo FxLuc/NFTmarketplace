@@ -25,7 +25,7 @@ class Profile extends React.Component {
                 />
                 <div className='row mb-4'>
                     <div className='col-12 text-center'>
-                        <Avatar avatar={this.props.account.avatar} _id={this.props.account._id} />
+                        <Avatar avatar={`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/pictures/avatars/${this.props.account.avatar}`} _id={this.props.account._id} />
                         <Name accountName={this.props.account.name} _id={this.props.account._id} />
                         <h4 className='text-muted'>
                             <ToastAutoHide
