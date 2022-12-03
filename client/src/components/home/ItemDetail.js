@@ -42,7 +42,7 @@ class Detail extends React.Component {
           <div className='row'>
             <div className='col-12 col-md-6 col-lg-4 ps-0 pe-0 pe-md-3 mb-3'>
               <img
-                src={this.state.item.picture}
+                src={`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/pictures/items/${this.state.item.picture}`}
                 alt={this.state.item.name}
                 className="bg-light rounded-3 h-100"
                 style={{ objectFit: 'contain', maxHeight: '350px', width: '100%' }}
@@ -52,7 +52,7 @@ class Detail extends React.Component {
             <ModalItemPicture
               show={this.state.modalItemPictureShow}
               onHide={() => this.setState({ modalItemPictureShow: false })}
-              src={this.state.item.picture}
+              src={`${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/pictures/items/${this.state.item.picture}`}
               alt={this.state.item.name}
             />
             <div

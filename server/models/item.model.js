@@ -1,6 +1,6 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose')
 require('dotenv').config({path: '../.env'})
-const defaultAddress = `http://${process.env.ADDRESS}/pictures/default.png`
+const defaultPicture = 'default.jpg'
 
 const itemSchema = new mongoose.Schema({
   _id: {
@@ -41,7 +41,7 @@ const itemSchema = new mongoose.Schema({
   },
   picture: {
     type: String,
-    default: defaultAddress,
+    default: defaultPicture,
   },
   rawDataHash: {
     type: String,
@@ -55,4 +55,4 @@ const itemSchema = new mongoose.Schema({
   }
 }, {timestamps: true})
 
-module.exports = mongoose.model("Item", itemSchema)
+module.exports = mongoose.model('Item', itemSchema)

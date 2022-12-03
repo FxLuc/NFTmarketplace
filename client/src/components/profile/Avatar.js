@@ -29,7 +29,7 @@ class Avatar extends React.Component {
                     headers: { 'content-type': 'multipart/form-data' }
                 })
                 .then(res => {
-                    this.setState({ avatar: res.data })
+                    this.setState({ avatar: `${process.env.REACT_APP_HTTP_SERVER_ENDPOINT}/pictures/avatars/${res.data}` })
                 })
                 .catch(_ => window.location = `${process.env.REACT_APP_HTTP_CLIENT_ENDPOINT}/error`)
         } else {
