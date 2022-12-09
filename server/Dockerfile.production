@@ -1,0 +1,35 @@
+# ==== CONFIGURE FOR PRODUCTION =====
+FROM node:16.18-alpine AS production
+
+# Set working directory
+WORKDIR server
+
+# Cache and Install dependencies
+COPY package.json .
+COPY package-lock.json .
+
+# Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
+RUN npm ci
+
+# Copy server files
+COPY . .
+
+# ==== TEST =====
+# Test the app
+RUN CI=true npm run test
+
+# ==== RUN =======
+# Set the env to "production"
+ENV NODE_ENV production
+
+# Start the app
+CMD [ "npm", "start" ]
+
+# Build the Docker image for the current folder and tag it with `fxethers-server-production`, file `Dockerfile.production`
+# docker build -t fxethers-server-production -f Dockerfile.production .
+
+# Check the image was created
+# docker images | grep fxethers-server-production
+
+# Run the image in detached mode and map port 4000 inside the container with 4000 on current host
+# docker run -p 4000:4000 -d fxethers-server-production

@@ -1,0 +1,49 @@
+# Run multi-container.
+# (External user) --> 443 [frontend network]
+#                             |
+#                   +--------------------+
+#                   |  frontend service  |...ro...<HTTP configuration>
+#                   |      "client"      |...ro...<server certificate> #secured
+#                   +--------------------+
+#                             |
+#                         [backend network]
+#                             |
+#                   +--------------------+
+#                   |  backend service   |  r+w   ___________________
+#                   |      "server"      |=======( persistent volume )
+#                   +--------------------+        \_________________/
+
+version: "3.8"
+
+services:
+  client:
+    restart: unless-stopped
+    image: fxethers-client-development
+    container_name: fxethers-client-development
+    build:
+      context: client
+      target: development
+      dockerfile: Dockerfile.development
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3001:3001" # map 3001 in container => 3001 in local
+  server:
+    restart: unless-stopped
+    image: fxethers-server-development
+    container_name: fxethers-server-development
+    build:
+      context: server
+      target: development
+      dockerfile: Dockerfile.development
+    volumes:
+      - "/home/luc/fxnft/development/public:/server/public"
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "4001:4001" # map 4001 in container => 4001 in local
+
+# RUN
+# docker compose -f docker-compose.development.yml up -d
+# STOP
+# docker compose -f docker-compose.development.yml down

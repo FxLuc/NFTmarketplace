@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+.dockerignore
+**/server/public/pictures
+**/.git
+**/.DS_Store
+**/node_modules

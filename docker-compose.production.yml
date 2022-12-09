@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  client:
+    restart: unless-stopped
+    image: fxethers-client-production
+    container_name: fxethers-client-production
+    build:
+      context: client
+      target: production
+      dockerfile: Dockerfile.production
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:3000" # map 3000 in container => 3000 in local
+  server:
+    restart: unless-stopped
+    image: fxethers-server-production
+    container_name: fxethers-server-production
+    build:
+      context: server
+      target: production
+      dockerfile: Dockerfile.production
+    volumes:
+      - "/home/luc/fxnft/production/public:/server/public"
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "4000:4000" # map 4000 in container => 4000 in local
+
+# RUN
+# docker compose -f docker-compose.production.yml up -d
+# STOP
+# docker compose -f docker-compose.production.yml down

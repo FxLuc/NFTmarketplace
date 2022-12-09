@@ -37,7 +37,7 @@ class App extends React.Component {
 
     // check logged in status form local storage
     const isLogin = await localStorage.getItem('isLogin');
-    this.setState({ web3: web3, isLogin: isLogin })
+    this.setState({ web3, isLogin })
     if (isLogin === 'true') this.login()
   }
 

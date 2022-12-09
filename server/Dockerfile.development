@@ -1,0 +1,38 @@
+# ==== CONFIGURE FOR DEVELOPMENT =====
+FROM node:16.18-alpine AS development
+
+# Set working directory
+WORKDIR server
+
+# Cache and Install dependencies
+COPY package.json .
+COPY package-lock.json .
+
+# Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
+RUN npm ci
+
+# Copy server files
+COPY . .
+
+# ==== TEST =====
+# Test the app
+RUN CI=true npm run test
+
+# ==== RUN =======
+# Set the env to "development"
+ENV NODE_ENV development
+
+# Expose the port on which the app will be running (4001 is the default that `serve` uses)
+EXPOSE 4001:4001
+
+# Start the app
+CMD [ "npm", "start" ]
+
+# Build the Docker image for the current folder and tag it with `fxethers-server-development`, file `Dockerfile.development`
+# docker build -t fxethers-server-development -f Dockerfile.development .
+
+# Check the image was created
+# docker images | grep fxethers-server-development
+
+# Run the image in detached mode and map port 4001 inside the container with 4001 on current host
+# docker run -p 4001:4001 -d fxethers-server-development

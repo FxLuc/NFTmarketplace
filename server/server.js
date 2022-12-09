@@ -3,7 +3,14 @@ const app = express()
 const bodyParser = require('body-parser')
 const path = require('path')
 const cors = require('cors')
-require('dotenv').config()
+
+if (process.env.NODE_ENV === "production") {
+  require("dotenv").config({ path: '.env.production' });
+} else if (process.env.NODE_ENV === "development") {
+  require("dotenv").config({ path: '.env.development' });
+} else {
+  require("dotenv").config();
+}
 
 // mongoose connect
 const mongoose = require('mongoose')

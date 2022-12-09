@@ -7,12 +7,11 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  client:
     runs-on: ubuntu-20.04
-    environment: secrets 
     defaults:
       run:
-        working-directory: 'client'
+        working-directory: ./client
     steps:
     - uses: actions/checkout@main
     - name: Use Node.js 16.18.1
@@ -22,11 +21,32 @@ jobs:
         cache: 'npm'
         cache-dependency-path: './client/package-lock.json'
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     - name: Build and test the apps
       run: |
         npm run build
-      # CI=true npm test
+        CI=true npm test
+  server:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+    - uses: actions/checkout@main
+    - name: Use Node.js 16.18.1
+      uses: actions/setup-node@main
+      with:
+        node-version: '16.18.1'
+        cache: 'npm'
+        cache-dependency-path: './server/package-lock.json'
+    - name: Install dependencies
+      run: npm ci
+    - name: test the apps
+      run: CI=true npm test
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+    environment: secrets
+    needs: [ client, server ]
     - name: Deploy NodeJS app
       uses: appleboy/ssh-action@v0.1.2
       with:
@@ -34,7 +54,9 @@ jobs:
         key: ${{secrets.SSH_PRIVATE_KEY}} # Private or public key of the server
         username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
         script: |
-          cd nft
+          cd fxnft
           git pull -s recursive -X ours
-          pm2 reload all
+          echo "${{ secrets.ENV_PROD_SERVER }}" > server/.env.production
+          echo "${{ secrets.ENV_PROD_CLIENT }}" > client/.env.production
+          docker compose -f docker-compose.production.yml up -d
           echo 'Deployment successful to VPS'

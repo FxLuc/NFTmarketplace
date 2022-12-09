@@ -19,12 +19,14 @@ COPY . .
 RUN CI=true npm run test
 
 # Build the app
-RUN CI=true npm run build
+RUN CI=true npm run build-development
 
 # ==== RUN =======
+# Set the env to "development"
+ENV NODE_ENV development
 
-# Expose the port on which the app will be running (50666 is the default that `serve` uses)
-EXPOSE 50666:50666
+# Expose the port on which the app will be running (3001 is the default that `serve` uses)
+EXPOSE 3001:3001
 
 # Start the app
 CMD [ "npx", "serve", "build" ]
@@ -35,5 +37,5 @@ CMD [ "npx", "serve", "build" ]
 # Check the image was created
 # docker images | grep fxethers-client-development
 
-# Run the image in detached mode and map port 50666 inside the container with 50666 on current host
-# docker run -p 50666:50666 -d fxethers-client-development
+# Run the image in detached mode and map port 3001 inside the container with 3001 on current host
+# docker run -p 3001:3001 -d fxethers-client-development
