@@ -1,4 +1,4 @@
-name: deploy-react-client
+name: deploy-production
 
 run-name: Deploy to production by @${{ github.actor }}
 
@@ -26,6 +26,7 @@ jobs:
       run: CI=true npm test
     - name: Build
       run: npm run build-production
+
   server:
     runs-on: ubuntu-20.04
     defaults:
@@ -43,10 +44,32 @@ jobs:
       run: npm ci
     - name: test the apps
       run: CI=true npm test
+
+  build:
+    runs-on: ubuntu-20.04
+    needs: [ client, server ]
+    environment: secrets
+    steps:
+    - uses: actions/checkout@main
+    - name: Create docker compose file
+      run: echo "${{secrets.DOCKER_COMPOSE_PROD}}" > docker-compose.yml
+    - name: Build docker compose
+      run: |
+        docker-compose up -d
+        docker images
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+    - name: Push to docker hub
+      run: |
+        docker compose push
+
   deploy:
     runs-on: ubuntu-20.04
     environment: secrets
-    needs: [ client, server ]
+    needs: build
     steps:
     - name: Deploy NodeJS app
       uses: appleboy/ssh-action@v0.1.2
@@ -57,7 +80,9 @@ jobs:
         script: |
           cd fxnft/source
           git pull -s recursive -X ours
-          echo "${{ secrets.ENV_PROD_SERVER }}" > server/.env.production
-          echo "${{ secrets.ENV_PROD_CLIENT }}" > client/.env.production
-          docker compose -f docker-compose.production.yml up -d
+          echo "${{secrets.ENV_PROD_SERVER}}" > server/.env.production
+          echo "${{secrets.ENV_PROD_CLIENT}}" > client/.env.production
+          echo "${{secrets.DOCKER_COMPOSE_PROD}}" > docker-compose.yml
+          docker compose pull
+          docker compose up -d
           echo 'Deployment successful to VPS'
