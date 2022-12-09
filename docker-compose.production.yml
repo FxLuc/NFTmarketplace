@@ -3,7 +3,7 @@ version: "3.8"
 services:
   client:
     restart: unless-stopped
-    image: fxethers-client-production
+    image: often127/fxethers-client-production
     container_name: fxethers-client-production
     build:
       context: client
@@ -15,7 +15,7 @@ services:
       - "3000:3000" # map 3000 in container => 3000 in local
   server:
     restart: unless-stopped
-    image: fxethers-server-production
+    image: often127/fxethers-server-production
     container_name: fxethers-server-production
     build:
       context: server
@@ -32,3 +32,8 @@ services:
 # docker compose -f docker-compose.production.yml up -d
 # STOP
 # docker compose -f docker-compose.production.yml down
+# BUILD
+# docker compose -f docker-compose.production.yml build
+# PUSH
+# docker push often127/fxethers-client-production
+# docker push often127/fxethers-server-production

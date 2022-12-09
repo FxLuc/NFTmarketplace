@@ -18,7 +18,7 @@ version: "3.8"
 services:
   client:
     restart: unless-stopped
-    image: fxethers-client-development
+    image: often127/fxethers-client-development
     container_name: fxethers-client-development
     build:
       context: client
@@ -30,7 +30,7 @@ services:
       - "3001:3001" # map 3001 in container => 3001 in local
   server:
     restart: unless-stopped
-    image: fxethers-server-development
+    image: often127/fxethers-server-development
     container_name: fxethers-server-development
     build:
       context: server
@@ -47,3 +47,7 @@ services:
 # docker compose -f docker-compose.development.yml up -d
 # STOP
 # docker compose -f docker-compose.development.yml down
+# BUILD
+# docker compose -f docker-compose.development.yml build
+# docker push often127/fxethers-client-development
+# docker push often127/fxethers-server-development
