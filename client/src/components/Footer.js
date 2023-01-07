@@ -18,8 +18,8 @@ class Footer extends React.Component {
                                 className="d-inline-block align-top mt-2"
                             />
                             <p className='fw-bold fs-5 mb-0'>FxEthers</p>
-                            <p>Hello world.</p>
-                            <p>Goerli testnet: { }
+                            <p> Buy, sell, and discover digital items..</p>
+                            <p>Avalanche Fuji testnet: { }
                             <ToastAutoHide message='Copy this contract address' feedback='Copied to clipboard!' title={this.props.contractAddress} content={this.props.contractAddress} />
                             </p>
                         </div>
@@ -29,7 +29,7 @@ class Footer extends React.Component {
                     <hr className='m-0' />
                     <div className='row pt-1 pb-2'>
                         <div className='col-12 col-sm text-center text-sm-start'>
-                            © 2022 <a href='https://fb.me/often147' className='text-light'>Le Tuan Luc</a>
+                            © 2022 <a href='https://github.com/often127' className='text-light'>Le Tuan Luc</a>
                         </div>
                         <div className='col-12 col-sm text-center text-sm-end'>
                             <a href='#privacy-policy' className='text-light me-3'>Privacy Policy</a>
