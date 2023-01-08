@@ -29,7 +29,7 @@ class Footer extends React.Component {
                     <hr className='m-0' />
                     <div className='row pt-1 pb-2'>
                         <div className='col-12 col-sm text-center text-sm-start'>
-                            © 2022 <a href='https://github.com/often127' className='text-light'>Le Tuan Luc</a>
+                            © 2022 <a href='https://github.com/fxluc' className='text-light'>Le Tuan Luc</a>
                         </div>
                         <div className='col-12 col-sm text-center text-sm-end'>
                             <a href='#privacy-policy' className='text-light me-3'>Privacy Policy</a>
